@@ -1,0 +1,2 @@
+# flair-notifications
+Notifications service 
