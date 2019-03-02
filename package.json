@@ -5,7 +5,7 @@
   "main": "/flair-notifications/app/index.js",
   "scripts": {
     "start": "node /flair-notifications/app/index.js",
-    "test": "mocha --timeout 10000"
+    "test": "mocha ./app/test/*.js --timeout 10000"
   },
   "author": "",
   "license": "ISC",
