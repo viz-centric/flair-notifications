@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/VizCentric/Flair%20BI/_apis/build/status/viz-centric.flair-notifications?branchName=master)](https://dev.azure.com/VizCentric/Flair%20BI/_build/latest?definitionId=6&branchName=master)
+
 # Flair-Reporting-Engine
 
 Application expose an api to schedule a job in cron fashion.
