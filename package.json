@@ -1,10 +1,10 @@
 {
   "name": "flair-notifications",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "flair-notifications",
+  "main": "/flair-notifications/app/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node /flair-notifications/app/index.js",
     "test": "mocha --timeout 10000"
   },
   "author": "",

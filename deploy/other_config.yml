@@ -1,0 +1,10 @@
+port: 9000
+imageFolder:
+grpcEndPoint:
+mailService:
+    serive:
+    sender:
+    testUser:
+    auth :
+      user:
+      pass:

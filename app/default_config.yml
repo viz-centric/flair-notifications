@@ -1,0 +1,10 @@
+port: 8080
+imageFolder: /flair-notifications/images/
+grpcEndPoint: localhost:6565
+mailService:
+    serive:
+    sender:
+    testUser:
+    auth :
+      user:
+      pass:

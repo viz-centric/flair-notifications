@@ -1,0 +1,71 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+trigger:
+  # batch: true
+  branches:
+    include:
+    - master
+    - feature/*
+    - bug/*
+
+variables:
+  imageName: 'flair-notifications'
+  major: 1
+  minor: 0
+  patch: 0 # $(Build.BuildId)
+
+pr:
+  branches:
+    include:
+    - master
+
+steps:
+
+- checkout: self
+  persistCredentials: true
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '8.x'
+
+- script: |
+    apt-get update && \
+    apt-get install -y wget && \
+    wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
+    tar xvf wkhtmltox*.tar.xz && \
+    mv wkhtmltox/bin/wkhtmlto* /usr/bin && \
+    rm -rf wkhtmltox && \
+    rm -rf wkhtmltox*.tar.xz
+  displayName: 'Preparing environment'
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    command: install
+
+- task: Npm@1
+  displayName: 'npm test'
+  inputs:
+    command: custom
+    customCommand: 'test'
+
+# - task: PublishTestResults@2
+#   inputs:
+#     testResultsFiles: '**/TEST-RESULTS.xml'
+#     testRunTitle: 'Test results for JavaScript'
+#   condition: succeededOrFailed()
+
+- script: |
+    docker build -t flairbi/$(imageName):v$(major).$(minor).$(patch) .
+  displayName: 'Build Docker image'
+
+- script: |
+    docker login -u vizcentric -p $DOCKER_PASSWORD
+    docker push flairbi/$(imageName):v$(major).$(minor).$(patch)
+    docker tag flairbi/$(imageName):v$(major).$(minor).$(patch) flairbi/$(imageName):latest
+    docker push flairbi/$(imageName):latest
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  env:
+    DOCKER_PASSWORD: $(dockerPassword)
+  displayName: 'Push Docker image'
