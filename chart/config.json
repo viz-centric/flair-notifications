@@ -1,0 +1,15 @@
+{
+    "type": "pie",
+    "minDim": 1,
+    "maxDim": 1,
+    "minMes": 1,
+    "maxMes": 1,
+    "dimDisplayName": "Dimension",
+    "mesDisplayName": "Measure",
+    "showLegend": true,
+    "legendPosition": "top",
+    "chartType": "donut",
+    "showValueAs": "percentage",
+    "valueAsArc": false,
+    "valuePosition": "outside"
+}

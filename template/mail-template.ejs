@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <style>
+            body {
+                  font-family: Helvetica, Arial, sans-serif;
+
+              }
+              #container{
+                text-align: center;
+              }
+            #char-container{
+              border: 1px solid gray;
+            }
+            #chart-title{
+              border-bottom: 1px solid gray;
+              padding-bottom: 10px;
+            }
+          </style>
+
+      </head>
+      <body>
+      <h2><%= mail_body %></h2>
+
+      <div id="container">
+          <div id="char-container">
+            <p id="chart-title"><%= title %></p>
+            <img id="chartimg" src="<%= imageFile %>" alt="Report Image">
+          </div>
+
+        </div>
+      </body>
+    </html>    

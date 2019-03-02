@@ -1,0 +1,17 @@
+[{
+    "city": "Kathmandu",
+    "cost": 200,
+    "rank": 634
+}, {
+    "city": "Delhi",
+    "cost": 120,
+    "rank": 360
+}, {
+    "city": "Detroit",
+    "cost": 510,
+    "rank": 47
+}, {
+    "city": "London",
+    "cost": 340,
+    "rank": 40
+}]

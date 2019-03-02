@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package messages;
+
+option java_package = "com.flair.bi.messages";
+option java_multiple_files = true;
+
+message ConnectionRequest {
+    int64 id = 1;
+    string name = 2;
+    string connectionUsername = 3;
+    string connectionPassword = 4;
+    int64 connectionType = 5;
+    string linkId = 6;
+    string details = 7;
+}
+
+message ConnectionResponse {
+    Connection connection = 1;
+}
+
+message ConnectionTypeResponse {
+    ConnectionType connectionType = 1;
+}
+
+message ConnectionResponses {
+    repeated Connection connection = 1;
+}
+
+message ConnectionTypesResponses {
+    repeated ConnectionType connectionTypes = 1;
+}
+
+message EmptyConnection {
+
+}
+
+message GetAllConnectionTypesRequest {
+
+}
+
+message TestConnectionRequest {
+    string connectionLinkId = 1;
+    string datasourceName = 2;
+    Connection connection = 3;
+}
+
+message TestConnectionResponse {
+    string result = 1;
+}
+
+message Connection {
+    int64 id = 1;
+    string name = 2;
+    string connectionUsername = 3;
+    string connectionPassword = 4;
+    int64 connectionType = 5;
+    string linkId = 6;
+    map<string, string> details = 7;
+}
+
+message ConnectionType {
+    int64 id = 1;
+    string name = 2;
+    string bundleClass = 3;
+    ConnectionPropertiesSchema connectionPropertiesSchema = 4;
+
+    message ConnectionPropertiesSchema {
+        string connectionDetailsClass = 1;
+        string connectionDetailsType = 2;
+        string imagePath = 3;
+        repeated ConnectionProperty connectionProperties = 4;
+
+        message ConnectionProperty {
+            string displayName = 1;
+            string fieldName = 2;
+            int32 order = 3;
+            string fieldType = 4;
+            string defaultValue = 5;
+            bool required = 6;
+        }
+    }
+}
+
+message SaveConnectionResponse {
+    Connection connection = 1;
+}
+
+message UpdateConnectionResponse {
+    Connection connection = 1;
+}
+
+message SaveConnectionRequest {
+    Connection connection = 1;
+}
+
+message UpdateConnectionRequest {
+    Connection connection = 1;
+}
+
+service ConnectionService {
+    rpc GetConnection(ConnectionRequest) returns (ConnectionResponse) {};
+    rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {};
+    rpc UpdateConnection(UpdateConnectionRequest) returns (UpdateConnectionResponse) {};
+    rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {};
+    rpc GetAllConnections(EmptyConnection) returns (ConnectionResponses) {};
+    rpc GetConnectionTypes(GetAllConnectionTypesRequest) returns (ConnectionTypesResponses) {};
+}

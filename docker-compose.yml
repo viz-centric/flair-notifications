@@ -1,0 +1,27 @@
+
+version: '3'
+services:
+  flair-ap-pgsql:
+    image: postgres:9.4-alpine
+    labels:
+      purpose: Metadata store
+      environment: staging
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=admin
+    - POSTGRES_DB=nodeDB
+    ports:
+    - 5777:5432
+
+  # app:
+  #   build: .
+  #   container_name: node_container
+  #   links:
+  #    - flair-ap-pgsql
+  #   environment:
+  #    - NODE_ENV=production
+  #   depends_on:
+  #    - flair-ap-pgsql
+  #   ports:
+  #    - 9100:8080   
+

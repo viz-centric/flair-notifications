@@ -1,0 +1,29 @@
+version: "2"
+services:
+  flair-ap-pgsql-stag:
+    image: postgres:9.4-alpine
+    labels:
+      purpose: Metadata store
+      environment: staging
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nodeDB
+    ports:
+      - 5777:5432
+  flair-reporting-stag:
+    image: ${DOCKER_REGISTRY_URL}/flair-reporting-engine:latest-${GIT_LOCAL_BRANCH}
+    environment:
+      - NODE_ENV=staging
+    ports:
+      - 9100:8080
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: flair-reporting-staging
+
+networks:
+  default:
+    external:
+      name: staging

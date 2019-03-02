@@ -1,0 +1,10 @@
+port: 8080
+imageFolder: /home/piyush/images/code/
+grpcEndPoint: devsupport-vizcentric.com:6565
+mailService: 
+    serive: gmail
+    sender: piyushmani@yopmail.com
+    testUser: piyushmani@yopmail.com
+    auth :
+      user: vizcentric.smtp@gmail.com
+      pass: Centric$Flair81

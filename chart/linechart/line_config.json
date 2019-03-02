@@ -1,0 +1,41 @@
+{
+    "type": "line",
+    "minDim": 1,
+    "maxDim": 1,
+    "minMes": 1,
+    "maxMes": 2,
+    "showXaxis": true,
+    "showYaxis": true,
+    "showXaxisLabel": true,
+    "showYaxisLabel": true,
+    "xAxisColor": "#ff0000",
+    "yAxisColor": "#00ff00",
+    "showLegend": true,
+    "legendPosition": "left",
+    "showGrid": true,
+    "stacked": false,
+    "displayName": "Dimension 1",
+    "forEachMeasure": [{
+        "showValues": true,
+        "displayName": "Measure 1",
+        "fontStyle": "italic",
+        "fontWeight": "bold",
+        "numberFormat": "K",
+        "textColor": "#636363",
+        "displayColor": "#79b6e8",
+        "borderColor": "#639ece",
+        "lineType": "area",
+        "pointType": "circle"
+    }, {
+        "showValues": true,
+        "displayName": "Measure 2",
+        "fontStyle": "bold",
+        "fontWeight": "bold",
+        "numberFormat": "M",
+        "textColor": "#00ff00",
+        "displayColor": "#e06a6a",
+        "borderColor": "#bb4b4b",
+        "lineType": "line",
+        "pointType": "circle"
+    }]
+}

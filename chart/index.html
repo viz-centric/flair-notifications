@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Server-side rendering DEMO</title>
+
+    <style>
+      body {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        svg {
+            border: 1px solid #999;
+            margin: 0 auto;
+            display: block;
+        }
+
+        text {
+            font: 9px sans-serif;
+        }
+
+        #tooltip {
+            font: 9px sans-serif;
+            visibility: hidden;
+            position: absolute;
+            color: white;
+            background-color: black;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            padding: 5px;
+            z-index: 10;
+        }
+
+        #tooltip p {
+            line-height: 0.5;
+        }
+    </style>
+
+  </head>
+  <body>
+    <h1>Server-side rendering DEMO</h1>
+    <%-
+      pie({
+        data: data,
+        containerId: 'pie',
+        tooltipId: 'tooltip',
+        config: config
+      })
+    %>
+  </body>
+</html>

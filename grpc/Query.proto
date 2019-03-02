@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package messages;
+
+option java_package = "com.flair.bi.messages";
+option java_multiple_files = true;
+
+message Query {
+    string queryId = 1;
+    string userId = 2;
+    string sourceId = 3;
+    string source = 4;
+    repeated string fields = 5;
+    repeated string groupBy = 6;
+    int64 limit = 7;
+    message ConditionExpressionHolder {
+        enum SourceType {
+            BASE = 0;
+            FILTER = 1;
+            REDUCTION = 2;
+        }
+        enum ExpressionType {
+            AND = 0;
+            OR = 1;
+            BETWEEN = 2;
+            COMPARE = 3;
+            CONTAINS = 4;
+            NOTCONTAINS = 5;
+            LIKE = 6;
+        }
+        SourceType sourceType = 1;
+        ExpressionType expressionType = 2;
+        string conditionExpression = 3;
+        message AndOrExpressionType {
+            ExpressionType firstExpressionType = 1;
+            ExpressionType secondExpressionType = 2;
+        }
+        AndOrExpressionType andOrExpressionType = 4;
+    }
+    repeated ConditionExpressionHolder conditionExpressions = 8;
+    bool distinct = 9;
+    message SortHolder {
+        string featureName = 1;
+        enum Direction {
+            ASC = 0;
+            DESC = 1;
+        }
+        Direction direction = 2;
+    }
+    repeated SortHolder orders = 10;
+    enum QueryType {
+        UNARY = 0;
+        BIDITOGGLE = 1;
+    }
+    QueryType queryType = 11;
+}
+
+message QueryResponse {
+     string queryId = 1;
+     string userId = 2;
+     string data = 3;
+}
+
+message QueryValidationResponse {
+	message ValidationResult {
+		enum ValidationResultType {
+            SUCCESS = 0;
+            INVALID = 1;
+        }
+        ValidationResultType type = 1;
+        string data = 2;
+    }
+
+    string queryId = 1;
+    string userId = 2;
+    ValidationResult validationResult = 3;
+    string rawQuery = 4;
+}
+
+message RunQueryRequest {
+    Query query = 1;
+    bool retrieveMeta = 2;
+}
+
+message RunQueryResponse {
+    string result = 1;
+}
+
+service QueryService {
+    rpc RunQuery(RunQueryRequest) returns (RunQueryResponse) {};
+    rpc Validate(Query) returns (QueryValidationResponse) {};
+    rpc GetData(Query) returns (QueryResponse) {};
+    rpc GetDataStream(stream Query) returns (stream QueryResponse) {};
+}

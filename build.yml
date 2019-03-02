@@ -1,0 +1,8 @@
+version: "2"
+
+services:
+    flair-reporting-engine-build:
+        build: ./
+    flair-reporting-engine-latest:
+        extends: flair-reporting-engine-build
+        image: ${DOCKER_REGISTRY_URL}/flair-reporting-engine:latest-${GIT_LOCAL_BRANCH}

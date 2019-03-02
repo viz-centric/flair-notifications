@@ -1,0 +1,24 @@
+version: "2"
+services:
+  flair-ap-pgsql-dev:
+    image: postgres:9.4-alpine
+    labels:
+      purpose: Metadata store
+      environment: staging
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nodeDB
+    ports:
+      - 5777:5432
+  flair-reporting-dev:
+    image: ${DOCKER_REGISTRY_URL}/flair-reporting-engine:latest-${GIT_LOCAL_BRANCH}
+    environment:
+      - NODE_ENV=remote-dev
+    ports:
+      - 9100:8080
+
+networks:
+  default:
+    external:
+      name: development
