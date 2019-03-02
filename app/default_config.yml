@@ -1,5 +1,5 @@
 port: 8080
-imageFolder: /flair-notifications/images/
+imageFolder: ./images/
 grpcEndPoint: devsupport-vizcentric.com:6565
 mailService:
     serive: gmail
