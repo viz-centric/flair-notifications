@@ -34,6 +34,9 @@ steps:
     tar xvf wkhtmltox*.tar.xz && \
     sudo mv wkhtmltox/bin/wkhtmlto* /usr/bin && \
     rm -rf wkhtmltox*
+    docker-compose -f ./deploy/docker-compose.yml up -d
+    sleep 5
+    docker ps -a
   displayName: 'Preparing environment'
 
 - task: Npm@1
@@ -41,11 +44,19 @@ steps:
   inputs:
     command: install
 
+- script: |
+    docker ps -a
+    ls -a
+    node_modules/.bin/sequelize db:migrate
+  displayName: 'Running migrations'
+
 - task: Npm@1
   displayName: 'npm test'
   inputs:
     command: custom
     customCommand: 'test'
+  env:
+    mailServiceAuthPass: $(mailServiceAuthPass)
 
 # - task: PublishTestResults@2
 #   inputs:

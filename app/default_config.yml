@@ -1,10 +1,10 @@
 port: 8080
 imageFolder: /flair-notifications/images/
-grpcEndPoint: localhost:6565
+grpcEndPoint: devsupport-vizcentric.com:6565
 mailService:
-    serive:
-    sender:
-    testUser:
+    serive: gmail
+    sender: admin-vizcentric@gmail.com
+    testUser: admin@vizcentric.com
     auth :
-      user:
+      user: vizcentric.smpt@gmail.com
       pass:
