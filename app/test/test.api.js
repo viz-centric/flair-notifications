@@ -16,7 +16,7 @@ describe('/api/jobSchedule/', () => {
             "connection_name": "Postgres-connection",
             "mail_body": "This is a test email to check api functionality",
             "subject": "API Testing",
-            "report_name": "report_x8",
+            "report_name": "report_x3",
             "source_id":"1715917d-fff8-44a1-af02-ee2cd41a3609",
             "title_name":"Clustered Vertical Bar Chart"
           },
@@ -43,13 +43,14 @@ describe('/api/jobSchedule/', () => {
           "schedule": {
             "timezone": "Asia/Kolkata",
             "start_date":"2019-02-04 08:25:00",
-            "end_date":"2019-02-15 12:50:00"
+            "end_date":"2029-12-15 12:50:00"
             }
         }
       chai.request(app)
           .post('/api/jobSchedule')
           .send(report)
           .end((err, res) => {
+            console.log(res.body)
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
