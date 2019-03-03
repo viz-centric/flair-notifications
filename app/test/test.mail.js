@@ -26,6 +26,7 @@ describe('send mail', () => {
 
         },
             function (error) {
+                console.log(error)
             }); 
         
     });
