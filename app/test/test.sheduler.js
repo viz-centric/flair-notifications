@@ -24,7 +24,6 @@ describe('node schedule', () => {
         function checkImage(path){
             
             if (fs.existsSync(path)) {
-                console.log(path)
                 done()
             }
             //delete after test

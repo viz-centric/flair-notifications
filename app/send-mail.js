@@ -23,7 +23,6 @@ exports.sendMail= function sendMailToGmail(subject, to_mail_list, mail_body,repo
             if (err) {
                 reject(err)
             } else {
-                    console.log(image_dir+imagefilename)
                     var mailOptions = {
                         from: AppConfig.mailService.sender, // sender address
                         to: to_mail_list, // list of receivers
