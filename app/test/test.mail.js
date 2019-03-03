@@ -16,6 +16,7 @@ describe('send mail', () => {
         var subject = "test"
         imagefilename='test.jpg';
         wkhtmltoimage.generate('http://example.com/', { output: image_dir + imagefilename });
+        console.log(image_dir + imagefilename)
         var mailsend_call= sendmailtool.sendMail(subject,to_mail_list,mail_body,report_title,imagefilename);
         mailsend_call.then(function (response) {
             var status= response.split(" ")[2]
