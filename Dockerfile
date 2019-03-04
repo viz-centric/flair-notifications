@@ -9,6 +9,7 @@ RUN apt-get update && \
     apt-get clean
 
 COPY package*.json /flair-notifications/app/
+COPY scripts/button.sh /flair-notifications/app/
 
 WORKDIR /flair-notifications/app/
 
@@ -20,6 +21,6 @@ VOLUME [ "/flair-notifications/images", "/flair-notifications/config" ]
 
 EXPOSE 8080
 
-WORKDIR /flair-notifications/
+WORKDIR /flair-notifications/app/
 
 CMD [ "sh", "./button.sh" ]
