@@ -20,4 +20,6 @@ VOLUME [ "/flair-notifications/images", "/flair-notifications/config" ]
 
 EXPOSE 8080
 
-CMD [ "npm", "start" ]
+WORKDIR /flair-notifications/
+
+CMD [ "sh", "./button.sh" ]
