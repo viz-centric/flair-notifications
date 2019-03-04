@@ -1,5 +1,5 @@
 const grpc = require('grpc')
-const PROTO_PATH = 'grpc/Query.proto'
+const PROTO_PATH = './app/grpc/Query.proto'
 const queryproto = grpc.load(PROTO_PATH)
 
 var AppConfig = require('../load_config');

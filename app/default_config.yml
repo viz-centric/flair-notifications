@@ -6,5 +6,5 @@ mailService:
     sender: admin-vizcentric@gmail.com
     testUser: admin@vizcentric.com
     auth :
-      user: vizcentric.smpt@gmail.com
+      user: vizcentric.smtp@gmail.com
       pass:

@@ -16,17 +16,25 @@ describe('send mail', () => {
         var subject = "test"
         imagefilename='test.jpg';
         wkhtmltoimage.generate('http://example.com/', { output: image_dir + imagefilename });
-        var mailsend_call= sendmailtool.sendMail(subject,to_mail_list,mail_body,report_title,imagefilename);
-        mailsend_call.then(function (response) {
-            var status= response.split(" ")[2]
-            expect(status).to.equal("OK");
-            done();
-            //delete after test
-            fs.unlinkSync(image_dir+imagefilename);
+        function sendMail(){
+            var mailsend_call= sendmailtool.sendMail(subject,to_mail_list,mail_body,report_title,imagefilename);
+            mailsend_call.then(function (response) {
+                var status= response.split(" ")[2]
+                expect(status).to.equal("OK");
+                done();
+                //delete after test
+                fs.unlinkSync(image_dir+imagefilename);
+    
+            },
+                function (error) {
+                    console.log(error)
+                });
 
-        },
-            function (error) {
-            }); 
+        }
+
+        setTimeout(() => sendMail(), 5000);
+
+         
         
     });
 

@@ -19,8 +19,10 @@ describe('node schedule', () => {
             wkhtmltoimage.generate('http://example.com/', { output: image_dir + imagefilename });
             filetoCheck=image_dir+imagefilename;
         });
+        
         setTimeout(() => checkImage(filetoCheck), 7000);
         function checkImage(path){
+            
             if (fs.existsSync(path)) {
                 done()
             }
