@@ -8,10 +8,11 @@ RUN apt-get update && \
     rm -rf wkhtmltox* && \
     apt-get clean
 
-COPY package*.json /flair-notifications/app/
-COPY scripts/button.sh /flair-notifications/app/
+COPY package*.json /flair-notifications/
+COPY scripts/button.sh /flair-notifications/
+COPY .sequelizerc /flair-notifications/
 
-WORKDIR /flair-notifications/app/
+WORKDIR /flair-notifications/
 
 RUN npm install --only=production
 
@@ -21,6 +22,6 @@ VOLUME [ "/flair-notifications/images", "/flair-notifications/config" ]
 
 EXPOSE 8080
 
-WORKDIR /flair-notifications/app/
+WORKDIR /flair-notifications/
 
 CMD [ "sh", "./button.sh" ]
