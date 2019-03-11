@@ -1,9 +1,20 @@
-const grpc = require('grpc')
-const PROTO_PATH = './app/grpc/Query.proto'
-const queryproto = grpc.load(PROTO_PATH)
 
+let grpc = require("grpc");
+var protoLoader = require("@grpc/proto-loader");
 var AppConfig = require('../load_config');
-var grpc_endpoint= AppConfig.grpcEndPoint
+var grpc_endpoint= AppConfig.grpcEndPoint;
+
+const PROTO_PATH = './app/grpc/Query.proto';
+
+var queryproto = grpc.loadPackageDefinition(
+   protoLoader.loadSync(PROTO_PATH, {
+     keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+   })
+ );
 
 const client = new queryproto.messages.QueryService(grpc_endpoint, grpc.credentials.createInsecure());
 
