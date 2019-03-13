@@ -5,6 +5,6 @@ var restartJobModule=require('./restart-jobs')
 
 var port= AppConfig.port;  
 var server= app.listen(port);
-console.log('Server started! At http://localhost:' + port);
+console.log('Server started! At http://localhost:  ' + port);
 
 restartJobModule.restartJobs();
