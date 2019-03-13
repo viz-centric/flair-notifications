@@ -41,6 +41,43 @@ app.post('/api/jobSchedule/', function (req, res) {
     }
 
 });
+app.put('/api/jobModify/', function (req, res) {
+    var result = validator.validateReportReqBody(req.body);
+    if (result.error) {
+        res.status(422).json({
+            status: 'error',
+            message: 'Invalid request data',
+            data: result.error.details
+        });
+    }
+    else {
+        reslt = jobs.modifyJob(req.body);
+        reslt.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+    }
+
+});
+app.delete('/api/jobCancel/', function (req, res) {
+    reslt = jobs.deleteJob(req.body);
+        reslt.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+
+});
+app.get('/api/jobLogs/', function (req, res) {
+    reslt = jobs.jobLogs(req.body);
+        reslt.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+
+});
 
 module.exports = app;  // for testing
 

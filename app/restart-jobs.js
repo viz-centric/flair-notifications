@@ -25,13 +25,8 @@ exports.restartJobs = function restartOldJobs(){
     }).then(function(reports){
         for (var i=0 ; i< reports.length; i++){
 
-            var reports_data={
-                report_obj:reports[i],
-                report_line_obj :reports[i].reportline,
-                report_assign_obj:reports[i].AssignReport,
-                report_shedular_obj:reports[i].SchedulerTask
-            }
-            shedular.shedulJob(reports_data)
+            shedular.shedulJob(reports[i].report_name,reports[i].SchedulerTask.start_date,
+                     reports[i].SchedulerTask.end_date, reports[i].SchedulerTask.cron_exp)
 
         }
 
