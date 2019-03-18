@@ -142,7 +142,10 @@ function loadDataAndSendMail(reports_data) {
         var imagefilename = reports_data['report_obj']['report_name'] + '_' + new Date().getTime() + '.jpg';
 
         wkhtmltoimage.generate(html_body, { output: image_dir + imagefilename });
-        var to_mail_list = reports_data['report_assign_obj']['email_list']
+        var to_mail_list=[];
+        for(user of reports_data['report_assign_obj']['email_list']){
+            to_mail_list.push(user['user_email'])
+          }
         var mail_body = reports_data['report_obj']['mail_body']
         var report_title = reports_data['report_obj']['title_name']
         var subject = reports_data['report_obj']['subject']
