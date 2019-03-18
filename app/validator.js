@@ -54,7 +54,10 @@ var validator = {
             stride_API_Token: Joi.string().allow(null, ''),
             stride_cloud_id: Joi.string().allow(null, ''),
             stride_conversation_id: Joi.string().allow(null, ''),
-            email_list: Joi.array().items(Joi.string().email()),
+            email_list: Joi.array().items(Joi.object({
+                user_name: Joi.string().required(),
+                user_email: Joi.string().required(),
+            })),
             condition: Joi.string().allow(null, ''),
         });
 
