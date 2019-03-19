@@ -32,6 +32,7 @@
     "request": "^2.88.0",
     "sequelize": "^4.42.0",
     "sequelize-cli": "^5.4.0",
-    "wkhtmltoimage": "^0.1.5"
+    "wkhtmltoimage": "^0.1.5",
+    "flair-notifications-pkg":"1.0.1"
   }
 }
