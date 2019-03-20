@@ -63,8 +63,8 @@ var validator = {
 
         var scheduleSchema = Joi.object().keys({
             timezone: Joi.string().allow(null, ''),
-            start_date: Joi.string().allow(null, ''),
-            end_date: Joi.string().allow(null, ''),
+            start_date: Joi.date().iso(),
+            end_date: Joi.date().iso().greater(new Date()),
         });
 
         var reportSchema = Joi.object().keys({
