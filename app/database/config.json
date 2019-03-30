@@ -46,5 +46,13 @@
     "host": "flair-notifications-pgsql",
     "port": 5432,
     "dialect": "postgres"
+  },
+  "oss-dev": {
+    "username": "postgres",
+    "password": "admin",
+    "database": "flairnotify",
+    "host": "flair-pgsql",
+    "port": 5432,
+    "dialect": "postgres"
   }
 }
