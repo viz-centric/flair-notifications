@@ -25,10 +25,13 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(422).json({
+        var errors=[];
+        for(err of result.error.details){
+            errors.push(err.message.replace(/\"/g, ""));
+        }
+        res.status(200).json({
             status: 'error',
-            message: 'Invalid request data',
-            data: result.error.details
+            message: errors,
         });
     }
     else {
@@ -44,10 +47,13 @@ app.post('/api/jobSchedule/', function (req, res) {
 app.put('/api/jobModify/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(422).json({
+        var errors=[];
+        for(err of result.error.details){
+            errors.push(err.message.replace(/\"/g, ""));
+        }
+        res.status(200).json({
             status: 'error',
-            message: 'Invalid request data',
-            data: result.error.details
+            message: errors,
         });
     }
     else {

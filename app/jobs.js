@@ -52,7 +52,10 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
-                job = await scheduler.shedulJob(report.report_name,shedualar_obj.start_date,shedualar_obj.end_date,shedualar_obj.cron_exp)
+                job = await scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
+                if(job===null){
+                    job = await scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp)
+                }
                 await transaction.commit();
                 var response = {
                     success: 1, message: "created", report_name: report.report_name,
