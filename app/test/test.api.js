@@ -51,7 +51,7 @@ describe('/api/jobSchedule/', () => {
           .send(report)
           .end((err, res) => {
             console.log(res.body)
-                res.should.have.status(200);
+                res.should.have.status(201);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
                 res.body.should.have.property('message');
