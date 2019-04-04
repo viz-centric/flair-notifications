@@ -44,7 +44,7 @@ var validator = {
             where: Joi.string().allow(null, ''),
             limit: Joi.number().required(),
             table: Joi.string().required(),
-            visualization: Joi.string().valid(['line', 'pie']).required(),
+            visualization: Joi.string().valid(['pie', 'line']).required(),
         });
 
         var assignReportSchema = Joi.object().keys({

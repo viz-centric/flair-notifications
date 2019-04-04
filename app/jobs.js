@@ -22,7 +22,8 @@ var job = {
                     subject: params.report.subject,
                     report_name: params.report.report_name,
                     source_id: params.report.source_id,
-                    title_name: params.report.title_name
+                    title_name: params.report.title_name,
+                    userid:params.userid
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
@@ -52,9 +53,9 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
-                job = await scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
+                job = scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
-                    job = await scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp)
+                    job = scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp)
                 }
                 await transaction.commit();
                 var response = {
@@ -260,7 +261,49 @@ var job = {
             var response = { success: 0, message: ex }
             return response;
         }
-    }
+    },
+    reportsByUser: async function(userName){
+        try {
+            var reports = await models.Report.findAll({
+                include: [
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        attributes: ['viz_type', 'query_name','fields','group_by','order_by',
+                                  'where','limit','table']
+                    },
+                    {
+                        model: models.AssignReport,
+                        attributes: ['email_list', 'channel']
+                    },
+                    {
+                        model: models.SchedulerTask,
+                        attributes: ['cron_exp', 'active','timezone','start_date','end_date']
+                    },
+        
+                ],
+                attributes: ['connection_name', 'report_name','subject','mail_body','source_id',
+                             'title_name'],
+                where: {
+                    userid:userName
+                }
+            })
+            if (reports.length > 0 ) {
+                var response = { success: 1,totalCount:reports.length, message: reports }
+                return response;
+            }
+            else {
+                var response = { success: 0, message: "Reports Not Exist For This User" }
+                return response;
+            }
+        }
+        catch (ex) {
+            var response = { success: 0, message: ex }
+            return response;
+        }
+
+
+    },
 }
 
 module.exports = job;

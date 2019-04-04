@@ -37,14 +37,19 @@ app.post('/api/jobSchedule/', function (req, res) {
     else {
         reslt = jobs.createJob(req.body);
         reslt.then(function (result) {
-            res.send(result);
+            if (result.success==1){
+                res.status(201).send(result);
+            }
+            else{
+                res.status(302).send(result);
+            }
         }, function (err) {
             res.send(err);
         })
     }
 
 });
-app.put('/api/jobModify/', function (req, res) {
+app.put('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
         var errors=[];
@@ -66,7 +71,7 @@ app.put('/api/jobModify/', function (req, res) {
     }
 
 });
-app.delete('/api/jobCancel/', function (req, res) {
+app.delete('/api/jobSchedule/', function (req, res) {
     reslt = jobs.deleteJob(req.body);
         reslt.then(function (result) {
             res.send(result);
@@ -75,7 +80,7 @@ app.delete('/api/jobCancel/', function (req, res) {
         })
 
 });
-app.get('/api/jobLogs/', function (req, res) {
+app.get('/api/jobSchedule/', function (req, res) {
     reslt = jobs.jobLogs(req.body);
         reslt.then(function (result) {
             res.send(result);
@@ -84,6 +89,15 @@ app.get('/api/jobLogs/', function (req, res) {
         })
 
 });
+
+app.get('/api/user/:userName/reports', (req, res) => {
+    reslt = jobs.reportsByUser(req.params.userName);
+        reslt.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+  });
 
 module.exports = app;  // for testing
 
