@@ -44,7 +44,7 @@ var validator = {
             where: Joi.string().allow(null, ''),
             limit: Joi.number().required(),
             table: Joi.string().required(),
-            visualization: Joi.string().valid(['line', 'pie']).required(),
+            visualization: Joi.string().valid(['pie', 'line']).required(),
         });
 
         var assignReportSchema = Joi.object().keys({
@@ -76,7 +76,7 @@ var validator = {
             schedule: scheduleSchema
         });
 
-        result = Joi.validate(reqBody, reportSchema);
+        result = Joi.validate(reqBody, reportSchema,{ abortEarly: false });
         return result;
     },
 }

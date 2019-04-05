@@ -16,13 +16,18 @@ var retryDelay = 3000 //in miliseconds
 
 
 var shedular = {
-    shedulJob:  function (report_name,start_date,end_date, cron_exp) {
-
-        let cron_expression = {
-            start: moment(start_date).toDate(),
-            end: moment(end_date).toDate(),
-            rule: cron_exp
-        };
+    shedulJob:  function (report_name,cron_exp,start_date,end_date) {
+        if(start_date && end_date ){
+            var cron_expression = {
+                start: moment(start_date).toDate(),
+                end: moment(end_date).toDate(),
+                rule: cron_exp
+            };
+        }
+        else{
+            var cron_expression =cron_exp;
+        }
+        
         var job_name="JOB_"+report_name
         var job = scheduler.scheduleJob(job_name ,cron_expression, function (report_name) {
             console.log(report_name+" execution started")

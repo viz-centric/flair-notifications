@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     mail_body: DataTypes.TEXT,
     source_id: {type:DataTypes.STRING, allowNull: true},
     title_name: DataTypes.STRING,
+    userid : DataTypes.STRING,
   }, {});
   Report.associate = function(models) {
     Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' });
