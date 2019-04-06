@@ -44,7 +44,7 @@ var validator = {
             where: Joi.string().allow(null, ''),
             limit: Joi.number().required(),
             table: Joi.string().required(),
-            visualization: Joi.string().valid(['line', 'pie']).required(),
+            visualization: Joi.string().valid(['pie', 'line']).required(),
         });
 
         var assignReportSchema = Joi.object().keys({
@@ -54,14 +54,17 @@ var validator = {
             stride_API_Token: Joi.string().allow(null, ''),
             stride_cloud_id: Joi.string().allow(null, ''),
             stride_conversation_id: Joi.string().allow(null, ''),
-            email_list: Joi.array().items(Joi.string().email()),
+            email_list: Joi.array().items(Joi.object({
+                user_name: Joi.string().required(),
+                user_email: Joi.string().required(),
+            })),
             condition: Joi.string().allow(null, ''),
         });
 
         var scheduleSchema = Joi.object().keys({
             timezone: Joi.string().allow(null, ''),
-            start_date: Joi.string().allow(null, ''),
-            end_date: Joi.string().allow(null, ''),
+            start_date: Joi.date().iso(),
+            end_date: Joi.date().iso().greater(new Date()),
         });
 
         var reportSchema = Joi.object().keys({
@@ -73,7 +76,7 @@ var validator = {
             schedule: scheduleSchema
         });
 
-        result = Joi.validate(reqBody, reportSchema);
+        result = Joi.validate(reqBody, reportSchema,{ abortEarly: false });
         return result;
     },
 }

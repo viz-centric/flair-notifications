@@ -37,7 +37,7 @@ describe('/api/jobSchedule/', () => {
             "stride_API_Token":"uEkHqU5s2tsF6H13zK3p",
             "stride_cloud_id":"13f8bfc9-8748-4008-8b11-71f22aa84126",
             "stride_conversation_id":"ff15d817-3ab3-417d-8ba6-2490b330a35f",
-            "email_list":["piyushrajmani@gmail.com"],
+            "email_list":[{"user_name":"John","user_email":"piyushmani@yopmai.com"},{"user_name":"John","user_email":"piyush@yopmai.com"}],
             "condition": "test"
           },
           "schedule": {
@@ -51,7 +51,7 @@ describe('/api/jobSchedule/', () => {
           .send(report)
           .end((err, res) => {
             console.log(res.body)
-                res.should.have.status(200);
+                res.should.have.status(201);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
                 res.body.should.have.property('message');

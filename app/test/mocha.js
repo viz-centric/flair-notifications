@@ -4,7 +4,7 @@ var Mocha = require('mocha'),
 
 
 var mocha  = new Mocha({
-    timeout: 10000,
+    timeout: 20000,
     reporter: 'mochawesome',
     reporterOptions: {
     reportFilename: 'test-report',

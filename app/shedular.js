@@ -16,18 +16,54 @@ var retryDelay = 3000 //in miliseconds
 
 
 var shedular = {
-    shedulJob:  function (reports_data) {
-
-        let cron_expression = {
-            start: moment(reports_data.report_shedular_obj.start_date).toDate(),
-            end: moment(reports_data.report_shedular_obj.end_date).toDate(),
-            rule: reports_data['report_shedular_obj']['cron_exp']
-        };
-
-        var job = scheduler.scheduleJob(cron_expression, function (reports_data) {
-            // console.log("started");
+    shedulJob:  function (report_name,cron_exp,start_date,end_date) {
+        if(start_date && end_date ){
+            var cron_expression = {
+                start: moment(start_date).toDate(),
+                end: moment(end_date).toDate(),
+                rule: cron_exp
+            };
+        }
+        else{
+            var cron_expression =cron_exp;
+        }
+        
+        var job_name="JOB_"+report_name
+        var job = scheduler.scheduleJob(job_name ,cron_expression, function (report_name) {
+            console.log(report_name+" execution started")
             try {
-                loadDataAndSendMail(reports_data);
+                models.Report.find({
+                    include: [
+                        {
+                            model: models.ReportLineItem,
+                            as: 'reportline',
+                        },
+                        {
+                            model: models.AssignReport,
+                        },
+                        {
+                            model: models.SchedulerTask,
+                            where: {
+                                active:true
+                            },
+                        },
+            
+                    ],
+                    where: {
+                        report_name:report_name
+                    }
+                }).then(function(report){
+                        var reports_data={
+                            report_obj:report,
+                            report_line_obj :report.reportline,
+                            report_assign_obj:report.AssignReport,
+                            report_shedular_obj:report.SchedulerTask
+                        }
+                        loadDataAndSendMail(reports_data);
+                    }).catch(function(err){
+                        console.log('Oops! something went wrong, : ', err);
+                    });
+                   
             }
             catch (ex) {
                 console.log(ex);
@@ -39,8 +75,32 @@ var shedular = {
             }
 
 
-        }.bind(null, reports_data));
+        }.bind(null, report_name));
         return job;
+
+    },
+    cancleJob: function(jobName){
+        all_jobs=scheduler.scheduledJobs
+        if (jobName in all_jobs) {
+            all_jobs[jobName].cancel()
+            return true
+        }
+        else{
+            return false;
+        }
+        
+
+    },
+    reShedulJob: function(jobName,start_date,end_date,cron_exp){
+        let cron_expression = {
+            start: moment(start_date).toDate(),
+            end: moment(end_date).toDate(),
+            rule: cron_exp
+        };
+        all_jobs=scheduler.scheduledJobs;
+        result=all_jobs[jobName].reschedule(cron_expression);
+        return result;
+        
 
     }
 }
@@ -87,7 +147,10 @@ function loadDataAndSendMail(reports_data) {
         var imagefilename = reports_data['report_obj']['report_name'] + '_' + new Date().getTime() + '.jpg';
 
         wkhtmltoimage.generate(html_body, { output: image_dir + imagefilename });
-        var to_mail_list = reports_data['report_assign_obj']['email_list']
+        var to_mail_list=[];
+        for(user of reports_data['report_assign_obj']['email_list']){
+            to_mail_list.push(user['user_email'])
+          }
         var mail_body = reports_data['report_obj']['mail_body']
         var report_title = reports_data['report_obj']['title_name']
         var subject = reports_data['report_obj']['subject']
