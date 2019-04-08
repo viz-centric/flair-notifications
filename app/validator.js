@@ -76,7 +76,7 @@ var validator = {
             schedule: scheduleSchema
         });
 
-        result = Joi.validate(reqBody, reportSchema,{ abortEarly: false });
+        result = Joi.validate(reqBody, reportSchema);
         return result;
     },
 }

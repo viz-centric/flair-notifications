@@ -59,7 +59,7 @@ var job = {
                 }
                 await transaction.commit();
                 var response = {
-                    success: 1, message: "created", report_name: report.report_name,
+                    success: 1, message: "Report is scheduled successfully", report_name: report.report_name,
                     job_id: shedualar_obj.id, next_run: job.nextInvocation()
                 }
                 return response;
