@@ -25,13 +25,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        var errors=[];
-        for(err of result.error.details){
-            errors.push(err.message.replace(/\"/g, ""));
-        }
         res.status(200).json({
             status: 'error',
-            message: errors,
+            message: result.error.details[0].message.replace(/\"/g, ""),
         });
     }
     else {
@@ -52,13 +48,9 @@ app.post('/api/jobSchedule/', function (req, res) {
 app.put('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        var errors=[];
-        for(err of result.error.details){
-            errors.push(err.message.replace(/\"/g, ""));
-        }
         res.status(200).json({
             status: 'error',
-            message: errors,
+            message: result.error.details[0].message.replace(/\"/g, ""),
         });
     }
     else {
@@ -99,7 +91,7 @@ app.get('/api/user/:userName/reports', (req, res) => {
         })
   });
 
-module.exports = app;     // for testing
+module.exports = app;    //  for testing
 
 
 
