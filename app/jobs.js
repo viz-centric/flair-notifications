@@ -7,7 +7,7 @@ var moment = require('moment');
 var job = {
     createJob: async function (params) {
 
-        exist_report = await models.Report.find({
+        exist_report = await models.Report.findOne({
             where: {
                 report_name: params.report.report_name
             }
