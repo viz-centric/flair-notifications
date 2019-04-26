@@ -14,7 +14,10 @@ module.exports = {
       query_name: {
         type: Sequelize.STRING
       },
-      fields: {
+      dimension: {
+        type: Sequelize.JSON
+      },
+      measure: {
         type: Sequelize.JSON
       },
       group_by: {

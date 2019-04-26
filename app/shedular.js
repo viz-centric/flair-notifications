@@ -1,13 +1,10 @@
 var scheduler = require('node-schedule');
 var sendmailtool = require('./send-mail')
 var models = require('./database/models/index');
-var pie_chart = require('./chart/pie');
-var pie_config = require('./chart/config');
-var line_chart = require('./chart/linechart/line');
-var line_config = require('./chart/linechart/line_config');
 var wkhtmltoimage = require('wkhtmltoimage');
 var grpc_client = require('./grpc/client');
 var moment = require('moment');
+var charts=require('./chart/generate-charts');
 
 var AppConfig = require('./load_config');
 var image_dir = AppConfig.imageFolder;
@@ -32,7 +29,7 @@ var shedular = {
         var job = scheduler.scheduleJob(job_name ,cron_expression, function (report_name) {
             console.log(report_name+" execution started")
             try {
-                models.Report.find({
+                models.Report.findOne({
                     include: [
                         {
                             model: models.ReportLineItem,
@@ -111,7 +108,7 @@ function loadDataAndSendMail(reports_data) {
         userId: "manohar",
         sourceId: reports_data.report_obj.source_id,
         source: reports_data.report_line_obj.table,
-        fields: reports_data.report_line_obj.fields,
+        fields: reports_data.report_line_obj.dimension.concat(reports_data.report_line_obj.measure),
         groupBy: [],
         limit: reports_data.report_line_obj.limit
     }
@@ -121,70 +118,112 @@ function loadDataAndSendMail(reports_data) {
         var data_call = grpc_client.getRecords(query);
         data_call.then(function (response) {
         var json_res = JSON.parse(response.data);
-
+        var config={
+            dimension: reports_data.report_line_obj.dimension,
+            measure: reports_data.report_line_obj.measure,
+        }
         //render html chart
         if (reports_data.report_line_obj.viz_type == "pie") {
-            var html_body = pie_chart({
-                data: json_res.data,
-                containerId: 'pie',
-                tooltipId: 'tooltip',
-                config: pie_config,
-                dimension: [reports_data.report_line_obj.fields[0]],
-                measure: [reports_data.report_line_obj.fields[1]]
-            })
+            chart_call= charts.pieChart(config,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "line") {
-            var html_body = line_chart({
-                data: json_res.data,
-                containerId: 'pie',
-                tooltipId: 'tooltip',
-                config: line_config,
-                dimension: [reports_data.report_line_obj.fields[0]],
-                measure: [reports_data.report_line_obj.fields[1]]
-            })
+            chart_call= charts.lineChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "clusteredverticalbar") {
+            chart_call= charts.clusteredverticalBarChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "clusteredhorizontalbar") {
+            chart_call= charts.clusteredhorizontalBarChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "heatmap") {
+            chart_call= charts.heatmapChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "stackedverticalbar") {
+            chart_call= charts.stackedverticalBarChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "stackedhorizontalbar") {
+            chart_call= charts.stackedhorizontalBarChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "combo") {
+            chart_call= charts.comboChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "treemap") {
+            chart_call= charts.treemapChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "infographics") {
+            chart_call= charts.infographicsChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "boxplot") {
+            chart_call= charts.boxplotChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "bullet") {
+            chart_call= charts.bulletChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "sankey") {
+            chart_call= charts.sankeyChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "table") {
+            chart_call= charts.tableChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "pivottable") {
+            chart_call= charts.pivottableChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "doughnut") {
+            chart_call= charts.doughnutChart(config,json_res.data);
+        } 
+
+        else if (reports_data.report_line_obj.viz_type == "kpi") {
+            chart_call= charts.kpiChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "scatter") {
+            chart_call= charts.scatterChart(config,json_res.data);
         }
 
-        var imagefilename = reports_data['report_obj']['report_name'] + '_' + new Date().getTime() + '.jpg';
+        chart_call.then(function (response) {
+                var imagefilename = reports_data['report_obj']['report_name'] + '_' + new Date().getTime() + '.jpg';
 
-        wkhtmltoimage.generate(html_body, { output: image_dir + imagefilename });
-        var to_mail_list=[];
-        for(user of reports_data['report_assign_obj']['email_list']){
-            to_mail_list.push(user['user_email'])
-          }
-        var mail_body = reports_data['report_obj']['mail_body']
-        var report_title = reports_data['report_obj']['title_name']
-        var subject = reports_data['report_obj']['subject']
-        var mailRetryCount=0;
-        function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename){
-            mailRetryCount+=1;
-            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, imagefilename).then(function (response) {
-
-                let shedularlog = models.SchedulerTaskLog.create({
-                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                    task_executed: new Date(Date.now()).toISOString(),
-                    task_status: "success",
-                });
-            },
-                function (error) {
-                    console.log(error);
-                    if (mailRetryCount < 2){
-                        console.log("send mail retrying");
-                        setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename),
-                         retryDelay);  
-                    }
-                    else{
+                wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
+                var to_mail_list=[];
+                for(user of reports_data['report_assign_obj']['email_list']){
+                    to_mail_list.push(user['user_email'])
+                  }
+                var mail_body = reports_data['report_obj']['mail_body']
+                var report_title = reports_data['report_obj']['title_name']
+                var subject = reports_data['report_obj']['subject']
+                var mailRetryCount=0;
+                function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename){
+                    mailRetryCount+=1;
+                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, imagefilename).then(function (response) {
+        
                         let shedularlog = models.SchedulerTaskLog.create({
                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
                             task_executed: new Date(Date.now()).toISOString(),
-                            task_status: "mail "+error,
+                            task_status: "success",
                         });
-                    }
-                    
-                });
+                    },
+                        function (error) {
+                            console.log(error);
+                            if (mailRetryCount < 2){
+                                console.log("send mail retrying");
+                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename),
+                                 retryDelay);  
+                            }
+                            else{
+                                let shedularlog = models.SchedulerTaskLog.create({
+                                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                    task_executed: new Date(Date.now()).toISOString(),
+                                    task_status: "mail "+error,
+                                });
+                            }
+                            
+                        });
+        
+                }
+                sendMail(subject, to_mail_list, mail_body, report_title, imagefilename);
+            },function(err){
 
-        }
-        sendMail(subject, to_mail_list, mail_body, report_title, imagefilename);
-       
+                console.log("err"+err)
+            })
 
 
     }, function (err) {

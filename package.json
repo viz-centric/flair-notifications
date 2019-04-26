@@ -18,9 +18,10 @@
     "d3": "^4.10.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#feature/initial-implementation-charts",
+    "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#featured/3-viz-integration",
     "grpc": "^1.18.0",
     "joi": "^14.3.1",
+    "jquery": "^3.3.1",
     "js-yaml": "^3.12.1",
     "jsdom": "^13.2.0",
     "mocha": "^5.2.0",
@@ -31,9 +32,8 @@
     "nodemailer": "^5.1.1",
     "pg": "^7.8.0",
     "request": "^2.88.0",
-    "sequelize": "^4.42.0",
+    "sequelize": "^5.7.5",
     "sequelize-cli": "^5.4.0",
-    "wkhtmltoimage": "^0.1.5",
-    "flair-visualizations-pkg":"1.0.2"
+    "wkhtmltoimage": "^0.1.5"
   }
 }
