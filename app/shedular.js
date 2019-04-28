@@ -123,59 +123,59 @@ function loadDataAndSendMail(reports_data) {
             measure: reports_data.report_line_obj.measure,
         }
         //render html chart
-        if (reports_data.report_line_obj.viz_type == "pie") {
+        if (reports_data.report_line_obj.viz_type == "Pie Chart") {
             chart_call= charts.pieChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "line") {
+        else if (reports_data.report_line_obj.viz_type == "Line Chart") {
             chart_call= charts.lineChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "clusteredverticalbar") {
+        else if (reports_data.report_line_obj.viz_type == "Clustered Vertical Bar Chart") {
             chart_call= charts.clusteredverticalBarChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "clusteredhorizontalbar") {
+        else if (reports_data.report_line_obj.viz_type == "Clustered Horizontal Bar Chart") {
             chart_call= charts.clusteredhorizontalBarChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "heatmap") {
+        else if (reports_data.report_line_obj.viz_type == "Heat Map") {
             chart_call= charts.heatmapChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "stackedverticalbar") {
+        else if (reports_data.report_line_obj.viz_type == "Stacked Vertical Bar Chart") {
             chart_call= charts.stackedverticalBarChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "stackedhorizontalbar") {
+        else if (reports_data.report_line_obj.viz_type == "Stacked Horizontal Bar Chart") {
             chart_call= charts.stackedhorizontalBarChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "combo") {
+        else if (reports_data.report_line_obj.viz_type == "Combo Chart") {
             chart_call= charts.comboChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "treemap") {
+        else if (reports_data.report_line_obj.viz_type == "Tree Map") {
             chart_call= charts.treemapChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "infographics") {
+        else if (reports_data.report_line_obj.viz_type == "Info graphic") {
             chart_call= charts.infographicsChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "boxplot") {
+        else if (reports_data.report_line_obj.viz_type == "Box Plot") {
             chart_call= charts.boxplotChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "bullet") {
+        else if (reports_data.report_line_obj.viz_type == "Bullet Chart") {
             chart_call= charts.bulletChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "sankey") {
+        else if (reports_data.report_line_obj.viz_type == "Sankey") {
             chart_call= charts.sankeyChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "table") {
+        else if (reports_data.report_line_obj.viz_type == "Table") {
             chart_call= charts.tableChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "pivottable") {
+        else if (reports_data.report_line_obj.viz_type == "Pivot Table") {
             chart_call= charts.pivottableChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "doughnut") {
+        else if (reports_data.report_line_obj.viz_type == "Doughnut Chart") {
             chart_call= charts.doughnutChart(config,json_res.data);
         } 
 
-        else if (reports_data.report_line_obj.viz_type == "kpi") {
+        else if (reports_data.report_line_obj.viz_type == "KPI") {
             chart_call= charts.kpiChart(config,json_res.data);
         }
-        else if (reports_data.report_line_obj.viz_type == "scatter") {
+        else if (reports_data.report_line_obj.viz_type == "Scatter plot") {
             chart_call= charts.scatterChart(config,json_res.data);
         }
 

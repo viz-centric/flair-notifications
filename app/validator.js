@@ -1,9 +1,9 @@
 const Joi = require('joi');
 const cronParser = require('cron-parser');
 
-const supportedCharts=['pie', 'line','clusteredverticalbar','clusteredhorizontalbar',
-                'stackedverticalbar','stackedhorizontalbar','heatmap','combo','treemap',
-                'infographics','boxplot','bullet','sankey','table','pivottable','doughnut','kpi','scatter']
+const supportedCharts=['Pie Chart', 'Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
+                'Stacked Vertical Bar Chart','Stacked Horizontal Bar Chart','Heat Map','Combo Chart','Tree Map',
+                'Info graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI','Scatter plot']
 
 const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
