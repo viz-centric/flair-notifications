@@ -30,7 +30,7 @@ describe('/api/jobSchedule/', () => {
          "where":"null", 
          "limit":"5", 
          "table":"Transactions", 
-         "visualization":"clusteredverticalbar"
+         "visualization":"Pie Chart"
          }, 
          "assign_report":{
          "channel": "email",
