@@ -1,6 +1,10 @@
 const Joi = require('joi');
 const cronParser = require('cron-parser');
 
+const supportedCharts=['Pie Chart', 'Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
+                'Stacked Vertical Bar Chart','Stacked Horizontal Bar Chart','Heat Map','Combo Chart','Tree Map',
+                'Info graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI','Scatter plot']
+
 const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
     name: 'crone',
@@ -38,13 +42,14 @@ var validator = {
 
         var reportLineSchema = Joi.object().keys({
             query_name: Joi.string().required(),
-            fields: Joi.array().items(Joi.string()).min(2),
+            dimension: Joi.array().items(Joi.string()).min(1),
+            measure: Joi.array().items(Joi.string()).min(1),
             group_by: Joi.array().items(Joi.string()).allow(null, ''),
             order_by: Joi.array().items(Joi.string()).allow(null, ''),
             where: Joi.string().allow(null, ''),
             limit: Joi.number().required(),
             table: Joi.string().required(),
-            visualization: Joi.string().valid(['pie', 'line']).required(),
+            visualization: Joi.string().valid(supportedCharts).required(),
         });
 
         var assignReportSchema = Joi.object().keys({

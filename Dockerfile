@@ -28,7 +28,11 @@ EXPOSE 8080
 WORKDIR /flair-notifications/
 
 RUN groupadd -g 999 flairuser && \
-    useradd -r -u 999 -g flairuser flairuser
+    useradd --shell /bin/bash --create-home --home /home/flairuser -r -u 999 -g flairuser flairuser
+
+RUN chown -R flairuser:flairuser /flair-notifications
+RUN chmod -R 755 /flair-notifications
+
 USER flairuser
 
 CMD [ "sh", "./button.sh" ]

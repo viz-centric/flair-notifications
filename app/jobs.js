@@ -7,7 +7,7 @@ var moment = require('moment');
 var job = {
     createJob: async function (params) {
 
-        exist_report = await models.Report.find({
+        exist_report = await models.Report.findOne({
             where: {
                 report_name: params.report.report_name
             }
@@ -30,7 +30,8 @@ var job = {
                     ReportId: report.id,
                     viz_type: params.report_line_item.visualization,
                     query_name: params.report_line_item.query_name,
-                    fields: params.report_line_item.fields,
+                    dimension: params.report_line_item.dimension,
+                    measure: params.report_line_item.measure,
                     group_by: params.report_line_item.group_by,
                     order_by: params.report_line_item.order_by,
                     where: params.report_line_item.where,
@@ -80,7 +81,7 @@ var job = {
     },
     modifyJob: async function (report_data) {
 
-        exist_report = await models.Report.find({
+        exist_report = await models.Report.findOne({
             include: [
                 {
                     model: models.ReportLineItem,
@@ -101,7 +102,7 @@ var job = {
         if (exist_report) {
             const transaction = await db.sequelize.transaction();
             try {
-                //create report object
+                //update report object
                 let report = await models.Report.update({
                     connection_name: report_data.report.connection_name,
                     mail_body: report_data.report.mail_body,
@@ -116,7 +117,8 @@ var job = {
                 let report_line_item = await models.ReportLineItem.update({
                     viz_type: report_data.report_line_item.visualization,
                     query_name: report_data.report_line_item.query_name,
-                    fields: report_data.report_line_item.fields,
+                    dimension: report_data.report_line_item.dimension,
+                    measure: report_data.report_line_item.measure,
                     group_by: report_data.report_line_item.group_by,
                     order_by: report_data.report_line_item.order_by,
                     where: report_data.report_line_item.where,
@@ -169,7 +171,7 @@ var job = {
     deleteJob: async function (report_name) {
 
         try {
-            var report = await models.Report.find({
+            var report = await models.Report.findOne({
                 include: [
                     {
                         model: models.SchedulerTask,
@@ -217,7 +219,7 @@ var job = {
     },
     jobLogs: async function (report_name){
         try {
-            var report = await models.Report.find({
+            var report = await models.Report.findOne({
                 include: [
                     {
                         model: models.SchedulerTask,

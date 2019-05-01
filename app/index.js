@@ -1,4 +1,3 @@
-
 var app = require('./app');
 var AppConfig = require('./load_config');
 var restartJobModule=require('./restart-jobs')
