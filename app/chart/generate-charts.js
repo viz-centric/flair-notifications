@@ -17,6 +17,7 @@ const pivottable = require('flair-visualizations/js/charts/pivottable');
 const doughnut = require('flair-visualizations/js/charts/doughnut');
 const kpi = require('flair-visualizations/js/charts/kpi');
 const scatter = require('flair-visualizations/js/charts/scatter');
+const gauge = require('flair-visualizations/js/charts/gauge');
 
 const jsdom = require('jsdom');
 const chartUtility = require('./chart-util');
@@ -427,52 +428,29 @@ infographicsChart: async function(config,data){
   var infographicsChartobj=infographics();
   var newConfig = convertConfigToLowerCase(config);
 
-      var chartConfig = {
-        chartBorderColor: "#ebbe44",
-      chartDisplayColor: "#e91919",
-      chartType: "bar",
-      dimension: newConfig.dimension,
-      kpiAlignment: "Center",
-      kpiBackgroundColor: "#FFFFFF",
-      kpiColor: "#1e9fed",
-      kpiColorExpression: null,
-      kpiDisplayName: "Display name",
-      kpiFontSize: 9,
-      kpiFontStyle: "Normal",
-      kpiFontWeight: "normal",
-      kpiIcon: null,
-      kpiIconColor: null,
-      kpiIconExpression: null,
-      kpiIconFontWeight: "normal",
-      kpiNumberFormat: "Actual",
-      measure: newConfig.measure,
-      };
+      var chartConfig =  {
+          chartBorderColor: "#ebbe44",
+          chartDisplayColor: "#e91919",
+          chartType: "bar",
+          dimension: newConfig.dimension,
+          kpiAlignment: "Center",
+          kpiBackgroundColor: "#FFFFFF",
+          kpiColor: "#1e9fed",
+          kpiColorExpression: null,
+          kpiDisplayName: "Display name",
+          kpiFontSize: 9,
+          kpiFontStyle: "Normal",
+          kpiFontWeight: "normal",
+          kpiIcon: null,
+          kpiIconColor: null,
+          kpiIconExpression: null,
+          kpiIconFontWeight: "normal",
+          kpiNumberFormat: "Actual",
+          measure: newConfig.measure,
+      }
   infographicsChartobj.config(chartConfig).tooltip(false).print(true);
 
-  sample_data= [{
-    city: 'Kathmandu',
-    area: 120
-  }, {
-    city: 'Delhi',
-    area: 90
-  }, {
-    city: 'Detroit',
-    area: 310
-  }, {
-    city: 'London',
-    area: 140
-  },{
-  city: 'Delhi1',
-  area: 500
-  }, {
-  city: 'Detroit1',
-  area: 600
-  }, {
-  city: 'London1',
-  area: 30
-  }];
-
-  d3.select(infographicsFakeDom.window.document).select('#infographics').datum(sample_data).call(infographicsChartobj);
+  d3.select(infographicsFakeDom.window.document).select('#infographics').datum(data).call(infographicsChartobj);
 
   let chartRenderingPromise = new Promise((resolve, reject) => {
       setTimeout(function() { 
@@ -641,43 +619,39 @@ tableChart: async function(config,data){
 },
 pivottableChart: async function(config,data){
 
-  var pivottableFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="pivottable" width="950" height="440"/></body></html>'); 
+  var pivottableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pivottable"></div></body></html>'); 
   chartUtility.configureDomForcharts(pivottableFakeDom.window.document)
   var pivottableChartobj=pivottable();
 
   var newConfig = convertConfigToLowerCase(config);
       var chartConfig = {
-        "dimension": newConfig.dimension,
-        "displayNameForDimension": newConfig.dimension,
-        "cellColorForDimension": ["#efefef", "#ff00ff"],
-        "fontStyleForDimension": ["italic", "italic"],
-        "fontWeightForDimension": ["900", "800"],
-        "fontSizeForDimension": ["15", "16"],
-        "textColorForDimension": ["#ff00ff", ""],
-        "textColorExpressionForDimension": ['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "textAlignmentForDimension": ["center", "left"],
-        "isPivoted": [false, false],
-        "measure": newConfig.measure,
-        "displayNameForMeasure": newConfig.measure,
-        "cellColorForMeasure": ["#efefef", "#ff00ff"],
-        "cellColorExpressionForMeasure": ['upto,500000,#efefef|upto,900000,#acacac|above,900000,#00ff00|default,,#ffffaa', 'upto,500000,#ffbbff|upto,900000,#ffaacc|above,900000,#121212|default,,#454545'
-        ],
-        "fontStyleForMeasure": ["italic", "italic"],
-        "fontSizeForMeasure": ["15", "12"],
-        "fontWeightForMeasure": ["900", "800"],
-        "numberFormatForMeasure": ["M", "K"],
-        "textColorForMeasure": ["#eaeaea", ""],
-        "textAlignmentForMeasure": ["center", "left"],
-        "textColorExpressionForMeasure": ['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "iconNameForMeasure": ['fa fa-globe', 'fa fa-male'],
-        "iconFontWeight": [100, 200],
-        "iconColor": ['#FFFFFF', '#DDC224'],
-        "iconPositionForMeasure": ["center", "left"],
-        "iconExpressionForMeasure": ['upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00', 'upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00'
-        ]
-    }
+        cellColorExpressionForMeasure: [undefined, undefined],
+        cellColorForDimension: ["rgb(226, 166, 166)", "rgb(239, 72, 72)"],
+        cellColorForMeasure: ["rgba(255, 255, 255, 1)", "rgb(227, 45, 45)"],
+        dimension: newConfig.dimension,
+        displayNameForDimension: ["Display name", "Display name"],
+        displayNameForMeasure: ["Display name", "Display name"],
+        fontSizeForDimension: [9, 9],
+        fontSizeForMeasure: [9, 9],
+        fontStyleForDimension: ["Normal", "Normal"],
+        fontStyleForMeasure: ["Normal", "Normal"],
+        fontWeightForDimension: ["normal", "normal"],
+        fontWeightForMeasure: ["normal", "normal"],
+        iconColor: [],
+        iconExpressionForMeasure: [undefined, undefined],
+        iconFontWeight: [],
+        iconNameForMeasure: [undefined, undefined],
+        iconPositionForMeasure: [undefined, undefined],
+        isPivoted: [false, true],
+        measure: newConfig.measure,
+        numberFormatForMeasure: ["Actual", "Actual"],
+        textAlignmentForDimension: ["Left", "Left"],
+        textAlignmentForMeasure: ["center", "center"],
+        textColorExpressionForDimension: [undefined, undefined],
+        textColorExpressionForMeasure: [undefined, undefined],
+        textColorForDimension: ["#91ccef", "#131ae9"],
+        textColorForMeasure: ["#617c8c", "#f01238"]
+      };
 
     pivottableChartobj.config(chartConfig).print(true);
 
@@ -706,7 +680,7 @@ doughnutChart: async function (config, data) {
   valueAsArc: false, // true|false
   valuePosition: 'outside' // inside|outside
   }
-  doughnutChartobj.config(chartConfig).tooltip(false).print(true);
+  doughnutChartobj.config(chartConfig).print(true);
   d3.select(doughnutFakeDom.window.document).select('#doughnut').datum(data).call(doughnutChartobj);
 
   let chartRenderingPromise = new Promise((resolve, reject) => {
@@ -789,6 +763,43 @@ scatterChart: async function (config, data) {
   let chartRenderingPromise = new Promise((resolve, reject) => {
       setTimeout(function() { 
           var chartHtml=scatterChartobj._getHTML();
+          resolve(chartHtml)
+          }, 2000);
+  });
+  result=await chartRenderingPromise;
+  return result;
+
+},
+gaugeChart: async function (config, data) {
+  var gaugeFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="gauge" width="950" height="440"/></body></html>'); 
+  chartUtility.configureDomForcharts(gaugeFakeDom.window.document)
+  var gaugeChartobj=gauge();
+  var newConfig = convertConfigToLowerCase(config);
+  var chartConfig =  {
+    displayColor: "#ed2c2c",
+    displayName: "Display name",
+    fontStyle: "Normal",
+    fontWeight: "normal",
+    gaugeType: "half circle",
+    isGradient: false,
+    measures: newConfig.measure,
+    numberFormat: "Actual",
+    showValues: false,
+    targetDisplayColor: "#1824ed",
+    targetDisplayName: "Display name",
+    targetFontStyle: "Normal",
+    targetFontWeight: "normal",
+    targetNumberFormat: "Actual",
+    targetShowValues: false,
+    targetTextColor: "#617c8c",
+    textColor: "#617c8c",
+  }
+  gaugeChartobj.config(chartConfig).print(true);
+  d3.select(gaugeFakeDom.window.document).select('#gauge').datum(data).call(gaugeChartobj);
+
+  let chartRenderingPromise = new Promise((resolve, reject) => {
+      setTimeout(function() { 
+          var chartHtml=gaugeChartobj._getHTML();
           resolve(chartHtml)
           }, 2000);
   });

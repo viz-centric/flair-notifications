@@ -1,9 +1,10 @@
 const Joi = require('joi');
 const cronParser = require('cron-parser');
 
-const supportedCharts=['Pie Chart', 'Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
+const supportedCharts=['Pie Chart','Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
                 'Stacked Vertical Bar Chart','Stacked Horizontal Bar Chart','Heat Map','Combo Chart','Tree Map',
-                'Info graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI','Scatter plot']
+                'Info graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI',
+                'Scatter plot','Gauge plot']
 
 const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
@@ -42,7 +43,8 @@ var validator = {
 
         var reportLineSchema = Joi.object().keys({
             query_name: Joi.string().required(),
-            dimension: Joi.array().items(Joi.string()).min(1),
+            fields:Joi.array().items(Joi.string()).min(1),
+            dimension: Joi.array().items(Joi.string()),
             measure: Joi.array().items(Joi.string()).min(1),
             group_by: Joi.array().items(Joi.string()).allow(null, ''),
             order_by: Joi.array().items(Joi.string()).allow(null, ''),
@@ -74,6 +76,7 @@ var validator = {
 
         var reportSchema = Joi.object().keys({
             userid: Joi.string().allow(null, ''),
+            visualizationid:Joi.string(),
             cron_exp: cronSchema,
             report: reportBodySchema,
             report_line_item: reportLineSchema,

@@ -12,6 +12,7 @@ describe('/api/jobSchedule/', () => {
         let report = 
         {"userid":"flairadmin",
          "cron_exp":"* * * * *", 
+         "visualizationid":"xyz",
         "report":
         {
         "connection_name":"Transactions", 
