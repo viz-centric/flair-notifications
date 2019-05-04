@@ -31,7 +31,7 @@ describe('/api/jobSchedule/', () => {
          "where":"null", 
          "limit":"5", 
          "table":"Transactions", 
-         "visualization":"Clustered Vertical Bar Chart"
+         "visualization":"Pie Chart"
          }, 
          "assign_report":{
          "channel": "email",
