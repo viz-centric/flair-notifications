@@ -23,13 +23,15 @@ var job = {
                     report_name: params.report.report_name,
                     source_id: params.report.source_id,
                     title_name: params.report.title_name,
-                    userid:params.userid
+                    userid:params.userid,
+                    visualizationid:params.visualizationid
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
                     ReportId: report.id,
                     viz_type: params.report_line_item.visualization,
                     query_name: params.report_line_item.query_name,
+                    fields:params.report_line_item.fields,
                     dimension: params.report_line_item.dimension,
                     measure: params.report_line_item.measure,
                     group_by: params.report_line_item.group_by,
@@ -109,7 +111,8 @@ var job = {
                     subject: report_data.report.subject,
                     report_name: report_data.report.report_name,
                     source_id: report_data.report.source_id,
-                    title_name: report_data.report.title_name,},
+                    title_name: report_data.report.title_name,
+                    visualizationid:report_data.visualizationid,},
                     {where: {
                         id: exist_report.id
                     }}, { transaction });
@@ -117,6 +120,7 @@ var job = {
                 let report_line_item = await models.ReportLineItem.update({
                     viz_type: report_data.report_line_item.visualization,
                     query_name: report_data.report_line_item.query_name,
+                    fields:report_data.report_line_item.fields,
                     dimension: report_data.report_line_item.dimension,
                     measure: report_data.report_line_item.measure,
                     group_by: report_data.report_line_item.group_by,
@@ -271,8 +275,8 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        attributes: ['viz_type', 'query_name','fields','group_by','order_by',
-                                  'where','limit','table']
+                        attributes: ['viz_type', 'query_name','fields','dimension','measure',
+                                    'group_by','order_by','where','limit','table']
                     },
                     {
                         model: models.AssignReport,
@@ -285,7 +289,7 @@ var job = {
         
                 ],
                 attributes: ['connection_name', 'report_name','subject','mail_body','source_id',
-                             'title_name'],
+                             'title_name','visualizationid'],
                 where: {
                     userid:userName
                 }

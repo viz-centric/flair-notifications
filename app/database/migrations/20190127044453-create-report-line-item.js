@@ -14,6 +14,9 @@ module.exports = {
       query_name: {
         type: Sequelize.STRING
       },
+      fields: {
+        type: Sequelize.JSON
+      },
       dimension: {
         type: Sequelize.JSON
       },

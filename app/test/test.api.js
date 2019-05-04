@@ -12,6 +12,7 @@ describe('/api/jobSchedule/', () => {
         let report = 
         {"userid":"flairadmin",
          "cron_exp":"* * * * *", 
+         "visualizationid":"xyz",
         "report":
         {
         "connection_name":"Transactions", 
@@ -30,7 +31,7 @@ describe('/api/jobSchedule/', () => {
          "where":"null", 
          "limit":"5", 
          "table":"Transactions", 
-         "visualization":"clusteredverticalbar"
+         "visualization":"Clustered Vertical Bar Chart"
          }, 
          "assign_report":{
          "channel": "email",

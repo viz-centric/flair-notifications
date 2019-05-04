@@ -108,7 +108,7 @@ function loadDataAndSendMail(reports_data) {
         userId: "manohar",
         sourceId: reports_data.report_obj.source_id,
         source: reports_data.report_line_obj.table,
-        fields: reports_data.report_line_obj.dimension.concat(reports_data.report_line_obj.measure),
+        fields: reports_data.report_line_obj.fields,
         groupBy: [],
         limit: reports_data.report_line_obj.limit
     }
@@ -177,6 +177,9 @@ function loadDataAndSendMail(reports_data) {
         }
         else if (reports_data.report_line_obj.viz_type == "Scatter plot") {
             chart_call= charts.scatterChart(config,json_res.data);
+        }
+        else if (reports_data.report_line_obj.viz_type == "Gauge plot") {
+            chart_call= charts.gaugeChart(config,json_res.data);
         }
 
         chart_call.then(function (response) {
