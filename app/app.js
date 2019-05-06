@@ -25,8 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(200).json({
-            status: 'error',
+        res.status(422).json({
             message: result.error.details[0].message.replace(/\"/g, ""),
         });
     }
@@ -34,10 +33,14 @@ app.post('/api/jobSchedule/', function (req, res) {
         reslt = jobs.createJob(req.body);
         reslt.then(function (result) {
             if (result.success==1){
-                res.status(201).send(result);
+                res.status(201).json({
+                    message: result.message,
+                });
             }
             else{
-                res.status(302).send(result);
+                res.status(302).json({
+                    message: result.message,
+                });
             }
         }, function (err) {
             res.send(err);
@@ -48,15 +51,23 @@ app.post('/api/jobSchedule/', function (req, res) {
 app.put('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(200).json({
-            status: 'error',
+        res.status(422).json({
             message: result.error.details[0].message.replace(/\"/g, ""),
         });
     }
     else {
         reslt = jobs.modifyJob(req.body);
         reslt.then(function (result) {
-            res.send(result);
+            if (result.success==1){
+                res.status(200).json({
+                    message: result.message,
+                });
+            }
+            else{
+                res.status(404).json({
+                    message: result.message,
+                });
+            }
         }, function (err) {
             res.send(err);
         })

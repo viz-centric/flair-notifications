@@ -183,7 +183,7 @@ function loadDataAndSendMail(reports_data) {
         }
 
         chart_call.then(function (response) {
-                var imagefilename = reports_data['report_obj']['report_name'] + '_' + new Date().getTime() + '.jpg';
+                var imagefilename = reports_data['report_obj']['report_name'] + '.jpg';
 
                 wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
                 var to_mail_list=[];

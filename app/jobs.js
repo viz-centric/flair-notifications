@@ -278,15 +278,6 @@ var job = {
                         attributes: ['viz_type', 'query_name','fields','dimension','measure',
                                     'group_by','order_by','where','limit','table']
                     },
-                    {
-                        model: models.AssignReport,
-                        attributes: ['email_list', 'channel']
-                    },
-                    {
-                        model: models.SchedulerTask,
-                        attributes: ['cron_exp', 'active','timezone','start_date','end_date']
-                    },
-        
                 ],
                 attributes: ['connection_name', 'report_name','subject','mail_body','source_id',
                              'title_name','visualizationid'],
