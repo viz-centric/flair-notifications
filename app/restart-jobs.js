@@ -1,5 +1,6 @@
 var models = require('./database/models/index');
 var shedular= require('./shedular');
+var logger= require('./logger');
 var retryCount = 1;
 var retryDelay=5000; // in miliseconds
 
@@ -32,17 +33,28 @@ exports.restartJobs = function restartOldJobs(){
             }    
 
         }
-
+        logger.log({
+            level: 'info',
+            message: 'rescheduled previous reports',
+            total_reports: reports.length,
+          });
         }).catch(function(err){
-            console.log('Oops! something went wrong, : ', err);
-            console.log('retry count  : ', retryCount);
+            logger.log({
+                level: 'error',
+                message: 'database error while rescheduling reports',
+                retryCount: retryCount,
+              });
             retryCount+=1;
             if (retryCount <= 3){
                 setTimeout(restartOldJobs, retryDelay);
                 
             }
             else{
-                console.log('All retry fails ');
+                logger.log({
+                    level: 'error',
+                    message: 'all retry fails while rescheduling reports',
+                    retryCount: retryCount,
+                  });
             }
         });
 }

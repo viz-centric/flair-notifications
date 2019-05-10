@@ -3,6 +3,7 @@ var models = require('./database/models/index');
 var db = require('./database/models/index');
 var scheduler = require('./shedular');
 var moment = require('moment');
+var logger = require('./logger');
 
 var job = {
     createJob: async function (params) {
@@ -59,17 +60,31 @@ var job = {
                     success: 1, message: "Report is scheduled successfully", report_name: report.report_name,
                     job_id: shedualar_obj.id, next_run: job.nextInvocation()
                 }
+                logger.log({
+                    level: 'info',
+                    message: 'new report is saved into database',
+                    report_name: report.report_name,
+                  });
                 return response;
 
             }
             catch (ex) {
                 await transaction.rollback();
                 var response = { success: 0, message: ex }
+                logger.log({
+                    level: 'error',
+                    message: 'error while saving report into database',
+                    error: ex,
+                  });
                 return response;
             }
 
         }
         else {
+            logger.log({
+                level: 'info',
+                message: 'report already exist',
+              });
             var response = { success: 0, message: "report with this name already exit" }
             return response;
         }
@@ -269,12 +284,11 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        attributes: ['viz_type', 'query_name','fields','dimension','measure',
-                                    'group_by','order_by','where','limit','table']
+                        attributes: ['viz_type', 'query','dimension','measure','visualizationid']
                     },
                 ],
                 attributes: ['connection_name', 'report_name','subject','mail_body','source_id',
-                             'title_name','visualizationid'],
+                             'title_name'],
                 where: {
                     userid:userName
                 }
@@ -290,6 +304,11 @@ var job = {
         }
         catch (ex) {
             var response = { success: 0, message: ex }
+            logger.log({
+                level: 'error',
+                message: 'error while fetching reports for user',
+                error: ex,
+              });
             return response;
         }
 
