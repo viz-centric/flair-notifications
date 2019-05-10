@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.JSON
       },
       query: {
-        type: Sequelize.STRING(2048),
+        type: Sequelize.JSON,
         allowNull: false
       },
       createdAt: {

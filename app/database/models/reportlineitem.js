@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     visualizationid: DataTypes.STRING,
     dimension: DataTypes.JSON,
     measure: DataTypes.JSON,
-    query:{type:DataTypes.STRING(2048),allowNull: false},
+    query:{type:DataTypes.JSON,allowNull: false},
   }, {});
   
   ReportLineItem.associate = function(models) {

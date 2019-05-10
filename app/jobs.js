@@ -32,8 +32,7 @@ var job = {
                     viz_type: params.report_line_item.visualization,
                     dimension: params.report_line_item.dimension,
                     measure: params.report_line_item.measure,
-                    query:params.query,
-                    
+                    query:JSON.parse(params.query),
                 }, { transaction })
 
                 let assign_report_obj = await models.AssignReport.create({

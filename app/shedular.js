@@ -103,7 +103,7 @@ var shedular = {
 }
 
 function loadDataAndSendMail(reports_data) {
-    let query=JSON.parse(reports_data.report_line_obj.query);
+    let query=reports_data.report_line_obj.query;
 
     var grpcRetryCount=0;
     function loadDataFromGrpc(query){
