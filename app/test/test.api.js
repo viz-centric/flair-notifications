@@ -23,16 +23,19 @@ describe('/api/jobSchedule/', () => {
         },
          "report_line_item":
          {
-         "query_name":"flairadmin:90497569e61f113349fb082eb9000341--45d994f6-acad-4103-a87b-b7bf9fbc6c2a:1715917d-fff8-44a1-af02-ee2cd41a360", 
          "dimension":["State"],
-         "measure":[ "Price","Quantity"], 
-         "group_by":["State"], 
-         "order_by":[], 
-         "where":"null", 
-         "limit":"5", 
-         "table":"Transactions", 
+         "measure":[ "Price","Quantity"],  
          "visualization":"Pie Chart"
          }, 
+         "query":`{
+          "queryId": "603f5cd13d33141e3e31395a2b002ba7--461d64be-f618-4e6e-8a9f-93e817be76fb",
+          "userId": "flairadmin",
+          "sourceId": "1715917d-fff8-44a1-af02-ee2cd41a3609",
+          "source": "Transactions",
+          "fields": ["State", "COUNT(Price) as Price"],
+          "groupBy": ["State"],
+          "limit": "20"
+        }`,
          "assign_report":{
          "channel": "email",
          "slack_API_Token":"null", 
