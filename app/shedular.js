@@ -103,15 +103,8 @@ var shedular = {
 }
 
 function loadDataAndSendMail(reports_data) {
-    let query = {
-        queryId: "1",
-        userId: "manohar",
-        sourceId: reports_data.report_obj.source_id,
-        source: reports_data.report_line_obj.table,
-        fields: reports_data.report_line_obj.fields,
-        groupBy: [],
-        limit: reports_data.report_line_obj.limit
-    }
+    let query=JSON.parse(reports_data.report_line_obj.query);
+
     var grpcRetryCount=0;
     function loadDataFromGrpc(query){
         grpcRetryCount+=1;

@@ -24,21 +24,16 @@ var job = {
                     source_id: params.report.source_id,
                     title_name: params.report.title_name,
                     userid:params.userid,
-                    visualizationid:params.visualizationid
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
                     ReportId: report.id,
+                    visualizationid:params.visualizationid,
                     viz_type: params.report_line_item.visualization,
-                    query_name: params.report_line_item.query_name,
-                    fields:params.report_line_item.fields,
                     dimension: params.report_line_item.dimension,
                     measure: params.report_line_item.measure,
-                    group_by: params.report_line_item.group_by,
-                    order_by: params.report_line_item.order_by,
-                    where: params.report_line_item.where,
-                    limit: params.report_line_item.limit,
-                    table: params.report_line_item.table
+                    query:params.query,
+                    
                 }, { transaction })
 
                 let assign_report_obj = await models.AssignReport.create({

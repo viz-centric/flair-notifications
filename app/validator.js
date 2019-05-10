@@ -40,17 +40,10 @@ var validator = {
             source_id: Joi.string().required(),
             title_name: Joi.string().allow(null, ''),
         });
-
         var reportLineSchema = Joi.object().keys({
-            query_name: Joi.string().required(),
-            fields:Joi.array().items(Joi.string()).min(1),
+
             dimension: Joi.array().items(Joi.string()),
             measure: Joi.array().items(Joi.string()).min(1),
-            group_by: Joi.array().items(Joi.string()).allow(null, ''),
-            order_by: Joi.array().items(Joi.string()).allow(null, ''),
-            where: Joi.string().allow(null, ''),
-            limit: Joi.number().required(),
-            table: Joi.string().required(),
             visualization: Joi.string().valid(supportedCharts).required(),
         });
 
@@ -81,7 +74,8 @@ var validator = {
             report: reportBodySchema,
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
-            schedule: scheduleSchema
+            schedule: scheduleSchema,
+            query:Joi.string(),
         });
 
         result = Joi.validate(reqBody, reportSchema);
