@@ -33,6 +33,7 @@ var validator = {
         var cronSchema = customJoi.crone().valid();
 
         var reportBodySchema = Joi.object().keys({
+            userid: Joi.string().allow(null, ''),
             connection_name: Joi.string().required(),
             mail_body: Joi.string().allow(null, ''),
             subject: Joi.string().allow(null, ''),
@@ -41,10 +42,10 @@ var validator = {
             title_name: Joi.string().allow(null, ''),
         });
         var reportLineSchema = Joi.object().keys({
-
             dimension: Joi.array().items(Joi.string()),
             measure: Joi.array().items(Joi.string()).min(1),
             visualization: Joi.string().valid(supportedCharts).required(),
+            visualizationid:Joi.string(),
         });
 
         var assignReportSchema = Joi.object().keys({
@@ -62,20 +63,18 @@ var validator = {
         });
 
         var scheduleSchema = Joi.object().keys({
+            cron_exp: cronSchema,
             timezone: Joi.string().allow(null, ''),
             start_date: Joi.date().iso(),
             end_date: Joi.date().iso().greater(new Date()),
         });
 
         var reportSchema = Joi.object().keys({
-            userid: Joi.string().allow(null, ''),
-            visualizationid:Joi.string(),
-            cron_exp: cronSchema,
             report: reportBodySchema,
+            query:Joi.string(),
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
             schedule: scheduleSchema,
-            query:Joi.string(),
         });
 
         result = Joi.validate(reqBody, reportSchema);

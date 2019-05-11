@@ -5,6 +5,7 @@ var wkhtmltoimage = require('wkhtmltoimage');
 var grpc_client = require('./grpc/client');
 var moment = require('moment');
 var charts=require('./chart/generate-charts');
+var logger=require('./logger');
 
 var AppConfig = require('./load_config');
 var image_dir = AppConfig.imageFolder;
@@ -27,7 +28,11 @@ var shedular = {
         
         var job_name="JOB_"+report_name
         var job = scheduler.scheduleJob(job_name ,cron_expression, function (report_name) {
-            console.log(report_name+" execution started")
+            logger.log({
+                level: 'info',
+                message: 'report execution started ',
+                report_name:report_name,
+              });
             try {
                 models.Report.findOne({
                     include: [
@@ -58,12 +63,15 @@ var shedular = {
                         }
                         loadDataAndSendMail(reports_data);
                     }).catch(function(err){
-                        console.log('Oops! something went wrong, : ', err);
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching reports data for execution',
+                            errMsg:err,
+                          });
                     });
                    
             }
             catch (ex) {
-                console.log(ex);
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
@@ -217,15 +225,21 @@ function loadDataAndSendMail(reports_data) {
                 }
                 sendMail(subject, to_mail_list, mail_body, report_title, imagefilename);
             },function(err){
-
-                console.log("err"+err)
+                logger.log({
+                    level: 'error',
+                    message: 'error while generating chart',
+                    errMsg:err,
+                  });
             })
 
 
     }, function (err) {
-        console.log(err);
+        logger.log({
+            level: 'error',
+            message: 'error while fetching records data from GRPC ',
+            errMsg:err,
+          });
         if (grpcRetryCount < 2){
-            console.log("grpc retrying");
             setTimeout(() => loadDataFromGrpc(query), retryDelay);  
         }
         else{

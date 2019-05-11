@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var jobs = require('./jobs')
 const fs = require('fs');
 var validator = require('./validator');
+var logger = require('./logger');
 
 var AppConfig = require('./load_config');
 
@@ -25,6 +26,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
+        logger.log({
+            level: 'error',
+            message: 'error in schedule api due to invalid request body',
+            errMsg:result.error.details[0].message
+          });
         res.status(422).json({
             message: result.error.details[0].message.replace(/\"/g, ""),
         });
