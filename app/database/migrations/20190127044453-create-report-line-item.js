@@ -11,11 +11,8 @@ module.exports = {
       viz_type: {
         type: Sequelize.STRING
       },
-      query_name: {
+      visualizationid: {
         type: Sequelize.STRING
-      },
-      fields: {
-        type: Sequelize.JSON
       },
       dimension: {
         type: Sequelize.JSON
@@ -23,24 +20,9 @@ module.exports = {
       measure: {
         type: Sequelize.JSON
       },
-      group_by: {
+      query: {
         type: Sequelize.JSON,
-        allowNull: true
-      },
-      order_by: {
-        type: Sequelize.JSON,
-        allowNull: true
-      },
-      where: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      limit: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      table: {
-        type: Sequelize.STRING
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
