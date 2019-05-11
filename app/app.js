@@ -94,7 +94,9 @@ app.get('/api/jobSchedule/', function (req, res) {
 });
 
 app.get('/api/user/:userName/reports', (req, res) => {
-    reslt = jobs.reportsByUser(req.params.userName);
+    page=(+req.query.page);
+    pageSize=(+req.query.pageSize);
+    reslt = jobs.reportsByUser(req.params.userName,page,pageSize);
         reslt.then(function (result) {
             res.send(result);
         }, function (err) {

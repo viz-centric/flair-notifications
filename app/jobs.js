@@ -277,7 +277,16 @@ var job = {
             return response;
         }
     },
-    reportsByUser: async function(userName){
+    reportsByUser: async function(userName,page,pageSize){
+        if(!page){
+            page=0;
+        }
+        if(!pageSize){
+            pageSize=2;
+        }
+        var offset = page * pageSize;
+        var limit = offset + pageSize
+
         try {
             var reports = await models.Report.findAll({
                 include: [
@@ -291,7 +300,9 @@ var job = {
                              'title_name'],
                 where: {
                     userid:userName
-                }
+                },
+                limit,
+                offset,
             })
             if (reports.length > 0 ) {
                 var response = { success: 1,totalCount:reports.length, message: reports }
