@@ -3,6 +3,7 @@ var models = require('./database/models/index');
 var db = require('./database/models/index');
 var scheduler = require('./shedular');
 var moment = require('moment');
+var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var logger = require('./logger');
 
 var job = {
@@ -24,7 +25,7 @@ var job = {
                     report_name: params.report.report_name,
                     source_id: params.report.source_id,
                     title_name: params.report.title_name,
-                    userid:params.userid,
+                    userid:params.report.userid,
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
@@ -45,7 +46,7 @@ var job = {
 
                 let shedualar_obj = await models.SchedulerTask.create({
                     ReportId: report.id,
-                    cron_exp: params.cron_exp,
+                    cron_exp: params.schedule.cron_exp,
                     active: true,
                     timezone: params.schedule.timezone,
                     start_date: moment(params.schedule.start_date),
@@ -284,21 +285,27 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        attributes: ['viz_type', 'query','dimension','measure','visualizationid']
+                    },
+                    {
+                        model: models.AssignReport
+                    },
+                    {
+                        model: models.SchedulerTask,
                     },
                 ],
-                attributes: ['connection_name', 'report_name','subject','mail_body','source_id',
-                             'title_name'],
                 where: {
                     userid:userName
                 }
             })
             if (reports.length > 0 ) {
-                var response = { success: 1,totalCount:reports.length, message: reports }
-                return response;
+                var all_reports=[];
+                for (var i=0; i< reports.length; i++){
+                   all_reports.push(schedulerDTO(reports[i]))  
+                }
+                return all_reports;
             }
             else {
-                var response = { success: 0, message: "Reports Not Exist For This User" }
+                var response = { message: "Reports Not Exist For This User" }
                 return response;
             }
         }

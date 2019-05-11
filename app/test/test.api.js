@@ -10,11 +10,10 @@ chai.use(chaiHttp);
 describe('/api/jobSchedule/', () => {
     it('shedual a jab', (done) => {
         let report = 
-        {"userid":"flairadmin",
-         "cron_exp":"* * * * *", 
-         "visualizationid":"xyz",
+        {
         "report":
         {
+        "userid":"flairadmin",
         "connection_name":"Transactions", 
         "mail_body":"This is a test email to check api functionality", 
         "subject":"Report : Clustered Vertical Bar Chart : Sun Mar 17 21:14:03 IST 2019", 
@@ -25,7 +24,8 @@ describe('/api/jobSchedule/', () => {
          {
          "dimension":["State"],
          "measure":[ "Price","Quantity"],  
-         "visualization":"Pie Chart"
+         "visualization":"Pie Chart",
+         "visualizationid":"xyz",
          }, 
          "query":`{
           "queryId": "603f5cd13d33141e3e31395a2b002ba7--461d64be-f618-4e6e-8a9f-93e817be76fb",
@@ -46,9 +46,12 @@ describe('/api/jobSchedule/', () => {
          "condition":"test", 
          "email_list":[{"user_email":"impiyush111@gmail.com", "user_name":"Johib"}]
          }, 
-         "schedule":{"timezone":"Africa/Abidjan",
+         "schedule":{
+          "cron_exp":"* * * * *",  
+          "timezone":"Africa/Abidjan",
           "start_date":"2019-03-27 00:00",
-           "end_date":"2039-03-28"}
+           "end_date":"2039-03-28"
+          }
          }
         
       chai.request(app)
