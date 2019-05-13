@@ -1,5 +1,5 @@
 var scheduler = require('node-schedule');
-var sendmailtool = require('./send-mail')
+var sendmailtool = require('./send-mail');
 var models = require('./database/models/index');
 var wkhtmltoimage = require('wkhtmltoimage');
 var grpc_client = require('./grpc/client');
@@ -125,22 +125,22 @@ function loadDataAndSendMail(reports_data) {
         }
         //render html chart
         if (reports_data.report_line_obj.viz_type == "Pie Chart") {
-            chart_call= charts.pieChart(config,json_res.data);
+            chart_call= charts.pieChart(reports_data.report_line_obj.visualizationid,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Line Chart") {
-            chart_call= charts.lineChart(config,json_res.data);
+            chart_call= charts.lineChart(reports_data.report_line_obj.visualizationid,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Clustered Vertical Bar Chart") {
-            chart_call= charts.clusteredverticalBarChart(config,json_res.data);
+            chart_call= charts.clusteredverticalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Clustered Horizontal Bar Chart") {
-            chart_call= charts.clusteredhorizontalBarChart(config,json_res.data);
+            chart_call= charts.clusteredhorizontalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Heat Map") {
             chart_call= charts.heatmapChart(config,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Stacked Vertical Bar Chart") {
-            chart_call= charts.stackedverticalBarChart(config,json_res.data);
+            chart_call= charts.stackedverticalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
         }
         else if (reports_data.report_line_obj.viz_type == "Stacked Horizontal Bar Chart") {
             chart_call= charts.stackedhorizontalBarChart(config,json_res.data);

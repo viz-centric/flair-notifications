@@ -30,7 +30,7 @@ var job = {
 
                 let report_line_item = await models.ReportLineItem.create({
                     ReportId: report.id,
-                    visualizationid:params.visualizationid,
+                    visualizationid:params.report_line_item.visualizationid,
                     viz_type: params.report_line_item.visualization,
                     dimension: params.report_line_item.dimension,
                     measure: params.report_line_item.measure,
