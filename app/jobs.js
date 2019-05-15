@@ -369,7 +369,7 @@ var job = {
     },
     JobCountByUser: async function(userName){
         try {
-            var reports = await models.Report.findAll({
+            var reportCount = await models.Report.count({
                 include: [
                     {
                         model: models.SchedulerTask,
@@ -380,7 +380,7 @@ var job = {
                     userid:userName
                 }
             })
-            response = { totalReports: reports.length }
+            response = { totalReports: reportCount }
             return response;
         }
         catch (ex) {
