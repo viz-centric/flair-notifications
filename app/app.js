@@ -81,7 +81,8 @@ app.put('/api/jobSchedule/', function (req, res) {
 
 });
 app.delete('/api/jobSchedule/', function (req, res) {
-    reslt = jobs.deleteJob(req.body);
+    var visualizationid= req.query.visualizationid;
+    reslt = jobs.deleteJob(visualizationid);
         reslt.then(function (result) {
             res.send(result);
         }, function (err) {
@@ -90,7 +91,8 @@ app.delete('/api/jobSchedule/', function (req, res) {
 
 });
 app.get('/api/jobSchedule/', function (req, res) {
-    reslt = jobs.jobLogs(req.body);
+    var visualizationid= req.query.visualizationid;
+    reslt = jobs.getJob(visualizationid);
         reslt.then(function (result) {
             res.send(result);
         }, function (err) {
@@ -100,13 +102,24 @@ app.get('/api/jobSchedule/', function (req, res) {
 });
 
 app.get('/api/user/:userName/reports', (req, res) => {
-    reslt = jobs.reportsByUser(req.params.userName);
+    var page=(+req.query.page);
+    var pageSize=(+req.query.pageSize);
+    reslt = jobs.JobsByUser(req.params.userName,page,pageSize);
         reslt.then(function (result) {
             res.send(result);
         }, function (err) {
             res.send(err);
         })
   });
+
+  app.get('/api/user/:userName/reportCount', (req, res) => {
+    reslt = jobs.JobCountByUser(req.params.userName);
+        reslt.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+  });  
 
 module.exports = app;    //  for testing
 

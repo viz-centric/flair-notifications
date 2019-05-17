@@ -122,22 +122,17 @@ var job = {
                     report_name: report_data.report.report_name,
                     source_id: report_data.report.source_id,
                     title_name: report_data.report.title_name,
-                    visualizationid:report_data.visualizationid,},
+                    userid:report_data.report.userid,},
                     {where: {
                         id: exist_report.id
                     }}, { transaction });
 
                 let report_line_item = await models.ReportLineItem.update({
+                    visualizationid:report_data.report_line_item.visualizationid,
                     viz_type: report_data.report_line_item.visualization,
-                    query_name: report_data.report_line_item.query_name,
-                    fields:report_data.report_line_item.fields,
                     dimension: report_data.report_line_item.dimension,
                     measure: report_data.report_line_item.measure,
-                    group_by: report_data.report_line_item.group_by,
-                    order_by: report_data.report_line_item.order_by,
-                    where: report_data.report_line_item.where,
-                    limit: report_data.report_line_item.limit,
-                    table: report_data.report_line_item.table}, 
+                    query:JSON.parse(report_data.query)}, 
                     {where: {
                         ReportId: exist_report.id
                     }}, { transaction });
@@ -182,7 +177,7 @@ var job = {
         }
 
     },
-    deleteJob: async function (report_name) {
+    deleteJob: async function (visualizationid) {
 
         try {
             var report = await models.Report.findOne({
@@ -190,26 +185,28 @@ var job = {
                     {
                         model: models.SchedulerTask,
                     },
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        where:{ visualizationid: visualizationid }
+                    },
                 ],
-                where: {
-                    report_name: report_name.report_name
-                }
             })
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
                     var job_name = "JOB_" + report.report_name;
-                    result = scheduler.cancleJob(job_name)
+                    result = scheduler.cancleJob(job_name);
                     if(result){
                         await models.SchedulerTask.update(
                             { active: false },
                             { where: {id:report.SchedulerTask.id}}, { transaction })
                         await transaction.commit();
-                        var response = { success: 1, message: "Cancled" }
+                        var response = { message: "Cancled" }
                         return response;
                     }
                     else{
-                        var response = { success: 1, message: "Job already Cancled" }
+                        var response = { message: "Job already Cancled" }
                         return response;
                     }
                    
@@ -278,7 +275,15 @@ var job = {
             return response;
         }
     },
-    reportsByUser: async function(userName){
+    JobsByUser: async function(userName,page,pageSize){
+        if(!page){
+            page=0;
+        }
+        if(!pageSize){
+            pageSize=2;
+        }
+        var offset = page * pageSize;
+        var limit = offset + pageSize
         try {
             var reports = await models.Report.findAll({
                 include: [
@@ -291,11 +296,14 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
+                        where:{ active: true }
                     },
                 ],
                 where: {
-                    userid:userName
-                }
+                    userid:userName,     
+                },
+                limit,
+                offset,
             })
             if (reports.length > 0 ) {
                 var all_reports=[];
@@ -314,6 +322,72 @@ var job = {
             logger.log({
                 level: 'error',
                 message: 'error while fetching reports for user',
+                error: ex,
+              });
+            return response;
+        }
+
+
+    },
+    getJob: async function(visualizationid){
+        try {
+            var exist_report = await models.Report.findOne({
+                include: [
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        where:{ visualizationid: visualizationid }
+                    },
+                    {
+                        model: models.AssignReport
+                    },
+                    {
+                        model: models.SchedulerTask,
+                        where:{ active: true }
+                    },
+                ],
+            })
+            if ( exist_report ) {
+                return schedulerDTO(exist_report);
+            }
+            else {
+                var response = { message: "Reports Not Exist" }
+                return response;
+            }
+        }
+        catch (ex) {
+            var response = { success: 0, message: ex }
+            logger.log({
+                level: 'error',
+                message: 'error while fetching reports for user',
+                error: ex,
+              });
+            return response;
+        }
+
+
+    },
+    JobCountByUser: async function(userName){
+        try {
+            var reportCount = await models.Report.count({
+                include: [
+                    {
+                        model: models.SchedulerTask,
+                        where:{ active: true }
+                    },
+                ],
+                where: {
+                    userid:userName
+                }
+            })
+            response = { totalReports: reportCount }
+            return response;
+        }
+        catch (ex) {
+            var response = { success: 0, message: ex }
+            logger.log({
+                level: 'error',
+                message: 'error while fetching reports count for user',
                 error: ex,
               });
             return response;
