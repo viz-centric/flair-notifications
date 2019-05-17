@@ -12,7 +12,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       visualizationid: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       dimension: {
         type: Sequelize.JSON

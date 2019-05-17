@@ -9,12 +9,7 @@ var logger = require('./logger');
 var job = {
     createJob: async function (params) {
 
-        exist_report = await models.Report.findOne({
-            where: {
-                report_name: params.report.report_name
-            }
-        })
-        if (!exist_report) {
+        
             const transaction = await db.sequelize.transaction();
             try {
                 //create report object
@@ -71,6 +66,14 @@ var job = {
             }
             catch (ex) {
                 await transaction.rollback();
+                if (ex.name=="SequelizeUniqueConstraintError"){
+                    logger.log({
+                        level: 'info',
+                        message: 'report already exist',
+                      });
+                    var response = { success: 0, message: "report with this visulaizationid already exit" }
+                    return response;
+                }
                 var response = { success: 0, message: ex }
                 logger.log({
                     level: 'error',
@@ -79,16 +82,7 @@ var job = {
                   });
                 return response;
             }
-
-        }
-        else {
-            logger.log({
-                level: 'info',
-                message: 'report already exist',
-              });
-            var response = { success: 0, message: "report with this name already exit" }
-            return response;
-        }
+        
 
     },
     modifyJob: async function (report_data) {
@@ -98,6 +92,9 @@ var job = {
                 {
                     model: models.ReportLineItem,
                     as: 'reportline',
+                    where: {
+                        visualizationid: report_data.report_line_item.visualizationid
+                    }
                 },
                 {
                     model: models.AssignReport,
@@ -106,9 +103,6 @@ var job = {
                     model: models.SchedulerTask,
                 },
             ],
-            where: {
-                report_name: report_data.report.report_name
-            }
 
         })
         if (exist_report) {
