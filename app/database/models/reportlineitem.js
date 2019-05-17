@@ -2,7 +2,10 @@
 module.exports = (sequelize, DataTypes) => {
   const ReportLineItem = sequelize.define('ReportLineItem', {
     viz_type: DataTypes.STRING,
-    visualizationid: DataTypes.STRING,
+    visualizationid:{
+         type:DataTypes.STRING,
+         allowNull: false,
+         unique: true},
     dimension: DataTypes.JSON,
     measure: DataTypes.JSON,
     query:{type:DataTypes.JSON,allowNull: false},

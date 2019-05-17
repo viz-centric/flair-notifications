@@ -9,12 +9,7 @@ var logger = require('./logger');
 var job = {
     createJob: async function (params) {
 
-        exist_report = await models.Report.findOne({
-            where: {
-                report_name: params.report.report_name
-            }
-        })
-        if (!exist_report) {
+        
             const transaction = await db.sequelize.transaction();
             try {
                 //create report object
@@ -71,6 +66,14 @@ var job = {
             }
             catch (ex) {
                 await transaction.rollback();
+                if (ex.name=="SequelizeUniqueConstraintError"){
+                    logger.log({
+                        level: 'info',
+                        message: 'report already exist',
+                      });
+                    var response = { success: 0, message: "report with this visulaizationid already exit" }
+                    return response;
+                }
                 var response = { success: 0, message: ex }
                 logger.log({
                     level: 'error',
@@ -79,16 +82,7 @@ var job = {
                   });
                 return response;
             }
-
-        }
-        else {
-            logger.log({
-                level: 'info',
-                message: 'report already exist',
-              });
-            var response = { success: 0, message: "report with this name already exit" }
-            return response;
-        }
+        
 
     },
     modifyJob: async function (report_data) {
@@ -98,6 +92,9 @@ var job = {
                 {
                     model: models.ReportLineItem,
                     as: 'reportline',
+                    where: {
+                        visualizationid: report_data.report_line_item.visualizationid
+                    }
                 },
                 {
                     model: models.AssignReport,
@@ -106,9 +103,6 @@ var job = {
                     model: models.SchedulerTask,
                 },
             ],
-            where: {
-                report_name: report_data.report.report_name
-            }
 
         })
         if (exist_report) {
@@ -177,7 +171,7 @@ var job = {
         }
 
     },
-    deleteJob: async function (report_name) {
+    deleteJob: async function (visualizationid) {
 
         try {
             var report = await models.Report.findOne({
@@ -185,16 +179,18 @@ var job = {
                     {
                         model: models.SchedulerTask,
                     },
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        where:{ visualizationid: visualizationid }
+                    },
                 ],
-                where: {
-                    report_name: report_name.report_name
-                }
             })
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
                     var job_name = "JOB_" + report.report_name;
-                    result = scheduler.cancleJob(job_name)
+                    result = scheduler.cancleJob(job_name);
                     if(result){
                         await models.SchedulerTask.update(
                             { active: false },
@@ -327,13 +323,14 @@ var job = {
 
 
     },
-    getJob: async function(report_name){
+    getJob: async function(visualizationid){
         try {
             var exist_report = await models.Report.findOne({
                 include: [
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
+                        where:{ visualizationid: visualizationid }
                     },
                     {
                         model: models.AssignReport
@@ -343,9 +340,6 @@ var job = {
                         where:{ active: true }
                     },
                 ],
-                where: {
-                    report_name:report_name.report_name
-                }
             })
             if ( exist_report ) {
                 return schedulerDTO(exist_report);
@@ -369,7 +363,7 @@ var job = {
     },
     JobCountByUser: async function(userName){
         try {
-            var reports = await models.Report.findAll({
+            var reportCount = await models.Report.count({
                 include: [
                     {
                         model: models.SchedulerTask,
@@ -380,7 +374,7 @@ var job = {
                     userid:userName
                 }
             })
-            response = { totalReports: reports.length }
+            response = { totalReports: reportCount }
             return response;
         }
         catch (ex) {
