@@ -62,8 +62,8 @@ app.put('/api/jobSchedule/', function (req, res) {
         });
     }
     else {
-        reslt = jobs.modifyJob(req.body);
-        reslt.then(function (result) {
+        result = jobs.modifyJob(req.body);
+        result.then(function (result) {
             if (result.success==1){
                 res.status(200).json({
                     message: result.message,
@@ -81,8 +81,9 @@ app.put('/api/jobSchedule/', function (req, res) {
 
 });
 app.delete('/api/jobSchedule/', function (req, res) {
-    reslt = jobs.deleteJob(req.body);
-        reslt.then(function (result) {
+    var visualizationid= req.query.visualizationid;
+    result = jobs.deleteJob(visualizationid);
+    result.then(function (result) {
             res.send(result);
         }, function (err) {
             res.send(err);
@@ -90,8 +91,9 @@ app.delete('/api/jobSchedule/', function (req, res) {
 
 });
 app.get('/api/jobSchedule/', function (req, res) {
-    reslt = jobs.jobLogs(req.body);
-        reslt.then(function (result) {
+    var visualizationid= req.query.visualizationid;
+    result = jobs.getJob(visualizationid);
+    result.then(function (result) {
             res.send(result);
         }, function (err) {
             res.send(err);
@@ -100,13 +102,24 @@ app.get('/api/jobSchedule/', function (req, res) {
 });
 
 app.get('/api/user/:userName/reports', (req, res) => {
-    reslt = jobs.reportsByUser(req.params.userName);
-        reslt.then(function (result) {
+    var page=(+req.query.page);
+    var pageSize=(+req.query.pageSize);
+    result = jobs.JobsByUser(req.params.userName,page,pageSize);
+    result.then(function (result) {
             res.send(result);
         }, function (err) {
             res.send(err);
         })
   });
+
+  app.get('/api/user/:userName/reportCount', (req, res) => {
+    result = jobs.JobCountByUser(req.params.userName);
+    result.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+  });  
 
 module.exports = app;    //  for testing
 

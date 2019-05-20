@@ -14,7 +14,6 @@ module.exports = {
       },
       report_name: {
         type: Sequelize.STRING,
-        unique: true,
       },
       subject: {
         type: Sequelize.STRING
