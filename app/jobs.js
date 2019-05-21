@@ -345,8 +345,8 @@ var job = {
                 return schedulerDTO(exist_report);
             }
             else {
-                var response = { message: "Reports Not Exist" }
-                return response;
+                return { message: "report is not found for visulization Id : "+visualizationid };
+                //return response;
             }
         }
         catch (ex) {
