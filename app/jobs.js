@@ -52,16 +52,15 @@ var job = {
                     job = scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp)
                 }
                 await transaction.commit();
-                var response = {
-                    success: 1, message: "Report is scheduled successfully", report_name: report.report_name,
-                    job_id: shedualar_obj.id, next_run: job.nextInvocation()
-                }
                 logger.log({
                     level: 'info',
                     message: 'new report is saved into database',
                     report_name: report.report_name,
-                  });
-                return response;
+                });
+                return {
+                    success: 1, message: "Report is scheduled successfully", report_name: report.report_name,
+                    job_id: shedualar_obj.id, next_run: job.nextInvocation()
+                };
 
             }
             catch (ex) {
@@ -74,13 +73,12 @@ var job = {
                     var response = { success: 0, message: "report with this visulaizationid already exit" }
                     return response;
                 }
-                var response = { success: 0, message: ex }
                 logger.log({
                     level: 'error',
                     message: 'error while saving report into database',
                     error: ex,
                   });
-                return response;
+                return { success: 0, message: ex };
             }
         
 
@@ -152,22 +150,19 @@ var job = {
                 var job_name="JOB_"+exist_report.report_name;
                 result = await scheduler.reShedulJob(job_name,shedualar_obj.start_date,shedualar_obj.end_date,shedualar_obj.cron_exp)
                 await transaction.commit();
-                var response = {
+                return {
                     success: 1, message: "modified", report_name: exist_report.report_name,
-                }
-                return response;
+                };
 
             }
             catch (ex) {
                 await transaction.rollback();
-                var response = { success: 0, message: ex }
-                return response;
+                return { success: 0, message: ex };
             }
 
         }
         else {
-            var response = { success: 0, message: "report does not exit" }
-            return response;
+            return { success: 0, message: "report is not found" };
         }
 
     },
@@ -196,29 +191,24 @@ var job = {
                             { active: false },
                             { where: {id:report.SchedulerTask.id}}, { transaction })
                         await transaction.commit();
-                        var response = { message: "Cancled" }
-                        return response;
+                        return { message: "Scheduled report is cancelled" };
                     }
                     else{
-                        var response = { message: "Job already Cancled" }
-                        return response;
+                        return { message: "Scheduled report has already been cancelled" };
                     }
                    
                 }
                 catch (ex) {
-                    var response = { success: 0, message: ex }
-                    return response;
+                    return { success: 0, message: ex };
                 }
 
             }
             else {
-                var response = { success: 0, message: "Report Not Exist" }
-                return response;
+                return { success: 0, message: "Report is not found" };
             }
         }
         catch (ex) {
-            var response = { success: 0, message: ex }
-            return response;
+            return { success: 0, message: ex };
         }
 
     },
@@ -248,25 +238,22 @@ var job = {
                         log.task_executed=moment(logItem.task_executed).toString();
                         outputlogs.push(log);
                     }
-                    var response = {
-                        success: 1, message: "found", SchedulerLogs:outputlogs}
-                    return response;
+                    return response = {
+                        success: 1, message: "found", SchedulerLogs:outputlogs
+                    };
                    
                 }
                 catch (ex) {
-                    var response = { success: 0, message: ex }
-                    return response;
+                    return { success: 0, message: ex };
                 }
 
             }
             else {
-                var response = { success: 0, message: "Report Not Exist" }
-                return response;
+                return { success: 0, message: "Report is not found" };
             }
         }
         catch (ex) {
-            var response = { success: 0, message: ex }
-            return response;
+            return { success: 0, message: ex };
         }
     },
     JobsByUser: async function(userName,page,pageSize){
@@ -307,18 +294,16 @@ var job = {
                 return all_reports;
             }
             else {
-                var response = { message: "Reports Not Exist For This User" }
-                return response;
+                return { message: "Report is not found for the user" };
             }
         }
         catch (ex) {
-            var response = { success: 0, message: ex }
             logger.log({
                 level: 'error',
-                message: 'error while fetching reports for user',
+                message: 'error while fetching reports for the user',
                 error: ex,
               });
-            return response;
+            return { success: 0, message: ex };
         }
 
 
@@ -346,17 +331,15 @@ var job = {
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };
-                //return response;
             }
         }
         catch (ex) {
-            var response = { success: 0, message: ex }
             logger.log({
                 level: 'error',
                 message: 'error while fetching reports for user',
                 error: ex,
               });
-            return response;
+            return { success: 0, message: ex };
         }
 
 
@@ -378,13 +361,12 @@ var job = {
             return response;
         }
         catch (ex) {
-            var response = { success: 0, message: ex }
             logger.log({
                 level: 'error',
                 message: 'error while fetching reports count for user',
                 error: ex,
               });
-            return response;
+            return  { success: 0, message: ex };
         }
 
 
