@@ -95,7 +95,7 @@ app.get('/api/jobSchedule/', function (req, res) {
     result = jobs.getJob(visualizationid);
     result.then(function (result) {
         if(result.message){
-            res.status(404).json({
+            res.status(204).json({
                 message: result.message,
             });
         }else{
