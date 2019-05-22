@@ -151,7 +151,7 @@ var job = {
                 result = await scheduler.reShedulJob(job_name,shedualar_obj.start_date,shedualar_obj.end_date,shedualar_obj.cron_exp)
                 await transaction.commit();
                 return {
-                    success: 1, message: "modified", report_name: exist_report.report_name,
+                    success: 1, message: "report is updated", report_name: exist_report.report_name,
                 };
 
             }
