@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     userid : DataTypes.STRING,
   }, {});
   Report.associate = function(models) {
-    Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' });
-    Report.hasOne(models.AssignReport);
-    Report.hasOne(models.SchedulerTask)
+    Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
+    Report.hasOne(models.AssignReport, { onDelete: 'cascade' });
+    Report.hasOne(models.SchedulerTask, { onDelete: 'cascade' })
   };
   return Report;
 };
