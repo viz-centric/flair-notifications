@@ -187,9 +187,7 @@ var job = {
                     var job_name = "JOB_" + report.report_name;
                     result = scheduler.cancleJob(job_name);
                     if(result){
-                        await models.SchedulerTask.update(
-                            { active: false },
-                            { where: {id:report.SchedulerTask.id}}, { transaction })
+                        await report.destroy({ force: true })
                         await transaction.commit();
                         return { message: "Scheduled report is cancelled" };
                     }
