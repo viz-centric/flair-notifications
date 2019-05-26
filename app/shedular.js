@@ -12,6 +12,8 @@ var image_dir = AppConfig.imageFolder;
 
 var retryDelay = 3000 //in miliseconds
 
+var wkhtmltoimage=wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
+
 
 var shedular = {
     shedulJob:  function (report_name,cron_exp,start_date,end_date) {
@@ -185,7 +187,6 @@ function loadDataAndSendMail(reports_data) {
 
         chart_call.then(function (response) {
                 var imagefilename = reports_data['report_obj']['report_name'] + '.jpg';
-
                 wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
                 var to_mail_list=[];
                 for(user of reports_data['report_assign_obj']['email_list']){

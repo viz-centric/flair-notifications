@@ -6,11 +6,12 @@ var AppConfig = require('./load_config');
 var image_dir=AppConfig.imageFolder;
 
 var transporter = nodemailer.createTransport({
- service: AppConfig.mailService.serive,
- auth: {
+    service: AppConfig.mailService.serive,
+    auth: {
         user: AppConfig.mailService.auth.user,
         pass: AppConfig.mailService.auth.pass
-    }
+    },
+    tls: { rejectUnauthorized: false }  
 });
 exports.sendMail= function sendMailToGmail(subject, to_mail_list, mail_body,report_title,imagefilename) {
     var template_data={
