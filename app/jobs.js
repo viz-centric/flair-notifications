@@ -242,7 +242,7 @@ var job = {
                         outputlogs.push(log);
                     }
                     return response = {
-                        success: 1, SchedulerLogs:outputlogs
+                           SchedulerLogs:outputlogs
                     };
                    
                 }
