@@ -4,6 +4,7 @@ var db = require('./database/models/index');
 var scheduler = require('./shedular');
 var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
+var execution=require('./execution');
 var logger = require('./logger');
 
 var job = {
@@ -14,11 +15,12 @@ var job = {
             try {
                 //create report object
                 let report = await models.Report.create({
-                    connection_name: params.report.connection_name,
+                    dashboard_name: params.report.dashboard_name,
+                    view_name: params.report.view_name,
+                    share_link: params.report.share_link,
                     mail_body: params.report.mail_body,
                     subject: params.report.subject,
                     report_name: params.report.report_name,
-                    source_id: params.report.source_id,
                     title_name: params.report.title_name,
                     userid:params.report.userid,
                 }, { transaction });
@@ -36,7 +38,6 @@ var job = {
                     ReportId: report.id,
                     channel: params.assign_report.channel,
                     email_list: params.assign_report.email_list,
-                    condition: params.assign_report.condition,
                 }, { transaction })
 
                 let shedualar_obj = await models.SchedulerTask.create({
@@ -47,9 +48,9 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
-                job = scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
+                job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
-                    job = scheduler.shedulJob(report.report_name,shedualar_obj.cron_exp)
+                    job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp)
                 }
                 await transaction.commit();
                 logger.log({
@@ -108,11 +109,12 @@ var job = {
             try {
                 //update report object
                 let report = await models.Report.update({
-                    connection_name: report_data.report.connection_name,
+                    dashboard_name: report_data.report.dashboard_name,
+                    view_name: report_data.report.view_name,
+                    share_link: report_data.report.share_link,
                     mail_body: report_data.report.mail_body,
                     subject: report_data.report.subject,
                     report_name: report_data.report.report_name,
-                    source_id: report_data.report.source_id,
                     title_name: report_data.report.title_name,
                     userid:report_data.report.userid,},
                     {where: {
@@ -131,14 +133,13 @@ var job = {
 
                 let assign_report_obj = await models.AssignReport.update({
                     channel: report_data.assign_report.channel,
-                    email_list: report_data.assign_report.email_list,
-                    condition: report_data.assign_report.condition,},
+                    email_list: report_data.assign_report.email_list,},
                     {where: {
                         ReportId: exist_report.id
                     }}, { transaction });
 
                 let shedualar_obj = await models.SchedulerTask.update({
-                    cron_exp: report_data.cron_exp,
+                    cron_exp: report_data.schedule.cron_exp,
                     active: true,
                     timezone: report_data.schedule.timezone,
                     start_date: moment(report_data.schedule.start_date),
@@ -147,8 +148,10 @@ var job = {
                 {where: {
                     ReportId: exist_report.id
                 }}, { transaction });
-                var job_name="JOB_"+exist_report.report_name;
-                result = await scheduler.reShedulJob(job_name,shedualar_obj.start_date,shedualar_obj.end_date,shedualar_obj.cron_exp)
+                var job_name="JOB_"+exist_report.reportline.visualizationid;
+                var start_date = moment(report_data.schedule.start_date);
+                var end_date = moment(report_data.schedule.end_date);
+                result = await scheduler.reShedulJob(job_name,start_date,end_date,report_data.schedule.cron_exp)
                 await transaction.commit();
                 return {
                     success: 1, message: "report is updated", report_name: exist_report.report_name,
@@ -184,7 +187,7 @@ var job = {
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
-                    var job_name = "JOB_" + report.report_name;
+                    var job_name = "JOB_" + report.reportline.visualizationid;
                     result = scheduler.cancleJob(job_name);
                     if(result){
                         await report.destroy({ force: true })
@@ -210,17 +213,19 @@ var job = {
         }
 
     },
-    jobLogs: async function (report_name){
+    jobLogs: async function (visualizationid){
         try {
             var report = await models.Report.findOne({
                 include: [
                     {
                         model: models.SchedulerTask,
                     },
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        where:{ visualizationid: visualizationid }
+                    },
                 ],
-                where: {
-                    report_name: report_name.report_name
-                }
             })
             if (report) {
                 try {
@@ -237,7 +242,7 @@ var job = {
                         outputlogs.push(log);
                     }
                     return response = {
-                        success: 1, message: "found", SchedulerLogs:outputlogs
+                        success: 1, SchedulerLogs:outputlogs
                     };
                    
                 }
@@ -365,6 +370,48 @@ var job = {
                 error: ex,
               });
             return  { success: 0, message: ex };
+        }
+
+
+    },
+    executeImmediate: async function(visualizationid){
+        try {
+            var report = await models.Report.findOne({
+                include: [
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                        where:{ visualizationid: visualizationid }
+                    },
+                    {
+                        model: models.AssignReport
+                    },
+                    {
+                        model: models.SchedulerTask,
+                        where:{ active: true }
+                    },
+                ],
+            })
+            if ( report ) {
+                var reports_data={
+                    report_obj:report,
+                    report_line_obj :report.reportline,
+                    report_assign_obj:report.AssignReport,
+                    report_shedular_obj:report.SchedulerTask
+                }
+                execution.loadDataAndSendMail(reports_data);
+            }
+            else {
+                return { message: "report is not found for visulization Id : "+visualizationid };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching reports for user',
+                error: ex,
+              });
+            return { success: 0, message: ex };
         }
 
 

@@ -125,7 +125,27 @@ app.get('/api/user/:userName/reports', (req, res) => {
         }, function (err) {
             res.send(err);
         })
-  });  
+  });
+  
+  app.get('/api/executeImmediate/', (req, res) => {
+    var visualizationid= req.query.visualizationid;
+    result = jobs.executeImmediate(visualizationid);
+    result.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+  });
+
+  app.get('/api/jobLogs/', (req, res) => {
+    var visualizationid= req.query.visualizationid;
+    result = jobs.jobLogs(visualizationid);
+    result.then(function (result) {
+            res.send(result);
+        }, function (err) {
+            res.send(err);
+        })
+  });
 
 module.exports = app;    //for testing
 

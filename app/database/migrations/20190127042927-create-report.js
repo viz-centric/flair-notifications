@@ -8,7 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      connection_name: {
+      dashboard_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      view_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      share_link: {
         type: Sequelize.STRING,
         allowNull: true
       },
@@ -20,10 +28,6 @@ module.exports = {
       },
       mail_body: {
         type: Sequelize.TEXT
-      },
-      source_id: {
-        type: Sequelize.STRING,
-        allowNull: true
       },
       title_name: {
         type: Sequelize.STRING

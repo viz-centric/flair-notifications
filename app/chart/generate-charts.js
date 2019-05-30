@@ -459,48 +459,14 @@ sankeyChart: async function(config,data){
   result=await chartRenderingPromise;
   return result;
 },
-tableChart: async function(config,data){
+tableChart: async function(viz_id,data){
 
   var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="table" width="950" height="440"/></body></html>'); 
   chartUtility.configureDomForcharts(tableFakeDom.window.document)
   var tableChartobj=table();
 
-  var newConfig = convertConfigToLowerCase(config);
-
-      var chartConfig = {
-        "dimension": newConfig.dimension,
-        "displayNameForDimension": ["State Name", "Under 5 Years"],
-        "cellColorForDimension": ["#efefef", "#ff00ff"],
-        "fontStyleForDimension": ["italic", "italic"],
-        "fontWeightForDimension": ["900", "800"],
-        "fontSizeForDimension": ["15", "16"],
-        "textColorForDimension": ["#ff00ff", ""],
-        "textColorExpressionForDimension":['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "textAlignmentForDimension": ["center", "left"],
-
-        "measure": newConfig.measure,
-        "displayNameForMeasure": ['5 to 13 Years', '14 to 17 Years'],
-        "cellColorForMeasure": ["#efefef", "#ff00ff"],
-        "cellColorExpressionForMeasure": ['upto,500000,#efefef|upto,900000,#acacac|above,900000,#00ff00|default,,#ffffaa', 'upto,500000,#ffbbff|upto,900000,#ffaacc|above,900000,#121212|default,,#454545'
-        ],
-        "fontStyleForMeasure": ["italic", "italic"],
-        "fontSizeForMeasure": ["15", "12"],
-        "fontWeightForMeasure": ["900", "800"],
-        "numberFormatForMeasure": ["M", "K"],
-        "textColorForMeasure": ["#eaeaea", ""],
-        "textAlignmentForMeasure": ["center", "left"],
-        "textColorExpressionForMeasure": ['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "iconNameForMeasure":  ['fa fa-globe', 'fa fa-male'],
-        "iconFontWeight": [100, 200],
-        "iconColor": ['#FFFFFF', '#DDC224'],
-        "iconPositionForMeasure": ["center", "left"],
-        "iconExpressionForMeasure": ['upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00', 'upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00'
-        ]
-    }
-
- tableChartobj.config(chartConfig).print(true);
+  var chartConfig= await load_config.tableChartConfig(viz_id)
+  tableChartobj.config(chartConfig).print(true);
 
   d3.select(tableFakeDom.window.document).select('#table').datum(data).call(tableChartobj);
 

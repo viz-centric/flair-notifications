@@ -31,7 +31,9 @@ RUN groupadd -g 999 flairuser && \
     useradd --shell /bin/bash --create-home --home /home/flairuser -r -u 999 -g flairuser flairuser
 
 RUN chown -R flairuser:flairuser /flair-notifications
+RUN chown -R flairuser:flairuser /usr/bin/wkhtmltoimage
 RUN chmod -R 755 /flair-notifications
+
 
 USER flairuser
 
