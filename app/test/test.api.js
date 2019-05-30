@@ -14,10 +14,12 @@ describe('/api/jobSchedule/', () => {
         "report":
         {
         "userid":"flairadmin",
-        "connection_name":"Transactions", 
+        "dashboard_name":"First Dashboard",
+        "view_name": "Ecom View",
+        "share_link": "http://localhost:8002/#", 
         "mail_body":"This is a test email to check api functionality", 
         "subject":"Report : Clustered Vertical Bar Chart : Sun Mar 17 21:14:03 IST 2019", 
-        "report_name":"report_x3", "source_id":"1715917d-fff8-44a1-af02-ee2cd41a3609", 
+        "report_name":"report_x3", 
         "title_name":"Clustered Vertical Bar Chart"
         },
          "report_line_item":
@@ -42,8 +44,7 @@ describe('/api/jobSchedule/', () => {
          "channel_id":"null", 
          "stride_API_Token":"null", 
          "stride_cloud_id":"null", 
-         "stride_conversation_id":"null", 
-         "condition":"test", 
+         "stride_conversation_id":"null",  
          "email_list":[{"user_email":"impiyush111@gmail.com", "user_name":"Johib"}]
          }, 
          "schedule":{
