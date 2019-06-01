@@ -8,10 +8,163 @@ var logger=require('./logger');
 var AppConfig = require('./load_config');
 var image_dir = AppConfig.imageFolder;
 
-var retryDelay = 3000 //in miliseconds
+const retryDelay = 3000 //in miliseconds
 
 var wkhtmltoimage=wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
 
+const chartMap = {
+    'Pie Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.pieChart(report_obj.report_line_obj.visualizationid,data);
+        }
+    },
+    'Line Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.lineChart(report_obj.report_line_obj.visualizationid,data);
+        }
+    },
+    'Clustered Vertical Bar Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid,data);
+        }
+    },
+    'Clustered Horizontal Bar Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid,data);
+        }
+    },
+    'Heat Map': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.heatmapChart(config,data);
+        }
+    },
+    'Stacked Vertical Bar Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid,data);
+        }
+    },
+    'Stacked Horizontal Bar Chart': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.stackedhorizontalBarChart(config,data);
+        }
+    },
+    'Combo Chart': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.comboChart(config,data);
+        }
+    },
+    'Tree Map': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.treemapChart(config,data);
+        }
+    },
+    'Info graphic': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.infographicsChart(config,data);
+        }
+    },
+    'Box Plot': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.boxplotChart(config,data);
+        }
+    },
+    'Bullet Chart': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.bulletChart(config,data);
+        }
+    },
+    'Sankey': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.sankeyChart(config,data);
+        }
+    },
+    'Table': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.tableChart(config,data);
+        }
+    },
+    'Pivot Table': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.pivottableChart(config,data);
+        }
+    },
+    'Doughnut Chart': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.doughnutChart(config,data);
+        }
+    },
+    'KPI': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.kpiChart(config,data);
+        }
+    },
+    'Scatter plot': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.scatterChart(config,data);
+        }
+    },
+    'Gauge plot': {
+        generateChart: function (report_obj, data) {
+            var config={
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.gaugeChart(config,data);
+        }
+    },
+};
 
 exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
     let query=reports_data.report_line_obj.query;
@@ -22,71 +175,11 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
         var data_call = grpc_client.getRecords(query);
         data_call.then(function (response) {
         var json_res = JSON.parse(response.data);
-        var config={
-            dimension: reports_data.report_line_obj.dimension,
-            measure: reports_data.report_line_obj.measure,
-        }
+
         //render html chart
-        if (reports_data.report_line_obj.viz_type == "Pie Chart") {
-            chart_call= charts.pieChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Line Chart") {
-            chart_call= charts.lineChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Clustered Vertical Bar Chart") {
-            chart_call= charts.clusteredverticalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Clustered Horizontal Bar Chart") {
-            chart_call= charts.clusteredhorizontalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Heat Map") {
-            chart_call= charts.heatmapChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Stacked Vertical Bar Chart") {
-            chart_call= charts.stackedverticalBarChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Stacked Horizontal Bar Chart") {
-            chart_call= charts.stackedhorizontalBarChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Combo Chart") {
-            chart_call= charts.comboChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Tree Map") {
-            chart_call= charts.treemapChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Info graphic") {
-            chart_call= charts.infographicsChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Box Plot") {
-            chart_call= charts.boxplotChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Bullet Chart") {
-            chart_call= charts.bulletChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Sankey") {
-            chart_call= charts.sankeyChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Table") {
-            chart_call= charts.tableChart(reports_data.report_line_obj.visualizationid,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Pivot Table") {
-            chart_call= charts.pivottableChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Doughnut Chart") {
-            chart_call= charts.doughnutChart(config,json_res.data);
-        } 
+        generate_chart=chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data,json_res.data);
 
-        else if (reports_data.report_line_obj.viz_type == "KPI") {
-            chart_call= charts.kpiChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Scatter plot") {
-            chart_call= charts.scatterChart(config,json_res.data);
-        }
-        else if (reports_data.report_line_obj.viz_type == "Gauge plot") {
-            chart_call= charts.gaugeChart(config,json_res.data);
-        }
-
-        chart_call.then(function (response) {
+        generate_chart.then(function (response) {
                 var imagefilename = reports_data['report_obj']['report_name'] + '.jpg';
                 wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
                 var to_mail_list=[];
@@ -108,9 +201,12 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                         });
                     },
                         function (error) {
-                            console.log(error);
+                            logger.log({
+                                level: 'error',
+                                message: 'error while sending mail',
+                                errMsg:error,
+                              });
                             if (mailRetryCount < 2){
-                                console.log("send mail retrying");
                                 setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename),
                                  retryDelay);  
                             }

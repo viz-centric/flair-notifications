@@ -19,8 +19,8 @@ var configs = {
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
                     var result = {};
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimensions = features.dimensions,
                         measures = features.measures;
@@ -93,8 +93,8 @@ var configs = {
 
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var result = {};
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimension = features.dimensions,
@@ -129,8 +129,8 @@ var configs = {
 
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimensions = features.dimensions,
                         measures = features.measures;
@@ -200,8 +200,8 @@ var configs = {
 
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimensions = features.dimensions,
                         measures = features.measures;
@@ -272,8 +272,8 @@ var configs = {
 
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimensions = features.dimensions,
                         measures = features.measures;
@@ -342,8 +342,8 @@ var configs = {
                 if (response.statusCode == 200) {
                     var json_res = JSON.parse(body);
                     var result = {};
-                    var properties = json_res.properties;
-                    var fields = json_res.fields;
+                    var properties = json_res.visualMetadata.properties;
+                    var fields = json_res.visualMetadata.fields;
                     var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                         dimensions = features.dimensions,
                         measures = features.measures;

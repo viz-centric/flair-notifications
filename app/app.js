@@ -36,8 +36,7 @@ app.post('/api/jobSchedule/', function (req, res) {
         });
     }
     else {
-        reslt = jobs.createJob(req.body);
-        reslt.then(function (result) {
+        jobs.createJob(req.body).then(function (result) {
             if (result.success == 1) {
                 res.status(201).json({
                     message: result.message,
@@ -62,8 +61,7 @@ app.put('/api/jobSchedule/', function (req, res) {
         });
     }
     else {
-        result = jobs.modifyJob(req.body);
-        result.then(function (result) {
+        jobs.modifyJob(req.body).then(function (result) {
             if (result.success == 1) {
                 res.status(200).json({
                     message: result.message,
@@ -82,8 +80,7 @@ app.put('/api/jobSchedule/', function (req, res) {
 });
 app.delete('/api/jobSchedule/', function (req, res) {
     var visualizationid = req.query.visualizationid;
-    result = jobs.deleteJob(visualizationid);
-    result.then(function (result) {
+    jobs.deleteJob(visualizationid).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -92,8 +89,7 @@ app.delete('/api/jobSchedule/', function (req, res) {
 });
 app.get('/api/jobSchedule/', function (req, res) {
     var visualizationid = req.query.visualizationid;
-    result = jobs.getJob(visualizationid);
-    result.then(function (result) {
+    jobs.getJob(visualizationid).then(function (result) {
         if (result.message) {
             res.status(204).json({
                 message: result.message,
@@ -110,8 +106,7 @@ app.get('/api/jobSchedule/', function (req, res) {
 app.get('/api/user/:userName/reports', (req, res) => {
     var page = (+req.query.page);
     var pageSize = (+req.query.pageSize);
-    result = jobs.JobsByUser(req.params.userName, page, pageSize);
-    result.then(function (result) {
+    jobs.JobsByUser(req.params.userName, page, pageSize).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -119,8 +114,7 @@ app.get('/api/user/:userName/reports', (req, res) => {
 });
 
 app.get('/api/user/:userName/reportCount', (req, res) => {
-    result = jobs.JobCountByUser(req.params.userName);
-    result.then(function (result) {
+    jobs.JobCountByUser(req.params.userName).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -129,8 +123,7 @@ app.get('/api/user/:userName/reportCount', (req, res) => {
 
 app.get('/api/executeImmediate/', (req, res) => {
     var visualizationid = req.query.visualizationid;
-    result = jobs.executeImmediate(visualizationid);
-    result.then(function (result) {
+    jobs.executeImmediate(visualizationid).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
