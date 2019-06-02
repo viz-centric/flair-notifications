@@ -112,11 +112,7 @@ const chartMap = {
     },
     'Table': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.tableChart(config,data);
+            return charts.tableChart(report_obj.report_line_obj.visualizationid,data,data);
         }
     },
     'Pivot Table': {
@@ -228,6 +224,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                     message: 'error while generating chart',
                     errMsg:err,
                   });
+                console.log(err)  
             })
 
 
