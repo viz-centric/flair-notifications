@@ -26,10 +26,10 @@ exports.restartJobs = function restartOldJobs(){
     }).then(function(reports){
         for (var i=0 ; i< reports.length; i++){
 
-            job=shedular.shedulJob(reports[i].report_name,reports[i].SchedulerTask.cron_exp,
+            job=shedular.shedulJob(reports[i].reportline.visualizationid,reports[i].SchedulerTask.cron_exp,
                 reports[i].SchedulerTask.start_date,reports[i].SchedulerTask.end_date)
             if (job===null){
-                job=shedular.shedulJob(reports[i].report_name,reports[i].SchedulerTask.cron_exp)
+                job=shedular.shedulJob(reports[i].reportline.visualizationid,reports[i].SchedulerTask.cron_exp)
             }    
 
         }

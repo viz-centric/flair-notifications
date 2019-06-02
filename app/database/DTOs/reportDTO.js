@@ -1,12 +1,15 @@
-function reportDTO(userid,connection_name,source_id,mail_body,subject,report_name,title_name){
+var moment = require('moment');
+function reportDTO(userid,dashboard_name,view_name,share_link,mail_body,subject,report_name,title_name,createdAt){
     return {
         userid:userid,
-        connection_name:connection_name,
-        source_id:source_id, 
+        dashboard_name:dashboard_name,
+        view_name:view_name,
+        share_link: share_link,
         mail_body:mail_body, 
         subject:subject, 
         report_name:report_name, 
-        title_name:title_name
+        title_name:title_name,
+        createdAt:moment(createdAt).format("YYYY-MM-DD HH:mm")
       }
   }
 

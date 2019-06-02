@@ -1,11 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define('Report', {
-    connection_name: DataTypes.STRING,
+    dashboard_name: DataTypes.STRING,
+    view_name: DataTypes.STRING,
+    share_link: DataTypes.STRING,
     report_name: {type:DataTypes.STRING, allowNull: true},
     subject: DataTypes.STRING,
     mail_body: DataTypes.TEXT,
-    source_id: {type:DataTypes.STRING, allowNull: true},
     title_name: DataTypes.STRING,
     userid : DataTypes.STRING,
   }, {});

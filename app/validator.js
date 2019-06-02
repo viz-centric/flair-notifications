@@ -34,11 +34,12 @@ var validator = {
 
         var reportBodySchema = Joi.object().keys({
             userid: Joi.string().allow(null, ''),
-            connection_name: Joi.string().required(),
+            dashboard_name: Joi.string().required(),
+            view_name: Joi.string().required(),
+            share_link: Joi.string().required(),
             mail_body: Joi.string().allow(null, ''),
             subject: Joi.string().allow(null, ''),
             report_name: Joi.string().required(),
-            source_id: Joi.string().required(),
             title_name: Joi.string().allow(null, ''),
         });
         var reportLineSchema = Joi.object().keys({
@@ -59,7 +60,6 @@ var validator = {
                 user_name: Joi.string().required(),
                 user_email: Joi.string().required(),
             })),
-            condition: Joi.string().allow(null, ''),
         });
 
         var scheduleSchema = Joi.object().keys({
