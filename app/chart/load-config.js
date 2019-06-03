@@ -79,7 +79,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }
@@ -126,7 +126,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }
@@ -214,7 +214,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }
@@ -307,7 +307,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }
@@ -394,7 +394,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }   
@@ -503,7 +503,7 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:error.message,
+                            errMsg:body.message,
                           });
                         reject(error);
                     }
