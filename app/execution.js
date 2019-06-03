@@ -222,9 +222,8 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 logger.log({
                     level: 'error',
                     message: 'error while generating chart',
-                    errMsg:err,
-                  });
-                console.log(err)  
+                    errMsg:err.message,
+                  });  
             })
 
 
