@@ -1,9 +1,6 @@
 const request = require('request');
 const VisualizationUtils = require('./visualization-util');
-
-const OLD_colorSet = ["#439dd3", "#0CC69A", "#556080", "#F0785A", "#F0C419", "#DBCBD8",
-    "#D10257", "#BDDBFF", "#9BC9FF", "#8AD5DD", "#EFEFEF", "#FF2970", "#6DDDC2", "#778099",
-    "#F3937B", "#F3D047", "#DA3579", "#8EA4BF"];
+var logger=require('../logger');
 
 var AppConfig = require('../load_config');
 const vizMetaApi = AppConfig.FlairBiEndPoint + "/api/external/visualMetaDataById";
@@ -17,7 +14,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var result = {};
                         var properties = json_res.visualMetadata.properties;
@@ -79,11 +76,21 @@ var configs = {
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }
                 });
                 
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);   
             }
         });
@@ -98,7 +105,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
@@ -113,15 +120,24 @@ var configs = {
                         result['valueAs'] = VisualizationUtils.getPropertyValue(properties, 'Show value as').toLowerCase();
                         result['valueAsArc'] = VisualizationUtils.getPropertyValue(properties, 'Value as Arc');
                         result['valuePosition'] = VisualizationUtils.getPropertyValue(properties, 'Value position').toLowerCase();
-                        console.log(result)
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }
     
                 });
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);
             }
             
@@ -137,7 +153,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if (ressponse && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
@@ -195,12 +211,22 @@ var configs = {
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }
     
     
                 });    
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);
             }
 
@@ -219,7 +245,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
@@ -278,12 +304,22 @@ var configs = {
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }
     
     
                 });    
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);
             }
         });
@@ -298,7 +334,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if ( response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
@@ -355,11 +391,21 @@ var configs = {
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }   
     
                 });
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);    
             }
         });
@@ -374,7 +420,7 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
 
-                    if (response.statusCode == 200) {
+                    if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var result = {};
                         var properties = json_res.visualMetadata.properties;
@@ -454,12 +500,22 @@ var configs = {
                         resolve(result);
                     }
                     else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg:error.message,
+                          });
                         reject(error);
                     }
     
     
                 });
             } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg:error.message,
+                  });
                 reject(error);
             }
 
