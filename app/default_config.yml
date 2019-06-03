@@ -1,6 +1,7 @@
-port: 8080
+port: 8090
 imageFolder: ./images/
 grpcEndPoint: localhost:6565
+FlairBiEndPoint: http://localhost:8002
 mailService:
     host: smtp.ethereal.email
     port: 587

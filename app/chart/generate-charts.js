@@ -19,26 +19,19 @@ const kpi = require('flair-visualizations/js/charts/kpi');
 const scatter = require('flair-visualizations/js/charts/scatter');
 const gauge = require('flair-visualizations/js/charts/gauge');
 
+const load_config=require('./load-config');
+
 const jsdom = require('jsdom');
 const chartUtility = require('./chart-util');
 const { JSDOM } = jsdom;
 
 
 var charts = {
-pieChart: async function (config, data) {
+pieChart: async function (viz_id, data) {
         var pieFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="pie" width="950" height="440"/></body></html>'); 
         chartUtility.configureDomForcharts(pieFakeDom.window.document)
         var pieChartobj=pie();
-        var newConfig = convertConfigToLowerCase(config);
-        var chartConfig = {
-        dimension: newConfig.dimension,
-        measure: newConfig.measure,
-        legend: true, // true|false
-        legendPosition: 'top', // top|bottom|right|left
-        valueAs: 'value', // label|value|percentage
-        valueAsArc: false, // true|false
-        valuePosition: 'outside' // inside|outside
-        }
+        var chartConfig=await load_config.pieChartConfig(viz_id);
         pieChartobj.config(chartConfig).tooltip(false).print(true);
         d3.select(pieFakeDom.window.document).select('#pie').datum(data).call(pieChartobj);
 
@@ -52,42 +45,16 @@ pieChart: async function (config, data) {
         return result;
    
 },
-lineChart: async function(config,data){
+lineChart: async function(viz_id,data){
 
       var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="line" width="950" height="440"/></body></html>');
-      chartUtility.configureDomForcharts(linefakeDom.window.document)
-
-      var newConfig = convertConfigToLowerCase(config);
+      chartUtility.configureDomForcharts(linefakeDom.window.document);
 
       var linechart=line();
-      var config = {
-      dimension: newConfig.dimension,
-      measure: newConfig.meassure,
-      xAxis: true,
-      yAxis: true,
-      xAxisColor: '#6B6A5D',
-      yAxisColor: '#6B6A5D',
-      xAxisLabel: 'Cities of Different Countries',
-      yAxisLabel: 'Area - Population',
-      legend: true, // true|false
-      legendPosition: 'right', // top|bottom|right|left
-      grid: true,
-      dimensionDisplayName: newConfig.dimension,
-      measureShowValue: false,
-      measureDisplayName:newMeassure,
-      measureFontStyle: 'normal', // oblique|normal|italic
-      measureFontWeight: 500, // 100|200|300|...|900
-      measureFontSize: '10px',
-      measureNumberFormat: ['K', 'percent'], // actual|K|M|B|percent
-      measureTextColor: '',
-      measureDisplayColor: ['#4387C7', '#E87589'],
-      measureBorderColor: ['#4387C7', '#E87589'],
-      measureLineType: ['line', 'area'], // line|area
-      measurePointType: ['star', 'rect'] // rectrounded|rectrot|star|triangle|circle|cross|crossrot|dash|line|rect
-    }
+      var chartConfig=await load_config.lineChartConfig(viz_id);
 
 
-linechart.config(config).tooltip(false).print(true);
+linechart.config(chartConfig).tooltip(false).print(true);
 d3.select(linefakeDom.window.document).select('#line').datum(data).call(linechart);
    
 let chartRenderingPromise = new Promise((resolve, reject) => {
@@ -101,39 +68,15 @@ return result;
 
 
 },
-clusteredverticalBarChart: async function(config, data){
-      var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="clusteredverticalBar" width="950" height="440"/></body></html>');
-      chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
+clusteredverticalBarChart: async function(viz_id, data){
+  var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="clusteredverticalBar" width="950" height="440"/></body></html>');
+  chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
 
-var clusteredverticalBarChartObj=clusteredverticalbar();
+  var clusteredverticalBarChartObj=clusteredverticalbar();
+    
+  var chartConfig=await load_config.clusteredverticalBarConfig(viz_id);
 
-  var newConfig = convertConfigToLowerCase(config);
-  var chartConfig = {
-  dimension: newConfig.dimension,
-  measure: newConfig.measure,
-  showLegend: true, // true|false
-  legendPosition: 'bottom', // top|bottom|right|left
-  "showXaxis": true,
-  "showYaxis": true,
-  "showXaxisLabel": true,
-  "showYaxisLabel": true,
-  "xAxisColor": "#ff0000",
-  "yAxisColor": "#00ff00",
-  "showGrid": true,
-  "stacked": false,
-  "displayName": "Dimension 1",
-  "showValues": [true, true, true, true, true, true, true,],
-  "displayNameForMeasure": newConfig.measure,
-  "fontStyle": ["italic", "bold", "bold", "bold", "bold", "bold", "bold"],
-  "fontWeight": ["bold", "900", "900", "900", "900", "900", "900",],
-  "numberFormat": ["M", "M", "M", "M", "M", "M", "M"],
-  "textColor": ["#e06a6a", "#00ff00", "#ff0000", "#639ece", "#ababab", "#e06a6a", "#639ece"],
-  "displayColor": ["", "", "", "", "", "", ""],
-  "borderColor": ["", "", "", "", "", "", ""],
-  "fontSize": ["8", "8", "8", "8", "8", "8", "8"]
-};
-
-clusteredverticalBarChartObj.config(chartConfig).tooltip(false).print(true);
+  clusteredverticalBarChartObj.config(chartConfig).tooltip(false).print(true);
 
 d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar').datum(data).call(clusteredverticalBarChartObj);
 let chartRenderingPromise = new Promise((resolve, reject) => {
@@ -146,36 +89,12 @@ result=await chartRenderingPromise;
 return result;   
 
 },
-clusteredhorizontalBarChart: async function(config, data){
+clusteredhorizontalBarChart: async function(viz_id, data){
   var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="clusteredhorizontalBar" width="950" height="440"/></body></html>');
   chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
 
 var clusteredhorizontalBarChartObj=clusteredhorizontalbar();
-var newConfig = convertConfigToLowerCase(config);
-var chartConfig = {
-dimension: newConfig.dimension,
-measure: newConfig.measure,
-showLegend: true, // true|false
-legendPosition: 'bottom', // top|bottom|right|left
-"showXaxis": true,
-"showYaxis": true,
-"showXaxisLabel": true,
-"showYaxisLabel": true,
-"xAxisColor": "#ff0000",
-"yAxisColor": "#00ff00",
-"showGrid": true,
-"stacked": false,
-"displayName": "Dimension 1",
-"showValues": [true, true, true, true, true, true, true,],
-"displayNameForMeasure": newConfig.measure,
-"fontStyle": ["italic", "bold", "bold", "bold", "bold", "bold", "bold"],
-"fontWeight": ["bold", "900", "900", "900", "900", "900", "900",],
-"numberFormat": ["M", "M", "M", "M", "M", "M", "M"],
-"textColor": ["#e06a6a", "#00ff00", "#ff0000", "#639ece", "#ababab", "#e06a6a", "#639ece"],
-"displayColor": ["", "", "", "", "", "", ""],
-"borderColor": ["", "", "", "", "", "", ""],
-"fontSize": ["8", "8", "8", "8", "8", "8", "8"]
-};
+var chartConfig=await load_config.clusteredhorizontalBarConfig(viz_id);
 
 clusteredhorizontalBarChartObj.config(chartConfig).tooltip(false).print(true);
 
@@ -190,36 +109,13 @@ result=await chartRenderingPromise;
 return result;   
 
 },
-stackedverticalBarChart: async function(config, data){
+stackedverticalBarChart: async function(viz_id, data){
   var stackedverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="stackedverticalBar" width="950" height="440"/></body></html>');
   chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
 var stackedverticalBarChartObj=stackedverticalbar();
-var newConfig = convertConfigToLowerCase(config);
-var chartConfig = {
-dimension: newConfig.dimension,
-measure: newConfig.measure,
-showLegend: true, // true|false
-legendPosition: 'bottom', // top|bottom|right|left
-"showXaxis": true,
-"showYaxis": true,
-"showXaxisLabel": true,
-"showYaxisLabel": true,
-"xAxisColor": "#ff0000",
-"yAxisColor": "#00ff00",
-"showGrid": true,
-"stacked": false,
-"displayName": "Dimension 1",
-"showValues": [true, true, true, true, true, true, true,],
-"displayNameForMeasure": newConfig.measure,
-"fontStyle": ["italic", "bold", "bold", "bold", "bold", "bold", "bold"],
-"fontWeight": ["bold", "900", "900", "900", "900", "900", "900",],
-"numberFormat": ["M", "M", "M", "M", "M", "M", "M"],
-"textColor": ["#e06a6a", "#00ff00", "#ff0000", "#639ece", "#ababab", "#e06a6a", "#639ece"],
-"displayColor": ["", "", "", "", "", "", ""],
-"borderColor": ["", "", "", "", "", "", ""],
-"fontSize": ["8", "8", "8", "8", "8", "8", "8"]
-};
+var chartConfig = await load_config.stackedverticalBarConfig(viz_id);
+
 
 stackedverticalBarChartObj.config(chartConfig).tooltip(false).print(true);
 
@@ -563,48 +459,14 @@ sankeyChart: async function(config,data){
   result=await chartRenderingPromise;
   return result;
 },
-tableChart: async function(config,data){
+tableChart: async function(viz_id,data){
 
   var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="table" width="950" height="440"/></body></html>'); 
   chartUtility.configureDomForcharts(tableFakeDom.window.document)
   var tableChartobj=table();
 
-  var newConfig = convertConfigToLowerCase(config);
-
-      var chartConfig = {
-        "dimension": newConfig.dimension,
-        "displayNameForDimension": ["State Name", "Under 5 Years"],
-        "cellColorForDimension": ["#efefef", "#ff00ff"],
-        "fontStyleForDimension": ["italic", "italic"],
-        "fontWeightForDimension": ["900", "800"],
-        "fontSizeForDimension": ["15", "16"],
-        "textColorForDimension": ["#ff00ff", ""],
-        "textColorExpressionForDimension":['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "textAlignmentForDimension": ["center", "left"],
-
-        "measure": newConfig.measure,
-        "displayNameForMeasure": ['5 to 13 Years', '14 to 17 Years'],
-        "cellColorForMeasure": ["#efefef", "#ff00ff"],
-        "cellColorExpressionForMeasure": ['upto,500000,#efefef|upto,900000,#acacac|above,900000,#00ff00|default,,#ffffaa', 'upto,500000,#ffbbff|upto,900000,#ffaacc|above,900000,#121212|default,,#454545'
-        ],
-        "fontStyleForMeasure": ["italic", "italic"],
-        "fontSizeForMeasure": ["15", "12"],
-        "fontWeightForMeasure": ["900", "800"],
-        "numberFormatForMeasure": ["M", "K"],
-        "textColorForMeasure": ["#eaeaea", ""],
-        "textAlignmentForMeasure": ["center", "left"],
-        "textColorExpressionForMeasure": ['upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00', 'upto,500000,#009D1D|upto,900000,#EBBC00|above,900000,#DC1C50|default,,#FFFF00'
-        ],
-        "iconNameForMeasure":  ['fa fa-globe', 'fa fa-male'],
-        "iconFontWeight": [100, 200],
-        "iconColor": ['#FFFFFF', '#DDC224'],
-        "iconPositionForMeasure": ["center", "left"],
-        "iconExpressionForMeasure": ['upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00', 'upto,500000,fa fa-chevron-circle-down,#ababab|upto,900000,fa fa-chevron-circle-up,#00ff00|above,900000,fa fa-exclamation-circle,#DC1C50|default,,fa fa-minus,#FFFF00'
-        ]
-    }
-
- tableChartobj.config(chartConfig).print(true);
+  var chartConfig= await load_config.tableChartConfig(viz_id)
+  tableChartobj.config(chartConfig).print(true);
 
   d3.select(tableFakeDom.window.document).select('#table').datum(data).call(tableChartobj);
 

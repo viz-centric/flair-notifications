@@ -5,8 +5,7 @@ function assignreportDTO(assignReportObj){
         channel_id:null, 
         stride_API_Token:null, 
         stride_cloud_id:null, 
-        stride_conversation_id:null, 
-        condition:assignReportObj.condition, 
+        stride_conversation_id:null,  
         email_list:assignReportObj.email_list
       }
   }
