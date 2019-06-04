@@ -79,9 +79,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }
                 });
                 
@@ -126,9 +126,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }
     
                 });
@@ -214,9 +214,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }
     
     
@@ -307,9 +307,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }
     
     
@@ -394,9 +394,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }   
     
                 });
@@ -503,9 +503,9 @@ var configs = {
                         logger.log({
                             level: 'error',
                             message: 'error while fetching config',
-                            errMsg:body.message,
+                            errMsg:JSON.parse(body).message,
                           });
-                        reject(error);
+                        reject(JSON.parse(body).message);
                     }
     
     

@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     dashboard_name: DataTypes.STRING,
     view_name: DataTypes.STRING,
     share_link: DataTypes.STRING,
+    build_url: DataTypes.STRING,
     report_name: {type:DataTypes.STRING, allowNull: true},
     subject: DataTypes.STRING,
     mail_body: DataTypes.TEXT,
