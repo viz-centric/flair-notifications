@@ -1,6 +1,7 @@
 port: 9000
 imageFolder:
 grpcEndPoint:
+mode:
 mailService:
     serive:
     sender:
