@@ -222,7 +222,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 logger.log({
                     level: 'error',
                     message: 'error while generating chart',
-                    errMsg:err.message,
+                    errMsg:err,
                   });  
             })
 

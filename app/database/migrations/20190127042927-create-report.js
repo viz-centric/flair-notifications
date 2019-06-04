@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
+      build_url: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       report_name: {
         type: Sequelize.STRING,
       },
