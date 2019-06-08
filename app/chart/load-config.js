@@ -13,7 +13,10 @@ var configs = {
             
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var result = {};
@@ -104,7 +107,10 @@ var configs = {
 
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
@@ -152,7 +158,10 @@ var configs = {
 
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if (ressponse && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
@@ -244,7 +253,10 @@ var configs = {
 
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
@@ -333,7 +345,10 @@ var configs = {
 
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if ( response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
@@ -419,7 +434,10 @@ var configs = {
 
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
-
+                    if(error){
+                        reject(error.message);
+                        return; 
+                    }
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var result = {};

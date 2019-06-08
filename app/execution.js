@@ -5,6 +5,7 @@ var grpc_client = require('./grpc/client');
 var charts=require('./chart/generate-charts');
 var logger=require('./logger');
 
+
 var AppConfig = require('./load_config');
 var image_dir = AppConfig.imageFolder;
 
@@ -185,10 +186,12 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 var mail_body = reports_data['report_obj']['mail_body']
                 var report_title = reports_data['report_obj']['title_name']
                 var subject = reports_data['report_obj']['subject']
+                var build_url = reports_data['report_obj']['build_url']
+                var share_link = reports_data['report_obj']['share_link']
                 var mailRetryCount=0;
                 function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename){
                     mailRetryCount+=1;
-                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, imagefilename).then(function (response) {
+                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, imagefilename).then(function (response) {
         
                         let shedularlog = models.SchedulerTaskLog.create({
                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
@@ -223,7 +226,12 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                     level: 'error',
                     message: 'error while generating chart',
                     errMsg:err,
-                  });  
+                  });
+                  let shedularlog = models.SchedulerTaskLog.create({
+                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                    task_executed: new Date(Date.now()).toISOString(),
+                    task_status: "chart error "+err,
+                });    
             })
 
 
