@@ -272,7 +272,7 @@ var job = {
             pageSize=2;
         }
         var offset = page * pageSize;
-        var limit = offset + pageSize
+        var limit = pageSize
         try {
             var reports = await models.Report.findAll({
                 include: [

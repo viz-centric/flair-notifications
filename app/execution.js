@@ -188,10 +188,11 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 var subject = reports_data['report_obj']['subject']
                 var build_url = reports_data['report_obj']['build_url']
                 var share_link = reports_data['report_obj']['share_link']
+                var dash_board = reports_data['report_obj']['dashboard_name']
                 var mailRetryCount=0;
                 function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename){
                     mailRetryCount+=1;
-                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, imagefilename).then(function (response) {
+                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url,dash_board, imagefilename).then(function (response) {
         
                         let shedularlog = models.SchedulerTaskLog.create({
                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
