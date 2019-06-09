@@ -234,7 +234,10 @@ var job = {
                     var SchedulerLogs = await models.SchedulerTaskLog.findAll({
                         where: {
                             SchedulerJobId: report.SchedulerTask.id
-                        }
+                        },
+                        order: [
+                            ['createdAt', 'DESC'],
+                        ],
                     })
                     var outputlogs=[]
                     for (var logItem of SchedulerLogs) {
@@ -288,6 +291,9 @@ var job = {
                 where: {
                     userid:userName,     
                 },
+                order: [
+                    ['createdAt', 'DESC'],
+                ],
                 limit,
                 offset,
             })
