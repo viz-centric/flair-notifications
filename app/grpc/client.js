@@ -1,12 +1,11 @@
-
-let grpc = require("grpc");
-var protoLoader = require("@grpc/proto-loader");
-var AppConfig = require('../load_config');
-var grpc_endpoint = AppConfig.grpcEndPoint;
+const grpc = require("grpc");
+const protoLoader = require("@grpc/proto-loader");
+const AppConfig = require('../load_config');
+const grpcEndpoint = AppConfig.grpcEndPoint;
 
 const PROTO_PATH = './app/grpc/Query.proto';
 
-var queryproto = grpc.loadPackageDefinition(
+const queryproto = grpc.loadPackageDefinition(
    protoLoader.loadSync(PROTO_PATH, {
       keepCase: true,
       longs: String,
@@ -16,9 +15,9 @@ var queryproto = grpc.loadPackageDefinition(
    })
 );
 
-const client = new queryproto.messages.QueryService(grpc_endpoint, grpc.credentials.createInsecure());
+const client = new queryproto.messages.QueryService(grpcEndpoint, grpc.credentials.createInsecure());
 
-var grpc_client = {
+const grpcClient = {
    getRecords: function (query) {
       return new Promise((resolve, reject) => {
 
@@ -35,5 +34,5 @@ var grpc_client = {
 
       })
    }
-}
-module.exports = grpc_client;
+};
+module.exports = grpcClient;

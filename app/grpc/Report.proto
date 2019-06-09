@@ -5,12 +5,13 @@ package messages;
 option java_package = "com.flair.bi.messages";
 option java_multiple_files = true;
 
+
 message ScheduleReportRequest {
     Report report = 1;
     ReportLineItem report_line_item = 2;
     AssignReport assign_report = 3;
     Schedule schedule = 4;
-    Query query = 5;
+    string query = 5;
 }
 
 message ScheduleReport {
@@ -18,21 +19,24 @@ message ScheduleReport {
     ReportLineItem report_line_item = 2;
     AssignReport assign_report = 3;
     Schedule schedule = 4;
-    Query query = 5;
+    string query = 5;
 }
 
+
 message Report {
-    string userId = 1;
-    string connection_name = 2;
-    string source_id = 3;
-    string mail_body = 4;
-    string subject = 5;
-    string report_name = 6;
-    string title_name = 7;
+    string userid = 1;
+    string dashboard_name = 2;
+    string view_name = 3;
+    string share_link = 4;
+    string build_url = 5;
+    string mail_body = 6;
+    string subject = 7;
+    string report_name = 8;
+    string title_name = 9;
 }
 
 message ReportLineItem {
-    string visualizationId = 1;
+    string visualizationid = 1;
     repeated string dimension = 2;
     repeated string measure = 3;
     string visualization = 4;
@@ -45,8 +49,7 @@ message AssignReport {
     string stride_API_Token = 4;
     string stride_cloud_id = 5;
     string stride_conversation_id = 6;
-    string condition = 7;
-    repeated Email email_list = 8;
+    repeated Email email_list = 7;
 }
 
 message Email {
@@ -75,14 +78,14 @@ message ScheduleReportResponse {
 }
 
 message RepUserReq {
-  String username = 1;
+  string username = 1;
 }
 message RepUserResp {
     repeated ScheduleReport reports = 1;
 }
 
 message RepUserCountReq {
-    String username = 1;
+    string username = 1;
 }
 
 message RepUserCountResp {
@@ -96,5 +99,4 @@ service ReportService {
     rpc ScheduleReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
     rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
     rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
-    
 }

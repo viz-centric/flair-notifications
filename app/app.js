@@ -1,21 +1,20 @@
-
-var express = require('express')
-var bodyParser = require('body-parser');
-var jobs = require('./jobs')
+const express = require('express');
+const bodyParser = require('body-parser');
+const jobs = require('./jobs');
 const fs = require('fs');
-var validator = require('./validator');
-var logger = require('./logger');
+const validator = require('./validator');
+const logger = require('./logger');
 
-var AppConfig = require('./load_config');
+const AppConfig = require('./load_config');
 
-var images_dir = AppConfig.imageFolder;
+const imageDir = AppConfig.imageFolder;
 
 // create image dir if not exit 
-if (!fs.existsSync(images_dir)) {
-    fs.mkdirSync(images_dir);
+if (!fs.existsSync(imageDir)) {
+    fs.mkdirSync(imageDir);
 }
 
-var app = express()
+const app = express();
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies

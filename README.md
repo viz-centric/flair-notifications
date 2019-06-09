@@ -50,3 +50,41 @@ curl http://localhost:8080/api/jobSchedule/
               }
           }
 ```
+
+#Getting started
+Requirements:
+* NodeJS
+* NPM
+* Docker
+
+
+
+Clone the repository with command
+```bash
+git clone https://github.com/viz-centric/flair-notifications.git
+```
+Navigate to directory
+```bash
+cd  flair-notifications
+```
+Install dependencies
+```bash
+npm i
+```
+Start the database
+```bash
+cd deploy
+```
+```bash
+docker-compose up -d
+```
+Run migrations from project directory
+```bash
+npx sequelize-cli db:migrate
+```
+Start the Server
+```bash
+npm start
+```
+
+
