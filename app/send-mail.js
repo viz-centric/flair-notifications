@@ -15,12 +15,13 @@ var transporter = nodemailer.createTransport({
         pass: AppConfig.mailService.auth.pass
     }
 });
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, imagefilename) {
+exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename) {
     var template_data = {
         mail_body: mail_body,
         title: report_title,
         share_link: share_link,
-        build_url, build_url,
+        build_url: build_url,
+        dash_board:dash_board,
         imageFile: "cid:" + imagefilename,
         AppLogo: "cid:" + appLogo
     }
