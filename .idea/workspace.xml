@@ -2,23 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="503dd94b-1f1b-46a9-8eb2-045418a7cafd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/flair-notifications.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/grpc/client/report.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/report/reportService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/test/grpc/report.test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/test/grpc/schleduleReportReq.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/grpc.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/grpc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/grpc/Report.proto" beforeDir="false" afterPath="$PROJECT_DIR$/app/grpc/Report.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/grpc/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/grpc/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/test/test.loadconfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/test/test.loadconfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/validator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/other_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/other_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/button.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/button.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/report/reportService.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/report/reportService.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -30,65 +14,43 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/grpc/Report.proto">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="50" column="38" lean-forward="true" selection-start-line="50" selection-start-column="38" selection-end-line="50" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/grpc/report.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="44" column="12" selection-start-line="44" selection-start-column="12" selection-end-line="44" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/report/reportService.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="87">
-              <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/test/grpc/schleduleReportReq.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/test/grpc/report.test.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="11" column="36" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="228">
-                <caret line="73" column="18" selection-start-line="73" selection-start-column="18" selection-end-line="73" selection-end-column="18" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.60033166">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/app/report/reportService.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="240">
+                  <caret line="10" column="51" selection-start-line="10" selection-start-column="51" selection-end-line="10" selection-end-column="51" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/app/app.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="92">
+                  <caret line="76" column="5" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="76" selection-end-column="5" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/app/app.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="284">
+                  <caret line="132" column="4" lean-forward="true" selection-start-line="132" selection-start-column="4" selection-end-line="137" selection-end-column="6" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -120,11 +82,11 @@
         <option value="$PROJECT_DIR$/app/test/grpc/report..testjs.js" />
         <option value="$PROJECT_DIR$/app/grpc/client/report.js" />
         <option value="$PROJECT_DIR$/app/report/reportService..js" />
-        <option value="$PROJECT_DIR$/app/report/reportService.js" />
         <option value="$PROJECT_DIR$/app/grpc/report.js" />
         <option value="$PROJECT_DIR$/app/grpc/Report.proto" />
         <option value="$PROJECT_DIR$/app/test/grpc/schleduleReportReq.js" />
         <option value="$PROJECT_DIR$/app/test/grpc/report.test.js" />
+        <option value="$PROJECT_DIR$/app/report/reportService.js" />
       </list>
     </option>
   </component>
@@ -162,20 +124,14 @@
               <item name="flair-notifications" type="b2602c69:ProjectViewProjectNode" />
               <item name="flair-notifications" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="report" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="flair-notifications" type="b2602c69:ProjectViewProjectNode" />
-              <item name="flair-notifications" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="flair-notifications" type="b2602c69:ProjectViewProjectNode" />
-              <item name="flair-notifications" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="grpc" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="flair-notifications" type="b2602c69:ProjectViewProjectNode" />
+              <item name="flair-notifications" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="flair-notifications" type="b2602c69:ProjectViewProjectNode" />
@@ -292,7 +248,7 @@
       <workItem from="1559854779332" duration="232000" />
       <workItem from="1559991974802" duration="2487000" />
       <workItem from="1560105140060" duration="8349000" />
-      <workItem from="1560120029695" duration="2917000" />
+      <workItem from="1560120029695" duration="4885000" />
     </task>
     <servers />
   </component>
@@ -329,7 +285,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20442000" />
+    <option name="totallyTimeSpent" value="22410000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -344,13 +300,13 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7869416" visible="true" weight="0.31328487" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7882353" visible="true" weight="0.20290813" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="npm" order="2" sideWeight="0.21305841" side_tool="true" visible="true" weight="0.31328487" />
+      <window_info id="npm" order="2" sideWeight="0.21176471" side_tool="true" visible="true" weight="0.20290813" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14411765" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.6382353" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.2485294" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -371,11 +327,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/app/report/reportService.js</url>
-          <line>15</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/app/test/grpc/report.test.js</url>
           <line>9</line>
@@ -468,13 +419,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grpc/client/test.js" />
-    <entry file="file://$PROJECT_DIR$/app/grpc/client/report.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/test/test.loadconfig.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -486,13 +430,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="594" column="8" selection-start-line="594" selection-start-column="8" selection-end-line="594" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/grpc/client.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-432">
-          <caret line="3" column="44" lean-forward="true" selection-start-line="3" selection-start-column="44" selection-end-line="3" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -518,13 +455,6 @@
     <entry file="file://$PROJECT_DIR$/app/shedular.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="4" column="34" lean-forward="true" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/validator.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="141">
@@ -536,27 +466,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="284">
           <caret line="50" column="38" lean-forward="true" selection-start-line="50" selection-start-column="38" selection-end-line="50" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/report/reportService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="87">
-          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/grpc/report.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="44" column="12" selection-start-line="44" selection-start-column="12" selection-end-line="44" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/test/grpc/schleduleReportReq.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -572,8 +481,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/test/grpc/report.test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
+        <state relative-caret-position="264">
           <caret line="11" column="36" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/grpc/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="3" column="44" lean-forward="true" selection-start-line="3" selection-start-column="44" selection-end-line="3" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/grpc/client/report.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/grpc/report.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="44" column="12" selection-start-line="44" selection-start-column="12" selection-end-line="44" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/test/grpc/schleduleReportReq.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="76" column="5" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="76" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/report/reportService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="10" column="51" selection-start-line="10" selection-start-column="51" selection-end-line="10" selection-end-column="51" />
         </state>
       </provider>
     </entry>
