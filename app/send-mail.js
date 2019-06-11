@@ -52,6 +52,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 };
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
+                        console.log(err)
                         reject(err)
                     } else {
                         resolve(info.response);
