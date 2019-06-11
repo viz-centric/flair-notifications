@@ -215,7 +215,15 @@ var job = {
         }
 
     },
-    jobLogs: async function (visualizationid){
+    jobLogs: async function (visualizationid,page ,pageSize){
+        if(!page){
+            page=0;
+        }
+        if(!pageSize){
+            pageSize=10;
+        }
+        var offset = page * pageSize;
+        var limit = pageSize
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -231,22 +239,25 @@ var job = {
             })
             if (report) {
                 try {
-                    var SchedulerLogs = await models.SchedulerTaskLog.findAll({
+                    var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
                         where: {
                             SchedulerJobId: report.SchedulerTask.id
                         },
                         order: [
                             ['createdAt', 'DESC'],
                         ],
+                        limit,
+                        offset,
                     })
                     var outputlogs=[]
-                    for (var logItem of SchedulerLogs) {
+                    for (var logItem of SchedulerLogs.rows) {
                         var log={}
                         log.task_status=logItem.task_status;
-                        log.task_executed=moment(logItem.task_executed).toString();
+                        log.task_executed=moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
                     return response = {
+                           totalRecords:SchedulerLogs.count,
                            SchedulerLogs:outputlogs
                     };
                    
