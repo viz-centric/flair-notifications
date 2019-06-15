@@ -6,6 +6,8 @@ var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
 var logger = require('./logger');
+const defaultPage=0;
+const defaultPageSize=10;
 
 var job = {
     createJob: async function (params) {
@@ -217,10 +219,10 @@ var job = {
     },
     jobLogs: async function (visualizationid,page ,pageSize){
         if(!page){
-            page=0;
+            page=defaultPage;
         }
         if(!pageSize){
-            pageSize=10;
+            pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
         var limit = pageSize
@@ -277,10 +279,10 @@ var job = {
     },
     JobsByUser: async function(userName,page,pageSize){
         if(!page){
-            page=0;
+            page=defaultPage;
         }
         if(!pageSize){
-            pageSize=2;
+            pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
         var limit = pageSize
