@@ -6,6 +6,8 @@ var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
 var logger = require('./logger');
+const defaultPage=0;
+const defaultPageSize=10;
 
 var job = {
     createJob: async function (params) {
@@ -215,7 +217,15 @@ var job = {
         }
 
     },
-    jobLogs: async function (visualizationid){
+    jobLogs: async function (visualizationid,page ,pageSize){
+        if(!page){
+            page=defaultPage;
+        }
+        if(!pageSize){
+            pageSize=defaultPageSize;
+        }
+        var offset = page * pageSize;
+        var limit = pageSize
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -231,22 +241,25 @@ var job = {
             })
             if (report) {
                 try {
-                    var SchedulerLogs = await models.SchedulerTaskLog.findAll({
+                    var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
                         where: {
                             SchedulerJobId: report.SchedulerTask.id
                         },
                         order: [
                             ['createdAt', 'DESC'],
                         ],
+                        limit,
+                        offset,
                     })
                     var outputlogs=[]
-                    for (var logItem of SchedulerLogs) {
+                    for (var logItem of SchedulerLogs.rows) {
                         var log={}
                         log.task_status=logItem.task_status;
-                        log.task_executed=moment(logItem.task_executed).toString();
+                        log.task_executed=moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
                     return response = {
+                           totalRecords:SchedulerLogs.count,
                            SchedulerLogs:outputlogs
                     };
                    
@@ -266,10 +279,10 @@ var job = {
     },
     JobsByUser: async function(userName,page,pageSize){
         if(!page){
-            page=0;
+            page=defaultPage;
         }
         if(!pageSize){
-            pageSize=2;
+            pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
         var limit = pageSize
