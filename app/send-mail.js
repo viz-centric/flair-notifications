@@ -10,9 +10,13 @@ var transporter = nodemailer.createTransport({
     host: AppConfig.mailService.host,
     port: AppConfig.mailService.port,
     pool: true,
+    secure: false,
     auth: {
         user: AppConfig.mailService.auth.user,
         pass: AppConfig.mailService.auth.pass
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename) {
