@@ -131,8 +131,10 @@ app.get('/api/executeImmediate/', (req, res) => {
 });
 
 app.get('/api/jobLogs/', (req, res) => {
+    var page = (+req.query.page);
+    var pageSize = (+req.query.pageSize);
     var visualizationid = req.query.visualizationid;
-    jobs.jobLogs(visualizationid).then(function (result) {
+    jobs.jobLogs(visualizationid, page, pageSize).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);

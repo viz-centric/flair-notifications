@@ -20,13 +20,14 @@ var transporter = nodemailer.createTransport({
     }
 });
 exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename) {
+    var image_cid=new Date().getTime()+imagefilename;
     var template_data = {
         mail_body: mail_body,
         title: report_title,
         share_link: share_link,
         build_url: build_url,
         dash_board:dash_board,
-        imageFile: "cid:" + imagefilename,
+        imageFile: "cid:" + image_cid,
         AppLogo: "cid:" + appLogo
     }
     return new Promise((resolve, reject) => {
@@ -42,7 +43,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                     attachments: [{
                         filename: imagefilename,
                         path: image_dir + imagefilename,
-                        cid: imagefilename //same cid value as in the html img src
+                        cid: image_cid //same cid value as in the html img src
                     },
                     {
                         filename: appLogo,
@@ -52,7 +53,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 };
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
-                        console.log(err)
+                        console.log(err); //to see error in case of container, will remove latter 
                         reject(err)
                     } else {
                         resolve(info.response);
