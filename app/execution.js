@@ -50,11 +50,7 @@ const chartMap = {
     },
     'Stacked Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.stackedhorizontalBarChart(config,data);
+            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'Combo Chart': {
@@ -127,20 +123,12 @@ const chartMap = {
     },
     'Doughnut Chart': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.doughnutChart(config,data);
+            return charts.doughnutChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'KPI': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.kpiChart(config,data);
+            return charts.kpiChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'Scatter plot': {
