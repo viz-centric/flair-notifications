@@ -14,6 +14,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -108,6 +113,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -159,6 +169,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -254,6 +269,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -346,6 +366,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -435,6 +460,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -549,6 +579,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -638,6 +673,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
@@ -699,6 +739,11 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
                         reject(error.message);
                         return;
                     }
