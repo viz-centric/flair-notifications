@@ -131,37 +131,13 @@ var charts = {
     return result;
 
   },
-  stackedhorizontalBarChart: async function (config, data) {
+  stackedhorizontalBarChart: async function (viz_id, data) {
     var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="stackedhorizontalBar" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      measure: newConfig.measure,
-      showLegend: true, // true|false
-      legendPosition: 'bottom', // top|bottom|right|left
-      "showXaxis": true,
-      "showYaxis": true,
-      "showXaxisLabel": true,
-      "showYaxisLabel": true,
-      "xAxisColor": "#ff0000",
-      "yAxisColor": "#00ff00",
-      "showGrid": true,
-      "stacked": false,
-      "displayName": "Dimension 1",
-      "showValues": [true, true, true, true, true, true, true,],
-      "displayNameForMeasure": newConfig.measure,
-      "fontStyle": ["italic", "bold", "bold", "bold", "bold", "bold", "bold"],
-      "fontWeight": ["bold", "900", "900", "900", "900", "900", "900",],
-      "numberFormat": ["M", "M", "M", "M", "M", "M", "M"],
-      "textColor": ["#e06a6a", "#00ff00", "#ff0000", "#639ece", "#ababab", "#e06a6a", "#639ece"],
-      "displayColor": ["", "", "", "", "", "", ""],
-      "borderColor": ["", "", "", "", "", "", ""],
-      "fontSize": ["8", "8", "8", "8", "8", "8", "8"]
-    };
-
+    var chartConfig = await load_config.stackedHorizontalBarConfig(viz_id);
+    
     stackedhorizontalBarChartObj.config(chartConfig).tooltip(false).print(true);
 
     d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar').datum(data).call(stackedhorizontalBarChartObj);
@@ -530,20 +506,12 @@ var charts = {
     result = await chartRenderingPromise;
     return result;
   },
-  doughnutChart: async function (config, data) {
+  doughnutChart: async function (viz_id, data) {
     var doughnutFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="doughnut" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(doughnutFakeDom.window.document)
     var doughnutChartobj = doughnut();
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      measure: newConfig.measure,
-      legend: true, // true|false
-      legendPosition: 'top', // top|bottom|right|left
-      valueAs: 'value', // label|value|percentage
-      valueAsArc: false, // true|false
-      valuePosition: 'outside' // inside|outside
-    }
+    var chartConfig = await load_config.DoughnutChartConfig(viz_id);
+    chartConfig.valueAsArc=false; //for server side
     doughnutChartobj.config(chartConfig).print(true);
     d3.select(doughnutFakeDom.window.document).select('#doughnut').datum(data).call(doughnutChartobj);
 
@@ -557,28 +525,11 @@ var charts = {
     return result;
 
   },
-  kpiChart: async function (config, data) {
+  kpiChart: async function (viz_id, data) {
     var kpiFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="kpi" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(kpiFakeDom.window.document)
     var kpiChartobj = kpi();
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      dimension: [],
-      kpiAlignment: ["Left", "Center"],
-      kpiBackgroundColor: ["#ed2121", "#f22d2d"],
-      kpiColor: ["#19a2f3", "#30e6dc"],
-      kpiColorExpression: [null, null],
-      kpiDisplayName: newConfig.measure,
-      kpiFontSize: [50, 30],
-      kpiFontStyle: ["Normal", "Oblique"],
-      kpiFontWeight: ["900", "700"],
-      kpiIcon: [null, "fa fa-female"],
-      kpiIconColor: [undefined, undefined],
-      kpiIconExpression: [null, null],
-      kpiIconFontWeight: [undefined, undefined],
-      kpiNumberFormat: ["Actual", "Actual"],
-      measure: newConfig.measure
-    };
+    var chartConfig = await load_config.KPIChartConfig(viz_id);
     kpiChartobj.config(chartConfig).print(true);
     d3.select(kpiFakeDom.window.document).select('#kpi').datum(data).call(kpiChartobj);
 

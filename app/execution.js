@@ -50,11 +50,7 @@ const chartMap = {
     },
     'Stacked Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.stackedhorizontalBarChart(config,data);
+            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'Combo Chart': {
@@ -127,20 +123,12 @@ const chartMap = {
     },
     'Doughnut Chart': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.doughnutChart(config,data);
+            return charts.doughnutChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'KPI': {
         generateChart: function (report_obj, data) {
-            var config={
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.kpiChart(config,data);
+            return charts.kpiChart(report_obj.report_line_obj.visualizationid,data);
         }
     },
     'Scatter plot': {
@@ -193,12 +181,20 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename){
                     mailRetryCount+=1;
                     sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url,dash_board, imagefilename).then(function (response) {
-        
-                        let shedularlog = models.SchedulerTaskLog.create({
-                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                            task_executed: new Date(Date.now()).toISOString(),
-                            task_status: "success",
-                        });
+                        
+                        try {
+                            let shedularlog = models.SchedulerTaskLog.create({
+                                SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                task_executed: new Date(Date.now()).toISOString(),
+                                task_status: "success",
+                            });
+                        } catch (error) {
+                            logger.log({
+                                level: 'error',
+                                message: 'error while saving scheduler log',
+                              });
+                        }
+                        
                     },
                         function (error) {
                             logger.log({
