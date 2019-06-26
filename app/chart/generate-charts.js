@@ -28,127 +28,77 @@ const { JSDOM } = jsdom;
 
 var charts = {
   pieChart: async function (viz_id, data) {
-    var pieFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="pie" width="950" height="440"/></body></html>');
+    
+    var pieFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pie" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(pieFakeDom.window.document)
+    
     var pieChartobj = pie();
     var chartConfig = await load_config.pieChartConfig(viz_id);
     chartConfig.valueAsArc=false; //for server side
-    pieChartobj.config(chartConfig).tooltip(false).print(true);
-    d3.select(pieFakeDom.window.document).select('#pie').datum(data).call(pieChartobj);
 
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = pieChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    pieChartobj.config(chartConfig).print(true).data(data);
+    pieChartobj(d3.select(pieFakeDom.window.document).select('#pie'))
+    return  pieChartobj._getHTML();
 
   },
   lineChart: async function (viz_id, data) {
 
-    var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="line" width="950" height="440"/></body></html>');
+    var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="line" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(linefakeDom.window.document);
 
     var linechart = line();
     var chartConfig = await load_config.lineChartConfig(viz_id);
 
-
-    linechart.config(chartConfig).tooltip(false).print(true);
-    d3.select(linefakeDom.window.document).select('#line').datum(data).call(linechart);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = linechart._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
+    linechart.config(chartConfig).print(true).data(data);
+    linechart(d3.select(linefakeDom.window.document).select('#line'))
+    return linechart._getHTML();
 
   },
   clusteredverticalBarChart: async function (viz_id, data) {
-    var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="clusteredverticalBar" width="950" height="440"/></body></html>');
+    var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
 
     var clusteredverticalBarChartObj = clusteredverticalbar();
-
     var chartConfig = await load_config.clusteredverticalBarConfig(viz_id);
 
-    clusteredverticalBarChartObj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar').datum(data).call(clusteredverticalBarChartObj);
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = clusteredverticalBarChartObj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    clusteredverticalBarChartObj.config(chartConfig).print(true).data(data);
+    clusteredverticalBarChartObj(d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar'))
+    return clusteredverticalBarChartObj._getHTML();
 
   },
   clusteredhorizontalBarChart: async function (viz_id, data) {
-    var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="clusteredhorizontalBar" width="950" height="440"/></body></html>');
+    var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
 
     var clusteredhorizontalBarChartObj = clusteredhorizontalbar();
     var chartConfig = await load_config.clusteredhorizontalBarConfig(viz_id);
 
-    clusteredhorizontalBarChartObj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar').datum(data).call(clusteredhorizontalBarChartObj);
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = clusteredhorizontalBarChartObj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
+    clusteredhorizontalBarChartObj.config(chartConfig).print(true).data(data);
+    clusteredhorizontalBarChartObj(d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar'))
+    return clusteredhorizontalBarChartObj._getHTML();
   },
   stackedverticalBarChart: async function (viz_id, data) {
-    var stackedverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="stackedverticalBar" width="950" height="440"/></body></html>');
+    var stackedverticalBarFakeDom= new JSDOM('<!DOCTYPE html><html><body><div id="stackedverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
     var stackedverticalBarChartObj = stackedverticalbar();
     var chartConfig = await load_config.stackedverticalBarConfig(viz_id);
 
-
-    stackedverticalBarChartObj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar').datum(data).call(stackedverticalBarChartObj);
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = stackedverticalBarChartObj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    stackedverticalBarChartObj.config(chartConfig).print(true).data(data);
+    stackedverticalBarChartObj(d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar'))
+    return stackedverticalBarChartObj._getHTML();
 
   },
   stackedhorizontalBarChart: async function (viz_id, data) {
-    var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="stackedhorizontalBar" width="950" height="440"/></body></html>');
+    var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
     var chartConfig = await load_config.stackedHorizontalBarConfig(viz_id);
     
-    stackedhorizontalBarChartObj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar').datum(data).call(stackedhorizontalBarChartObj);
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = stackedhorizontalBarChartObj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    stackedhorizontalBarChartObj.config(chartConfig).print(true).data(data);
+    stackedhorizontalBarChartObj(d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar'))
+    return stackedhorizontalBarChartObj._getHTML();
 
   },
   heatmapChart: async function (config, data) {
@@ -507,40 +457,27 @@ var charts = {
     return result;
   },
   doughnutChart: async function (viz_id, data) {
-    var doughnutFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="doughnut" width="950" height="440"/></body></html>');
+    var doughnutFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="doughnut" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(doughnutFakeDom.window.document)
+    
     var doughnutChartobj = doughnut();
     var chartConfig = await load_config.DoughnutChartConfig(viz_id);
     chartConfig.valueAsArc=false; //for server side
-    doughnutChartobj.config(chartConfig).print(true);
-    d3.select(doughnutFakeDom.window.document).select('#doughnut').datum(data).call(doughnutChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = doughnutChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    
+    doughnutChartobj.config(chartConfig).print(true).data(data);
+    doughnutChartobj(d3.select(doughnutFakeDom.window.document).select('#doughnut'))
+    return  doughnutChartobj._getHTML();
 
   },
   kpiChart: async function (viz_id, data) {
-    var kpiFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="kpi" width="950" height="440"/></body></html>');
+    var kpiFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="kpi" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(kpiFakeDom.window.document)
     var kpiChartobj = kpi();
     var chartConfig = await load_config.KPIChartConfig(viz_id);
-    kpiChartobj.config(chartConfig).print(true);
-    d3.select(kpiFakeDom.window.document).select('#kpi').datum(data).call(kpiChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = kpiChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    
+    kpiChartobj.config(chartConfig).print(true).data(data);
+    kpiChartobj(d3.select(kpiFakeDom.window.document).select('#kpi'))
+    return  kpiChartobj._getHTML();
 
   },
   scatterChart: async function (config, data) {

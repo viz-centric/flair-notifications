@@ -140,6 +140,19 @@ app.get('/api/jobLogs/', (req, res) => {
         res.send(err);
     })
 });
+app.get('/api/jobFilter/', (req, res) => {
+    var userName = req.query.userName;
+    var reportNameName = req.query.reportName;
+    var startDate = req.query.startDate;
+    var endDate = req.query.endDate;
+    var page = (+req.query.page);
+    var pageSize = (+req.query.pageSize);
+    jobs.filterJobs(userName, reportNameName, startDate, endDate, page, pageSize).then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
 
 module.exports = app;    //for testing
 

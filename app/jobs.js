@@ -6,6 +6,8 @@ var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
 var logger = require('./logger');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const defaultPage=0;
 const defaultPageSize=10;
 
@@ -424,6 +426,91 @@ var job = {
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching reports for user',
+                error: ex,
+              });
+            return { success: 0, message: ex };
+        }
+
+
+    },
+    filterJobs: async function(userName, reportName, startDate, endDate, page, pageSize){
+
+        var reportWhereClause={}
+        var schedularWhereClause={}
+        if (userName){
+            reportWhereClause.userid=userName;
+        }
+        if (reportName){
+            reportWhereClause.report_name={[Op.iLike]: '%' + reportName + '%'};
+        }
+        if (startDate){
+            schedularWhereClause.start_date= {
+                [Op.gt]: startDate
+              }
+        }
+        if (endDate){
+            schedularWhereClause.end_date= {
+                [Op.lt]: endDate
+              }
+        }
+        if ( startDate && endDate ){
+            schedularWhereClause.start_date= {
+                [Op.gt]: startDate,
+              }
+              schedularWhereClause.end_date= {
+                [Op.lt]: endDate
+              }
+        }
+
+        if(!page){
+            page=defaultPage;
+        }
+        if(!pageSize){
+            pageSize=defaultPageSize;
+        }
+        var offset = page * pageSize;
+        var limit = pageSize
+
+        try {
+            var reports = await models.Report.findAndCountAll({
+                include: [
+                    {
+                        model: models.ReportLineItem,
+                        as: 'reportline',
+                    },
+                    {
+                        model: models.AssignReport
+                    },
+                    {
+                        model: models.SchedulerTask,
+                        where:schedularWhereClause
+                    },
+                ],
+                where: reportWhereClause,
+                order: [
+                    ['createdAt', 'DESC'],
+                ],
+                limit,
+                offset,
+            })
+            if (reports.count > 0 ) {
+                var all_reports=[];
+                for (var report of reports.rows) {
+                    all_reports.push(schedulerDTO(report))
+                }
+                return response = {
+                    totalRecords:reports.count,
+                    records:all_reports
+                   };
+            }
+            else {
+                return { message: "report is not found" };
             }
         }
         catch (ex) {
