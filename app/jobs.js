@@ -443,37 +443,13 @@ var job = {
 
         var reportWhereClause={}
         var schedularWhereClause={}
-        if (userName){
-            reportWhereClause.userid=userName;
-        }
-        if (reportName){
-            reportWhereClause.report_name={[Op.iLike]: '%' + reportName + '%'};
-        }
-        if (startDate){
-            schedularWhereClause.start_date= {
-                [Op.gt]: startDate
-              }
-        }
-        if (endDate){
-            schedularWhereClause.end_date= {
-                [Op.lt]: endDate
-              }
-        }
-        if ( startDate && endDate ){
-            schedularWhereClause.start_date= {
-                [Op.gt]: startDate,
-              }
-              schedularWhereClause.end_date= {
-                [Op.lt]: endDate
-              }
-        }
-
-        if(!page){
-            page=defaultPage;
-        }
-        if(!pageSize){
-            pageSize=defaultPageSize;
-        }
+        userName ? reportWhereClause.userid = userName : null;
+        reportName ? reportWhereClause.report_name={[Op.iLike]: '%' + reportName + '%'} : null;
+        startDate ? schedularWhereClause.start_date= {[Op.gt]: startDate}: null;
+        endDate ? schedularWhereClause.end_date= { [Op.lt]: endDate }: null;
+        var page= page ? page : defaultPage;
+        var pageSize = pageSize ? pageSize : defaultPageSize;
+    
         var offset = page * pageSize;
         var limit = pageSize
 
@@ -510,7 +486,7 @@ var job = {
                    };
             }
             else {
-                return { message: "report is not found" };
+                return { message: "report not found" };
             }
         }
         catch (ex) {
