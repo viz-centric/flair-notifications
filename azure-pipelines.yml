@@ -73,7 +73,7 @@ steps:
     docker push flairbi/$(imageName):v$(major).$(minor).$(patch)
     docker tag flairbi/$(imageName):v$(major).$(minor).$(patch) flairbi/$(imageName):latest
     docker push flairbi/$(imageName):latest
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   env:
     DOCKER_PASSWORD: $(dockerPassword)
   displayName: 'Push Docker image'
