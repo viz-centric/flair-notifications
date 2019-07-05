@@ -3,7 +3,7 @@ const cronParser = require('cron-parser');
 
 const supportedCharts=['Pie Chart','Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
                 'Stacked Vertical Bar Chart','Stacked Horizontal Bar Chart','Heat Map','Combo Chart','Tree Map',
-                'Info graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI',
+                'Info-graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI',
                 'Scatter plot','Gauge plot']
 
 const customJoi = Joi.extend((joi) => ({
