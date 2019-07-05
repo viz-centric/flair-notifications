@@ -1,13 +1,13 @@
 
 function sortBySequenceNumber(a, b) {
-        return a.order - b.order;
-    }
+    return a.order - b.order;
+}
 function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
-}    
+}
 const VisualizationUtils = {
 
-    getPropertyValue : function (properties, propertyName, orElse) {
+    getPropertyValue: function (properties, propertyName, orElse) {
         var properties = properties.filter(function (item) {
             return item.propertyType.name === propertyName;
         });
@@ -28,31 +28,31 @@ const VisualizationUtils = {
         }
     },
 
-    getFieldPropertyValue :    function (field, propertyName, orElse) {
+    getFieldPropertyValue: function (field, propertyName, orElse) {
         return this.getPropertyValue(field.properties, propertyName, orElse);
-    } ,    
+    },
 
-    getDimensionsAndMeasures : function (fields) {
+    getDimensionsAndMeasures: function (fields) {
         var dimensions = fields.filter(function (item) {
             return item.feature && item.feature.featureType === 'DIMENSION';
         }).map(function (item) {
             var newItem = {};
             // angular.copy(item, newItem);
-            newItem=JSON.parse(JSON.stringify(item));
-            newItem.feature.name = newItem.feature.name.toLowerCase();
+            newItem = JSON.parse(JSON.stringify(item));
+            newItem.feature.name = newItem.feature.name;
             return newItem;
         }).sort(function (a, b) {
             return sortBySequenceNumber(a.fieldType, b.fieldType);
         });
 
         var measures = fields.filter(function (item) {
-                return item.feature && item.feature.featureType === 'MEASURE'
-            }).map(function (item) {
-                var newItem = {};
-                newItem=JSON.parse(JSON.stringify(item));
-                newItem.feature.name = newItem.feature.name.toLowerCase();
-                return newItem;
-            })
+            return item.feature && item.feature.featureType === 'MEASURE'
+        }).map(function (item) {
+            var newItem = {};
+            newItem = JSON.parse(JSON.stringify(item));
+            newItem.feature.name = newItem.feature.name;
+            return newItem;
+        })
             .sort(function (a, b) {
                 return sortBySequenceNumber(a.fieldType, b.fieldType);
             });
@@ -62,8 +62,8 @@ const VisualizationUtils = {
         };
     },
 
-    getNames: function(arr) {
-        return arr.map(function(item) {
+    getNames: function (arr) {
+        return arr.map(function (item) {
             return item.feature.name;
         });
     },
@@ -71,4 +71,4 @@ const VisualizationUtils = {
 
 }
 
-module.exports= VisualizationUtils;
+module.exports = VisualizationUtils;

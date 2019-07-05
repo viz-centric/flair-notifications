@@ -28,19 +28,19 @@ const { JSDOM } = jsdom;
 
 var charts = {
   pieChart: async function (viz_id, data) {
-    
+
     var pieFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pie" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(pieFakeDom.window.document)
-    
+
     var pieChartobj = pie();
     var chartConfig = await load_config.pieChartConfig(viz_id);
-    chartConfig.valueAsArc=false; //for server side
+    chartConfig.valueAsArc = false; //for server side
 
     pieChartobj.config(chartConfig).print(true).data(data);
     pieChartobj(d3.select(pieFakeDom.window.document).select('#pie'))
-    return  pieChartobj._getHTML();
-
+    return pieChartobj._getHTML();
   },
+
   lineChart: async function (viz_id, data) {
 
     var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="line" width="950" height="440"></div></body></html>');
@@ -52,8 +52,8 @@ var charts = {
     linechart.config(chartConfig).print(true).data(data);
     linechart(d3.select(linefakeDom.window.document).select('#line'))
     return linechart._getHTML();
-
   },
+
   clusteredverticalBarChart: async function (viz_id, data) {
     var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
@@ -64,8 +64,8 @@ var charts = {
     clusteredverticalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredverticalBarChartObj(d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar'))
     return clusteredverticalBarChartObj._getHTML();
-
   },
+
   clusteredhorizontalBarChart: async function (viz_id, data) {
     var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
@@ -77,8 +77,9 @@ var charts = {
     clusteredhorizontalBarChartObj(d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar'))
     return clusteredhorizontalBarChartObj._getHTML();
   },
+
   stackedverticalBarChart: async function (viz_id, data) {
-    var stackedverticalBarFakeDom= new JSDOM('<!DOCTYPE html><html><body><div id="stackedverticalBar" width="950" height="440"></div></body></html>');
+    var stackedverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
     var stackedverticalBarChartObj = stackedverticalbar();
@@ -87,20 +88,20 @@ var charts = {
     stackedverticalBarChartObj.config(chartConfig).print(true).data(data);
     stackedverticalBarChartObj(d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar'))
     return stackedverticalBarChartObj._getHTML();
-
   },
+
   stackedhorizontalBarChart: async function (viz_id, data) {
     var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
     var chartConfig = await load_config.stackedHorizontalBarConfig(viz_id);
-    
+
     stackedhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     stackedhorizontalBarChartObj(d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar'))
     return stackedhorizontalBarChartObj._getHTML();
-
   },
+
   heatmapChart: async function (config, data) {
 
     var heatmapFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="heatmap" width="950" height="440"/></body></html>');
@@ -155,137 +156,45 @@ var charts = {
 
 
   },
-  comboChart: async function (config, data) {
 
-    var comboFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="combo" width="950" height="440"/></body></html>');
+  comboChart: async function (viz_id, data) {
+
+    var comboFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="combo" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(comboFakeDom.window.document)
-    var comboChartobj = combo();
-    var newConfig = convertConfigToLowerCase(config);
 
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      measure: newConfig.measure,
-      showLegend: true, // true|false
-      legendPosition: 'top', // top|bottom|right|left
-      "showXaxis": true,
-      "showYaxis": true,
-      "showXaxisLabel": true,
-      "showYaxisLabel": true,
-      "xAxisColor": "#ff0000",
-      "yAxisColor": "#00ff00",
-      "showGrid": true,
-      "stacked": false,
-      "displayName": "Dimension 1",
-      "showValues": [true, true],
-      "displayNameForMeasure": ["Measure 1", "Measure 2"],
-      "fontStyle": ["italic", "bold"],
-      "fontWeight": ["bold", "900"],
-      "numberFormat": ["M", "M"],
-      "textColor": ["#e06a6a", "#00ff00"],
-      "displayColor": ["", ""],
-      "borderColor": ["", ""],
-      "fontSize": ["8", "8"],
-      "comboChartType": ['Line', 'Bar'],
-      "lineType": ["Line", ""],
-      "pointType": ["rectrounded", ""]
-    };
+    var comboChartObj = combo();
+    var chartConfig = await load_config.comboChartConfig(viz_id);
 
-    comboChartobj.config(chartConfig).tooltip(false).print(true);
-    d3.select(comboFakeDom.window.document).select('#combo').datum(data).call(comboChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = comboChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
-
+    comboChartObj.config(chartConfig).print(true).data(data);
+    comboChartObj(d3.select(comboFakeDom.window.document).select('#combo'))
+    return comboChartObj._getHTML();
   },
-  treemapChart: async function (config, data) {
 
-    var treemapFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="treemap" width="950" height="440"/></body></html>');
+  treemapChart: async function (viz_id, data) {
+    var treemapFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="treemap" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(treemapFakeDom.window.document)
+
     var treemapChartobj = treemap();
-    var newConfig = convertConfigToLowerCase(config);
+    var chartConfig = await load_config.treemapChartConfig(viz_id);
 
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      showLabelForDimension: [true, true],
-      labelColorForDimension: ["#ffffff", "blue"],
-      displayColor: ["#0000FF", "#00BFFF"],
-      "fontStyleForDimension": ["italic", "bold"],
-      fontWeightForDimension: ["900", "900"],
-      "fontSizeForDimension": ["15", "10"],
-      "measure": newConfig.measure,
-      "showLabel": true,
-      colorPattern: 'single_color',//gradient_color|unique_color|single_color
-      showValues: true,
-      "valueTextColour": "#e06a6a",
-      "fontStyleForMes": "italic",
-      fontWeightForMes: "bold",
-      "fontSizeForMes": "8",
-      "numberFormat": "K",
-    }
-    treemapChartobj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(treemapFakeDom.window.document).select('#treemap').datum(data).call(treemapChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = treemapChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
-
+    treemapChartobj.config(chartConfig).print(true).data(data);
+    treemapChartobj(d3.select(treemapFakeDom.window.document).select('#treemap'))
+    return treemapChartobj._getHTML();
   },
-  infographicsChart: async function (config, data) {
 
-    var infographicsFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="infographics" style="width:540px; height:600px;"></div></body></html>');
+  infographicsChart: async function (viz_id, data) {
+
+    var infographicsFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="infographics" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(infographicsFakeDom.window.document)
+
     var infographicsChartobj = infographics();
-    var newConfig = convertConfigToLowerCase(config);
+    var chartConfig = await load_config.infographicsChartConfig(viz_id);
 
-    var chartConfig = {
-      chartBorderColor: "#ebbe44",
-      chartDisplayColor: "#e91919",
-      chartType: "bar",
-      dimension: newConfig.dimension,
-      kpiAlignment: "Center",
-      kpiBackgroundColor: "#FFFFFF",
-      kpiColor: "#1e9fed",
-      kpiColorExpression: null,
-      kpiDisplayName: "Display name",
-      kpiFontSize: 9,
-      kpiFontStyle: "Normal",
-      kpiFontWeight: "normal",
-      kpiIcon: null,
-      kpiIconColor: null,
-      kpiIconExpression: null,
-      kpiIconFontWeight: "normal",
-      kpiNumberFormat: "Actual",
-      measure: newConfig.measure,
-    }
-    infographicsChartobj.config(chartConfig).tooltip(false).print(true);
-
-    d3.select(infographicsFakeDom.window.document).select('#infographics').datum(data).call(infographicsChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = infographicsChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
-
+    infographicsChartobj.config(chartConfig).print(true).data(data);
+    infographicsChartobj(d3.select(infographicsFakeDom.window.document).select('#infographics'))
+    return infographicsChartobj._getHTML();
   },
+
   boxplotChart: async function (config, data) {
 
     var boxplotFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="boxplot" width="950" height="440"/></body></html>');
@@ -318,6 +227,7 @@ var charts = {
 
 
   },
+
   bulletChart: async function (config, data) {
 
     var bulletFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="bullet" width="950" height="440"/></body></html>');
@@ -353,6 +263,7 @@ var charts = {
     result = await chartRenderingPromise;
     return result;
   },
+
   sankeyChart: async function (config, data) {
 
     var sankeyFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="sankey" width="950" height="440"/></body></html>');
@@ -387,141 +298,68 @@ var charts = {
     result = await chartRenderingPromise;
     return result;
   },
+
   tableChart: async function (viz_id, data) {
 
-    var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="table" width="950" height="440"/></body></html>');
+    var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="table" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(tableFakeDom.window.document)
     var tableChartobj = table();
 
-    var chartConfig = await load_config.tableChartConfig(viz_id)
-    tableChartobj.config(chartConfig).print(true);
-
-    d3.select(tableFakeDom.window.document).select('#table').datum(data).call(tableChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = tableChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    var chartConfig = await load_config.tableChartConfig(viz_id);
+    tableChartobj.config(chartConfig).print(true).data(data);
+    tableChartobj(d3.select(tableFakeDom.window.document).select('#table'))
+    return tableChartobj._getHTML();
   },
-  pivottableChart: async function (config, data) {
 
-    var pivottableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pivottable"></div></body></html>');
+  pivottableChart: async function (viz_id, data) {
+    var pivottableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pivottable" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(pivottableFakeDom.window.document)
     var pivottableChartobj = pivottable();
 
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      cellColorExpressionForMeasure: [undefined, undefined],
-      cellColorForDimension: ["rgb(226, 166, 166)", "rgb(239, 72, 72)"],
-      cellColorForMeasure: ["rgba(255, 255, 255, 1)", "rgb(227, 45, 45)"],
-      dimension: newConfig.dimension,
-      displayNameForDimension: ["Display name", "Display name"],
-      displayNameForMeasure: ["Display name", "Display name"],
-      fontSizeForDimension: [9, 9],
-      fontSizeForMeasure: [9, 9],
-      fontStyleForDimension: ["Normal", "Normal"],
-      fontStyleForMeasure: ["Normal", "Normal"],
-      fontWeightForDimension: ["normal", "normal"],
-      fontWeightForMeasure: ["normal", "normal"],
-      iconColor: [],
-      iconExpressionForMeasure: [undefined, undefined],
-      iconFontWeight: [],
-      iconNameForMeasure: [undefined, undefined],
-      iconPositionForMeasure: [undefined, undefined],
-      isPivoted: [false, true],
-      measure: newConfig.measure,
-      numberFormatForMeasure: ["Actual", "Actual"],
-      textAlignmentForDimension: ["Left", "Left"],
-      textAlignmentForMeasure: ["center", "center"],
-      textColorExpressionForDimension: [undefined, undefined],
-      textColorExpressionForMeasure: [undefined, undefined],
-      textColorForDimension: ["#91ccef", "#131ae9"],
-      textColorForMeasure: ["#617c8c", "#f01238"]
-    };
-
-    pivottableChartobj.config(chartConfig).print(true);
-
-    d3.select(pivottableFakeDom.window.document).select('#pivottable').datum(data).call(pivottableChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = pivottableChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    var chartConfig = await load_config.pivottableChartConfig(viz_id);
+    pivottableChartobj.config(chartConfig).print(true).data(data);
+    pivottableChartobj(d3.select(pivottableFakeDom.window.document).select('#pivottable'))
+    return pivottableChartobj._getHTML();
   },
+
   doughnutChart: async function (viz_id, data) {
     var doughnutFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="doughnut" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(doughnutFakeDom.window.document)
-    
+
     var doughnutChartobj = doughnut();
     var chartConfig = await load_config.DoughnutChartConfig(viz_id);
-    chartConfig.valueAsArc=false; //for server side
-    
+    chartConfig.valueAsArc = false; //for server side
+
     doughnutChartobj.config(chartConfig).print(true).data(data);
     doughnutChartobj(d3.select(doughnutFakeDom.window.document).select('#doughnut'))
-    return  doughnutChartobj._getHTML();
+    return doughnutChartobj._getHTML();
 
   },
+
   kpiChart: async function (viz_id, data) {
     var kpiFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="kpi" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(kpiFakeDom.window.document)
     var kpiChartobj = kpi();
     var chartConfig = await load_config.KPIChartConfig(viz_id);
-    
+
     kpiChartobj.config(chartConfig).print(true).data(data);
     kpiChartobj(d3.select(kpiFakeDom.window.document).select('#kpi'))
-    return  kpiChartobj._getHTML();
+    return kpiChartobj._getHTML();
 
   },
-  scatterChart: async function (config, data) {
-    var scatterFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="scatter" width="950" height="440"/></body></html>');
+
+  scatterChart: async function (viz_id, data) {
+    var scatterFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="scatter" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(scatterFakeDom.window.document)
-    var scatterChartobj = scatter();
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      measure: newConfig.measure,
-      showLegend: true, // true|false
-      legendPosition: 'top', // top|bottom|right|left
-      "showXaxis": true,
-      "showYaxis": true,
-      "showXaxisLabel": true,
-      "showYaxisLabel": true,
-      "xAxisColor": "#ff0000",
-      "yAxisColor": "#00ff00",
-      "showGrid": true,
-      "stacked": false,
-      "displayName": "Dimension 1",
-      "showValues": [true, true, true],
-      "displayNameForMeasure": ["Measure 1", "Measure 2", "Measure 2"],
-      "fontStyle": ["italic", "bold", "bold"],
-      "fontWeight": ["bold", "900", "900"],
-      "numberFormat": ["M", "M", "M"],
-      "textColor": ["#e06a6a", "#00ff00", "#00ff00"],
-      "displayColor": ["", "", ""],
-      "borderColor": ["", "", ""],
-      "fontSize": ["8", "8", ""]
-    };
-    scatterChartobj.config(chartConfig).print(true);
-    d3.select(scatterFakeDom.window.document).select('#scatter').datum(data).call(scatterChartobj);
 
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = scatterChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
+    var scatterChartObj = scatter();
+    var chartConfig = await load_config.scatterplotConfig(viz_id);
 
+    scatterChartObj.config(chartConfig).print(true).data(data);
+    scatterChartObj(d3.select(scatterFakeDom.window.document).select('#scatter'))
+    return scatterChartObj._getHTML();
   },
+
   gaugeChart: async function (config, data) {
     var gaugeFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="gauge" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(gaugeFakeDom.window.document)
