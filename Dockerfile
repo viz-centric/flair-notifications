@@ -11,6 +11,7 @@ RUN apt-get -y update && \
     rm -rf wkhtmltox* && \
     apt-get -y clean
 
+ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.0/grpc_health_probe-linux-amd64 /bin/grpc_health_probe
 COPY package*.json /flair-notifications/
 COPY scripts/button.sh /flair-notifications/
 COPY .sequelizerc /flair-notifications/
@@ -33,6 +34,7 @@ RUN groupadd -g 999 flairuser && \
 RUN chown -R flairuser:flairuser /flair-notifications
 RUN chown -R flairuser:flairuser /usr/bin/wkhtmltoimage
 RUN chmod -R 755 /flair-notifications
+RUN chmod +x /bin/grpc_health_probe
 
 
 USER flairuser
