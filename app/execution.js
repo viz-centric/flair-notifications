@@ -14,60 +14,107 @@ const retryDelay = 3000 //in miliseconds
 var wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
 
 const chartMap = {
-    'Pie Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.pieChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Line Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.lineChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
+
     'Clustered Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
     'Clustered Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
-    'Heat Map': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.heatmapChart(config, data);
-        }
-    },
+
     'Stacked Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
     'Stacked Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
+    'Line Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.lineChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Combo Chart': {
         generateChart: function (report_obj, data) {
             return charts.comboChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
-    'Tree Map': {
+
+    'Scatter plot': {
         generateChart: function (report_obj, data) {
-            return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
+            return charts.scatterChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
+    'Pie Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.pieChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Doughnut Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.doughnutChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Gauge plot': {
+        generateChart: function (report_obj, data) {
+            var config = {
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.gaugeChart(config, data);
+        }
+    },
+
+    'Table': {
+        generateChart: function (report_obj, data) {
+            return charts.tableChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Pivot Table': {
+        generateChart: function (report_obj, data) {
+            return charts.pivottableChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'KPI': {
+        generateChart: function (report_obj, data) {
+            return charts.kpiChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Info-graphic': {
         generateChart: function (report_obj, data) {
             return charts.infographicsChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
+    'Tree Map': {
+        generateChart: function (report_obj, data) {
+            return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Heat Map': {
+        generateChart: function (report_obj, data) {
+            return charts.heatmapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Box Plot': {
         generateChart: function (report_obj, data) {
             var config = {
@@ -77,56 +124,16 @@ const chartMap = {
             return charts.boxplotChart(config, data);
         }
     },
+
     'Bullet Chart': {
         generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.bulletChart(config, data);
+            return charts.bulletChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
     'Sankey': {
         generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.sankeyChart(config, data);
-        }
-    },
-    'Table': {
-        generateChart: function (report_obj, data) {
-            return charts.tableChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Pivot Table': {
-        generateChart: function (report_obj, data) {
-            return charts.pivottableChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Doughnut Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.doughnutChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'KPI': {
-        generateChart: function (report_obj, data) {
-            return charts.kpiChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Scatter plot': {
-        generateChart: function (report_obj, data) {
-            return charts.scatterChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Gauge plot': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.gaugeChart(config, data);
+            return charts.sankeyChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 };
