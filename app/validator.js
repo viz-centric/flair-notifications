@@ -76,6 +76,8 @@ var validator = {
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
             schedule: scheduleSchema,
+            queryHaving:Joi.string(),
+            hasThresholdAlert:Joi.boolean()
         });
 
         result = Joi.validate(reqBody, reportSchema);

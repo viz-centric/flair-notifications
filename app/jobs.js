@@ -53,6 +53,13 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
+
+                let threshold_lert = await models.ThresholdAlert.create({
+                    ReportId: report.id,
+                    visualizationid:params.report_line_item.visualizationid,
+                    queryHaving:JSON.parse(params.queryHaving),
+                }, { transaction })
+
                 job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
                     job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp)
