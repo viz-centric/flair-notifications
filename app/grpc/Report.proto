@@ -2,17 +2,8 @@ syntax = "proto3";
 
 package messages;
 
-option java_package = "com.flair.bi.messages";
+option java_package = "com.flair.bi.messages.report";
 option java_multiple_files = true;
-
-
-message ScheduleReportRequest {
-    Report report = 1;
-    ReportLineItem report_line_item = 2;
-    AssignReport assign_report = 3;
-    Schedule schedule = 4;
-    string query = 5;
-}
 
 message ScheduleReport {
     Report report = 1;
@@ -21,7 +12,6 @@ message ScheduleReport {
     Schedule schedule = 4;
     string query = 5;
 }
-
 
 message Report {
     string userid = 1;
@@ -63,40 +53,4 @@ message Schedule {
     string start_date = 3;
     string end_date = 4;
 
-}
-
-message DeleteScheduledReportRequest {
-    string visualizationId = 1;
-}
-
-message GetScheduledReportRequest {
-    string visualizationId = 1;
-}
-
-message ScheduleReportResponse {
-    string message = 1;
-}
-
-message RepUserReq {
-  string username = 1;
-}
-message RepUserResp {
-    repeated ScheduleReport reports = 1;
-}
-
-message RepUserCountReq {
-    string username = 1;
-}
-
-message RepUserCountResp {
-    int32 totalReports = 1;
-}
-
-service ReportService {
-    rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
-    rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
-    rpc GetAllScheduledReportsCountsByUser(RepUserCountReq) returns (RepUserCountResp) {};
-    rpc ScheduleReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
-    rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
-    rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
 }

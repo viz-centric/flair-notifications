@@ -1,5 +1,6 @@
 const grpc = require('grpc');
 const report = require('./grpc/report');
+const fs = require('fs');
 
 module.exports = {
     start: startServer
@@ -8,11 +9,25 @@ module.exports = {
 /**
  * Start the GRPC server on the selected port.
  * @param port
+ * @param config
  */
-function startServer(port) {
+function startServer(port, config) {
     const server = new grpc.Server();
     registerEndpoints(server);
-    server.bind('127.0.0.1:' + port, grpc.ServerCredentials.createInsecure());
+
+    let credentials;
+    if (config.enabled) {
+        let rootCerts = fs.readFileSync(config.caCert);
+        let keyCert = {
+            cert_chain: fs.readFileSync(config.serverCert),
+            private_key: fs.readFileSync(config.serverKey)
+        };
+        credentials = grpc.ServerCredentials.createSsl(rootCerts, [keyCert], true);
+    } else {
+        credentials = grpc.ServerCredentials.createInsecure()
+    }
+
+    server.bind(`127.0.0.1:${port}`, credentials);
     server.start()
 }
 

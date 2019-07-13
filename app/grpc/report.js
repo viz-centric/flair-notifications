@@ -1,6 +1,6 @@
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
-const PROTO_PATH = 'app/grpc/Report.proto';
+const PROTO_PATH = 'app/grpc/ReportService.proto';
 const reportService = require('./../report/reportService');
 
 const reportProto =
@@ -20,46 +20,55 @@ module.exports =
     ];
 
 
+function handleCall(promise, callback) {
+    return promise.then(function (data) {
+        callback(null, data);
+    }).catch(function (err) {
+        callback(null, err)
+    });
+}
 
 function constructReportService(server) {
     server.addService(reportProto.messages.ReportService.service, {
-        getScheduledReport: getScheduledReport,
-        scheduleReport: scheduleReport,
-        getAllScheduledReportsByUser: getAllScheduledReportsByUser,
-        getAllScheduledReportsCountsByUser: getAllScheduledReportsCountsByUser,
-        updateScheduledReport: updateScheduledReport,
-        deleteScheduledReport: deleteScheduledReport
+        getScheduledReport,
+        scheduleReport,
+        getAllScheduledReportsByUser,
+        getAllScheduledReportsCountsByUser,
+        updateScheduledReport,
+        deleteScheduledReport,
+        getScheduledReportLogs,
+        executeReport
     })
 }
-function getScheduledReport(_, callback) {
 
+function executeReport(call, callback) {
+    handleCall(reportService.executeReport(call.request), callback);
 }
 
-function getAllScheduledReportsByUser(_, callback) {
+function getScheduledReportLogs(call, callback) {
+    handleCall(reportService.getScheduledReportLogs(call.request), callback);
+}
 
+function getScheduledReport(call, callback) {
+    handleCall(reportService.getScheduledReport(call.request), callback);
+}
+
+function getAllScheduledReportsByUser(call, callback) {
+    handleCall(reportService.getAllScheduledReportForUser(call.request), callback);
 }
 
 function scheduleReport(call, callback) {
-    reportService.scheduleReport(call.request).then(
-        function(data){
-            callback(null, data);
-        },function(err){
-            callback(null, err);
-        }
-    ).catch(function (err){
-        callback(null, err)
-    });
-
+    handleCall(reportService.scheduleReport(call.request), callback);
 }
 
-function getAllScheduledReportsCountsByUser(_, callback) {
-
+function getAllScheduledReportsCountsByUser(call, callback) {
+    handleCall(reportService.getScheduledReportCountsForUser(call.request), callback);
 }
 
-function updateScheduledReport(_, callback) {
-
+function updateScheduledReport(call, callback) {
+    handleCall(reportService.updateScheduledReport(call.request), callback);
 }
 
-function deleteScheduledReport(_, callback) {
-
+function deleteScheduledReport(call, callback) {
+    handleCall(reportService.deleteScheduledReport(call.request), callback);
 }

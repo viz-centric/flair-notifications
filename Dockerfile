@@ -15,6 +15,9 @@ ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.0
 COPY package*.json /flair-notifications/
 COPY scripts/button.sh /flair-notifications/
 COPY .sequelizerc /flair-notifications/
+COPY certs/server.crt /flair-notifications/certs/certChainFile.crt
+COPY certs/server.key /flair-notifications/certs/privateKeyFile.key
+COPY certs/ca.crt /flair-notifications/certs/trustCertCollectionFile.crt
 
 WORKDIR /flair-notifications/
 

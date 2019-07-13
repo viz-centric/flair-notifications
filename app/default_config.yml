@@ -1,8 +1,14 @@
-port: 8090
+httpPort: 8090
+grpcPort: 8091
 imageFolder: ./images/
 grpcEndPoint: localhost:6565
 FlairBiEndPoint: http://localhost:8002
 mode: grpc
+ssl:
+  enabled: false
+  caCert: certs/trustCertCollectionFile.crt
+  serverCert: certs/certChainFile.crt
+  serverKey: certs/privateKeyFile.key
 mailService:
     host: smtp.ethereal.email
     port: 587

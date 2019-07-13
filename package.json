@@ -35,6 +35,22 @@
     "sequelize": "^5.7.5",
     "sequelize-cli": "^5.4.0",
     "winston": "^3.2.1",
-    "wkhtmltoimage": "^0.1.5"
+    "wkhtmltoimage": "^0.1.5",
+    "node-java-maven": "^0.1.1"
+  },
+  "java": {
+    "repositories": [
+      {
+        "id": "dev-azure-com-vizcentric-flair-bi",
+        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-bi/maven/v1"
+      }
+    ],
+    "dependencies": [
+      {
+        "groupId": "com.project.bi",
+        "artifactId": "flair-messages",
+        "version": "0.0.9"
+      }
+    ]
   }
 }

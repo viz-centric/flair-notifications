@@ -59,12 +59,12 @@ function scheduleReport(report) {
  */
 function updateScheduledReport(report) {
     return new Promise(function (resolve, reject) {
-        const result = validator.validateReportReqBody(req.body);
+        const result = validator.validateReportReqBody(report);
         if (result.error) {
             resolve(new Message(result.error.details[0].message.replace(/"/g, "")))
         } else {
-            jobs.modifyJob(req.body).then(function (result) {
-                if (result.success == 1) {
+            jobs.modifyJob(report).then(function (result) {
+                if (result.success === 1) {
                     resolve(new Message(result.message));
                 } else {
                     reject(new Message(result.message));
@@ -83,7 +83,7 @@ function updateScheduledReport(report) {
  */
 function deleteScheduledReport(visualizationId) {
     return new Promise(function (resolve, reject) {
-        jobs.deleteJob(visualizationid).then(function (result) {
+        jobs.deleteJob(visualizationId).then(function (result) {
             resolve(new Message(result));
         }, function (err) {
             reject(new Message(err))
@@ -98,7 +98,7 @@ function deleteScheduledReport(visualizationId) {
  */
 function getScheduledReport(visualizationId) {
     return new Promise(function (resolve, reject) {
-        jobs.getJob(visualizationid).then(function (result) {
+        jobs.getJob(visualizationId).then(function (result) {
             if (result.message) {
                 resolve(new Message(result.message));
             } else {

@@ -1,19 +1,27 @@
-var AppConfig = require('./load_config');
-var restartJobModule = require('./restart-jobs')
-var logger = require('./logger')
+const AppConfig = require('./load_config');
+const restartJobModule = require('./restart-jobs');
+const logger = require('./logger');
+const grpc = require('./grpc');
+const http = require('./http');
 
-var port = AppConfig.port;
+let httpPort = AppConfig.httpPort;
+let grpcPort = AppConfig.grpcPort;
+let sslConfig = AppConfig.ssl;
+let mode = AppConfig.mode;
 
-
-if (AppConfig.mode === 'grpc') {
-  require('./grpc').start(port);
-} else {
-  require('./http').start(port);
+if (mode === 'grpc') {
+  grpc.start(grpcPort, sslConfig);
 }
+
+http.start(httpPort);
+
 logger.log({
   level: 'info',
   message: 'Server started!',
-  port: port,
-  mode: AppConfig.mode
+  httpPort,
+  grpcPort,
+  mode,
+  sslConfig
 });
+
 restartJobModule.restartJobs();
