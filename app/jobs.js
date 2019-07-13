@@ -115,6 +115,13 @@ var job = {
                 {
                     model: models.SchedulerTask,
                 },
+                {
+                    model: models.ThresholdAlert,
+                    as:'thresholdalert',
+                    where: {
+                        visualizationid: report_data.report_line_item.visualizationid
+                    }
+                },
             ],
 
         })
@@ -163,6 +170,16 @@ var job = {
                 {where: {
                     ReportId: exist_report.id
                 }}, { transaction });
+
+                if(report_data.thresholdAlert){
+                    let threshold_lert = await models.ThresholdAlert.update({
+                        visualizationid:report_data.report_line_item.visualizationid,
+                        queryHaving:JSON.parse(report_data.queryHaving)},
+                    {where: {
+                        ReportId: exist_report.id
+                    }}, { transaction });
+                }
+
                 var job_name="JOB_"+exist_report.reportline.visualizationid;
                 var start_date = moment(report_data.schedule.start_date);
                 var end_date = moment(report_data.schedule.end_date);
@@ -311,6 +328,10 @@ var job = {
                         model: models.SchedulerTask,
                         where:{ active: true }
                     },
+                    {
+                        model: models.ThresholdAlert,
+                        as:'thresholdalert'
+                    },
                 ],
                 where: {
                     userid:userName,     
@@ -358,6 +379,10 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
+                    },
+                    {
+                        model: models.ThresholdAlert,
+                        as:'thresholdalert'
                     },
                 ],
             })
@@ -422,6 +447,11 @@ var job = {
                         model: models.SchedulerTask,
                         where:{ active: true }
                     },
+                    {
+                        model: models.ThresholdAlert,
+                        as:'thresholdalert',
+                        where:{ visualizationid: visualizationid }
+                    },
                 ],
             })
             if ( report ) {
@@ -476,6 +506,11 @@ var job = {
                         model: models.SchedulerTask,
                         where:schedularWhereClause
                     },
+                    {
+                        model: models.ThresholdAlert,
+                        as:'thresholdalert'
+                    },
+
                 ],
                 where: reportWhereClause,
                 order: [
