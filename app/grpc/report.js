@@ -3,16 +3,15 @@ const protoLoader = require("@grpc/proto-loader");
 const PROTO_PATH = 'app/grpc/ReportService.proto';
 const reportService = require('./../report/reportService');
 
-const reportProto =
-    grpc.loadPackageDefinition(
-        protoLoader.loadSync(PROTO_PATH, {
-            keepCase: true,
-            longs: String,
-            enums: String,
-            defaults: true,
-            oneofs: true
-        })
-    );
+const reportProto = grpc.loadPackageDefinition(
+    protoLoader.loadSync(PROTO_PATH, {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true
+    })
+);
 
 module.exports =
     [
@@ -29,7 +28,7 @@ function handleCall(promise, callback) {
 }
 
 function constructReportService(server) {
-    server.addService(reportProto.messages.ReportService.service, {
+    server.addService(reportProto.messages.reports.ReportService.service, {
         getScheduledReport,
         scheduleReport,
         getAllScheduledReportsByUser,

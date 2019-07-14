@@ -345,13 +345,17 @@ var job = {
 
     },
     getJob: async function(visualizationid){
+        logger.log({
+            level: 'info',
+            message: `Get job for vizualization id ${visualizationid}`
+        });
         try {
             var exist_report = await models.Report.findOne({
                 include: [
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                     {
                         model: models.AssignReport
@@ -361,12 +365,21 @@ var job = {
                         where:{ active: true }
                     }
                 ],
-            })
+            });
             if ( exist_report ) {
-                return schedulerDTO(exist_report);
-            }
-            else {
-                return { message: "report is not found for visulization Id : "+visualizationid };
+                return {
+                    success: 1,
+                    job: schedulerDTO(exist_report)
+                };
+            } else {
+                logger.log({
+                    level: 'info',
+                    message: `Get job for visualization id ${visualizationid} was not found`
+                });
+                return {
+                    message: `report is not found for visulization Id : ${visualizationid}`,
+                    success: 1
+                };
             }
         }
         catch (ex) {
@@ -375,7 +388,10 @@ var job = {
                 message: 'error while fetching reports for user',
                 error: ex,
               });
-            return { success: 0, message: ex };
+            return {
+                success: 0,
+                message: ex
+            };
         }
 
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package messages;
+package messages.reports;
 
 option java_package = "com.flair.bi.messages.report";
 option java_multiple_files = true;
@@ -52,5 +52,4 @@ message Schedule {
     string timezone = 2;
     string start_date = 3;
     string end_date = 4;
-
 }

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package messages;
+package messages.reports;
 
 option java_package = "com.flair.bi.messages.report";
 option java_multiple_files = true;
@@ -8,11 +8,7 @@ option java_multiple_files = true;
 import "Report.proto";
 
 message ScheduleReportRequest {
-    Report report = 1;
-    ReportLineItem report_line_item = 2;
-    AssignReport assign_report = 3;
-    Schedule schedule = 4;
-    string query = 5;
+    ScheduleReport report = 1;
 }
 
 message DeleteScheduledReportRequest {
@@ -24,11 +20,11 @@ message GetScheduledReportRequest {
 }
 
 message ScheduleReportResponse {
-    string message = 1;
+    ScheduleReport report = 1;
 }
 
 message RepUserReq {
-  string username = 1;
+    string username = 1;
 }
 message RepUserResp {
     repeated ScheduleReport reports = 1;

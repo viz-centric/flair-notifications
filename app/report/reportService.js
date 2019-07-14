@@ -98,15 +98,14 @@ function deleteScheduledReport(visualizationId) {
  */
 function getScheduledReport(visualizationId) {
     return new Promise(function (resolve, reject) {
-        jobs.getJob(visualizationId).then(function (result) {
-            if (result.message) {
-                resolve(new Message(result.message));
-            } else {
-                resolve(result);
-            }
-        }, function (err) {
-            reject(err);
-        })
+        jobs.getJob(visualizationId)
+            .then(function (result) {
+                resolve({
+                    report: result.job
+                });
+            }, function (err) {
+                reject(err);
+            });
     })
 }
 
