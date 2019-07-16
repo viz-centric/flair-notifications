@@ -201,7 +201,7 @@ exports.loadThresholdAlertAndSendMail = function loadThresholdAlertAndSendMail(r
             }, function (err) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating chart',
+                    message: 'error while generating threshold alert chart',
                     errMsg: err,
                 });
                 let shedularlog = models.SchedulerTaskLog.create({
@@ -215,7 +215,7 @@ exports.loadThresholdAlertAndSendMail = function loadThresholdAlertAndSendMail(r
         }, function (err) {
             logger.log({
                 level: 'error',
-                message: 'error while fetching records data from GRPC ',
+                message: 'error while fetching records data from GRPC for threhsold alert ',
                 errMsg: err,
             });
             if (grpcRetryCount < 2) {
