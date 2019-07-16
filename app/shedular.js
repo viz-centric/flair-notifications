@@ -2,6 +2,7 @@ var scheduler = require('node-schedule');
 var models = require('./database/models/index');
 var moment = require('moment');
 var execution=require('./execution');
+var thresholdAlertExecution=require('./threshold-alert-execution');
 var logger=require('./logger');
 
 
@@ -44,16 +45,23 @@ var shedular = {
                                 active:true
                             },
                         },
-            
+                        {
+                            model: models.ThresholdAlert,
+                            as:'thresholdalert',
+                            where:{ visualizationid: visualizationid }
+                        }
                     ],
                 }).then(function(report){
                         var reports_data={
                             report_obj:report,
                             report_line_obj :report.reportline,
                             report_assign_obj:report.AssignReport,
-                            report_shedular_obj:report.SchedulerTask
+                            report_shedular_obj:report.SchedulerTask,
+                            report_threshold_alert:report.thresholdalert
                         }
                         execution.loadDataAndSendMail(reports_data);
+                        if(reports_data.report_threshold_alert)
+                            thresholdAlertExecution.loadThresholdAlertAndSendMail(reports_data);
                     }).catch(function(err){
                         logger.log({
                             level: 'error',

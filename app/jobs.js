@@ -5,6 +5,7 @@ var scheduler = require('./shedular');
 var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
+var thresholdAlertExecution=require('./threshold-alert-execution');
 var logger = require('./logger');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -444,14 +445,14 @@ var job = {
                         model: models.AssignReport
                     },
                     {
-                        model: models.SchedulerTask,
-                        where:{ active: true }
-                    },
-                    {
                         model: models.ThresholdAlert,
                         as:'thresholdalert',
                         where:{ visualizationid: visualizationid }
                     },
+                    {
+                        model: models.SchedulerTask,
+                        where:{ active: true }
+                    }
                 ],
             })
             if ( report ) {
@@ -459,9 +460,12 @@ var job = {
                     report_obj:report,
                     report_line_obj :report.reportline,
                     report_assign_obj:report.AssignReport,
-                    report_shedular_obj:report.SchedulerTask
+                    report_shedular_obj:report.SchedulerTask,
+                    report_threshold_alert:report.thresholdalert
                 }
                 execution.loadDataAndSendMail(reports_data);
+                if(reports_data.report_threshold_alert)
+                    thresholdAlertExecution.loadThresholdAlertAndSendMail(reports_data);
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };
