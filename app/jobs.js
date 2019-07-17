@@ -118,11 +118,8 @@ var job = {
                 },
                 {
                     model: models.ThresholdAlert,
-                    as:'thresholdalert',
-                    where: {
-                        visualizationid: report_data.report_line_item.visualizationid
-                    }
-                },
+                    as:'thresholdalert'
+                }
             ],
 
         })
@@ -172,15 +169,26 @@ var job = {
                     ReportId: exist_report.id
                 }}, { transaction });
 
-                if(report_data.thresholdAlert){
+                if(exist_report.thresholdalert && report_data.thresholdAlert){
                     let threshold_lert = await models.ThresholdAlert.update({
                         visualizationid:report_data.report_line_item.visualizationid,
                         queryHaving:JSON.parse(report_data.queryHaving)},
                     {where: {
                         ReportId: exist_report.id
                     }}, { transaction });
+                }if(!exist_report.thresholdalert && report_data.thresholdAlert){
+                    let threshold_lert = await models.ThresholdAlert.create({
+                        ReportId: exist_report.id,
+                        visualizationid:report_data.report_line_item.visualizationid,
+                        queryHaving:JSON.parse(report_data.queryHaving),
+                    }, { transaction });
+                }if(exist_report.thresholdalert && !report_data.thresholdAlert){
+                    let threshold_lert = await models.ThresholdAlert.destroy({
+                        where: {
+                            visualizationid: report_data.report_line_item.visualizationid
+                        }
+                    }, { transaction });
                 }
-
                 var job_name="JOB_"+exist_report.reportline.visualizationid;
                 var start_date = moment(report_data.schedule.start_date);
                 var end_date = moment(report_data.schedule.end_date);
@@ -192,6 +200,11 @@ var job = {
 
             }
             catch (ex) {
+                logger.log({
+                    level: 'error',
+                    message: 'error occured while updating report'+ex.message,
+                    errMsg: err,
+                });
                 await transaction.rollback();
                 return { success: 0, message: ex };
             }
