@@ -31,9 +31,8 @@ app.post('/api/jobSchedule/', function (req, res) {
             message: 'error in schedule api due to invalid request body',
             errMsg: result.error.details[0].message
         });
-        res.status(422).json({
-            message: result.error.details[0].message.replace(/\"/g, ""),
-        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
     }
     else {
         jobs.createJob(req.body).then(function (result) {
@@ -56,9 +55,8 @@ app.post('/api/jobSchedule/', function (req, res) {
 app.put('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(422).json({
-            message: result.error.details[0].message.replace(/\"/g, ""),
-        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
     }
     else {
         jobs.modifyJob(req.body).then(function (result) {
