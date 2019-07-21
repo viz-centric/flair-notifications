@@ -11,9 +11,9 @@ trigger:
 
 variables:
   imageName: 'flair-notifications'
-  major: 1
+  major: 0
   minor: 0
-  patch: 0 # $(Build.BuildId)
+  patch: 111 # $(Build.BuildId)
 
 pr:
   branches:

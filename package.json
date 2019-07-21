@@ -1,6 +1,6 @@
 {
   "name": "flair-notifications",
-  "version": "0.0.111",
+  "version": "1.0.0",
   "description": "flair-notifications",
   "main": "/flair-notifications/app/index.js",
   "scripts": {
