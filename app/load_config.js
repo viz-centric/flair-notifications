@@ -13,6 +13,9 @@ function load_appConfig(configFile){
         if ( process.env.mailServiceAuthPass ){
             AppConfig.mailService.auth.pass=process.env.mailServiceAuthPass;
         }
+        if (process.env.EUREKA_URL) {
+            AppConfig.eurekaUrl = process.env.EUREKA_URL;
+        }
         return AppConfig;
 
     } catch (e) {

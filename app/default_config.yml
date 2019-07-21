@@ -4,6 +4,7 @@ imageFolder: ./images/
 grpcEndPoint: localhost:6565
 FlairBiEndPoint: http://localhost:8002
 mode: grpc
+eurekaUrl: http://admin:admin@localhost:8761/eureka
 ssl:
   enabled: false
   caCert: certs/trustCertCollectionFile.crt

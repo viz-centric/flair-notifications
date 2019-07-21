@@ -2,6 +2,7 @@ const AppConfig = require('./load_config');
 const Eureka = require('eureka-js-client').Eureka;
 
 const grpcPort = AppConfig.grpcPort;
+const eurekaUrl = AppConfig.eurekaUrl;
 
 const client = new Eureka({
     instance: {
@@ -23,7 +24,7 @@ const client = new Eureka({
     eureka: {
         serviceUrls: {
             default: [
-                'http://admin:admin@localhost:8761/eureka/apps'
+                `${eurekaUrl}/apps`
             ]
         },
     },
