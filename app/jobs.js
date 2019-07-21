@@ -93,7 +93,7 @@ var job = {
 
     },
     modifyJob: async function (report_data) {
-
+        logger.info('Modifying job', report_data.report_line_item.visualizationid);
         exist_report = await models.Report.findOne({
             include: [
                 {
@@ -345,10 +345,7 @@ var job = {
 
     },
     getJob: async function(visualizationid){
-        logger.log({
-            level: 'info',
-            message: `Get job for vizualization id ${visualizationid}`
-        });
+        logger.info(`Get job for vizualization id ${visualizationid}`);
         try {
             var exist_report = await models.Report.findOne({
                 include: [
@@ -367,15 +364,13 @@ var job = {
                 ],
             });
             if ( exist_report ) {
+                logger.info(`Get job for visualization id ${visualizationid} was found`, exist_report);
                 return {
                     success: 1,
                     job: schedulerDTO(exist_report)
                 };
             } else {
-                logger.log({
-                    level: 'info',
-                    message: `Get job for visualization id ${visualizationid} was not found`
-                });
+                logger.info(`Get job for visualization id ${visualizationid} was not found`);
                 return {
                     message: `report is not found for visulization Id : ${visualizationid}`,
                     success: 1

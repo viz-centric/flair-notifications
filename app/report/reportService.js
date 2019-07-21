@@ -93,14 +93,20 @@ function deleteScheduledReport(visualizationId) {
 
 /**
  * Retrieve scheduled report by visualization id.
- * @param visualizationId
+ * @param request request
  * @return {Promise<Any>}
  */
-function getScheduledReport(visualizationId) {
+function getScheduledReport(request) {
+    let visualizationId = request.visualizationId;
+    logger.info(`Get scheduled report via grpc for ${visualizationId}`);
     return new Promise(function (resolve, reject) {
         jobs.getJob(visualizationId)
             .then(function (result) {
-                resolve({report: result.job});
+                if (result.job) {
+                    resolve({report: result.job});
+                } else {
+                    resolve({message: result.message});
+                }
             }, function (err) {
                 reject(err);
             });

@@ -62,6 +62,11 @@ app.post('/api/jobSchedule/', function (req, res) {
 
 });
 app.put('/api/jobSchedule/', function (req, res) {
+    logger.log({
+        level: 'info',
+        message: `Updating job schedule`,
+        body: req.body
+    });
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
         res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
@@ -69,7 +74,8 @@ app.put('/api/jobSchedule/', function (req, res) {
     }
     else {
         jobs.modifyJob(req.body).then(function (result) {
-            if (result.success == 1) {
+            logger.info('Modify job result', result);
+            if (result.success === 1) {
                 res.status(200).json({
                     message: result.message,
                 });
@@ -99,12 +105,12 @@ app.get('/api/jobSchedule/', function (req, res) {
     jobs.getJob(visualizationid)
         .then(function (result) {
             if (result.job) {
-                res.send(result.job);
+                res.json({report: result.job});
             } else {
-                res.status(204);
+                res.json({message: result.message});
             }
         }, function (err) {
-            res.status(500);
+            res.send(err);
         })
 });
 

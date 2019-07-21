@@ -21,6 +21,7 @@ message GetScheduledReportRequest {
 
 message ScheduleReportResponse {
     ScheduleReport report = 1;
+    string message = 2;
 }
 
 message RepUserReq {
