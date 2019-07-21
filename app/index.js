@@ -3,6 +3,7 @@ const restartJobModule = require('./restart-jobs');
 const logger = require('./logger');
 const grpc = require('./grpc');
 const http = require('./http');
+const discovery = require('./discovery');
 
 let httpPort = AppConfig.httpPort;
 let grpcPort = AppConfig.grpcPort;
@@ -25,3 +26,5 @@ logger.log({
 });
 
 restartJobModule.restartJobs();
+
+discovery.start();

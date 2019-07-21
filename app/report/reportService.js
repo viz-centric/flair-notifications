@@ -100,9 +100,7 @@ function getScheduledReport(visualizationId) {
     return new Promise(function (resolve, reject) {
         jobs.getJob(visualizationId)
             .then(function (result) {
-                resolve({
-                    report: result.job
-                });
+                resolve({report: result.job});
             }, function (err) {
                 reject(err);
             });
