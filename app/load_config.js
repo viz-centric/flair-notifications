@@ -1,6 +1,6 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
-var default_config='./app/default_config.yml';
+const default_config='./app/default_config.yml';
 const configFile = process.env.APP_CONFIG || default_config;
 
 function load_appConfig(configFile){
@@ -16,6 +16,9 @@ function load_appConfig(configFile){
         if (process.env.EUREKA_URL) {
             AppConfig.eurekaUrl = process.env.EUREKA_URL;
         }
+        if (process.env.GRPC_SSL_ENABLED) {
+            AppConfig.ssl.enabled = process.env.GRPC_SSL_ENABLED;
+        }
         return AppConfig;
 
     } catch (e) {
@@ -23,7 +26,7 @@ function load_appConfig(configFile){
     }
 }
 
-AppConfig=load_appConfig(configFile)
+AppConfig = load_appConfig(configFile);
 
 
 module.exports = AppConfig;

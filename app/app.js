@@ -62,11 +62,7 @@ app.post('/api/jobSchedule/', function (req, res) {
 
 });
 app.put('/api/jobSchedule/', function (req, res) {
-    logger.log({
-        level: 'info',
-        message: `Updating job schedule`,
-        body: req.body
-    });
+    logger.info(`Updating job schedule`, req.body);
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
         res.statusMessage = result.error.details[0].message.replace(/\"/g, "");

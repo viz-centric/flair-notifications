@@ -17,6 +17,7 @@ const queryProto = grpc.loadPackageDefinition(
 module.exports = createClient();
 
 function createClient(){
+    // TODO: move to tests
     return new queryProto.messages.ReportService("localhost:8090",
         grpc.credentials.createInsecure());
 }
