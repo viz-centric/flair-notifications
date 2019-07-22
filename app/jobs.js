@@ -32,20 +32,20 @@ var job = {
                     thresholdAlert:params.report.thresholdAlert
                 }, { transaction });
 
-                let report_line_item = await models.ReportLineItem.create({
-                    ReportId: report.id,
-                    visualizationid:params.report_line_item.visualizationid,
-                    viz_type: params.report_line_item.visualization,
-                    dimension: params.report_line_item.dimension,
-                    measure: params.report_line_item.measure,
-                    query:JSON.parse(params.query),
-                }, { transaction })
+            let report_line_item = await models.ReportLineItem.create({
+                ReportId: report.id,
+                visualizationid: params.report_line_item.visualizationid,
+                viz_type: params.report_line_item.visualization,
+                dimension: params.report_line_item.dimension,
+                measure: params.report_line_item.measure,
+                query: JSON.parse(params.query),
+            }, {transaction});
 
-                let assign_report_obj = await models.AssignReport.create({
-                    ReportId: report.id,
-                    channel: params.assign_report.channel,
-                    email_list: params.assign_report.email_list,
-                }, { transaction })
+            let assign_report_obj = await models.AssignReport.create({
+                ReportId: report.id,
+                channel: params.assign_report.channel,
+                email_list: params.assign_report.email_list,
+            }, {transaction});
 
                 let shedualar_obj = await models.SchedulerTask.create({
                     ReportId: report.id,
@@ -71,24 +71,23 @@ var job = {
                     job_id: shedualar_obj.id, next_run: job.nextInvocation()
                 };
 
-            }
-            catch (ex) {
-                await transaction.rollback();
-                if (ex.name=="SequelizeUniqueConstraintError"){
-                    logger.log({
-                        level: 'info',
-                        message: 'report already exist',
-                      });
-                    var response = { success: 0, message: "report with this visulaizationid already exit" }
-                    return response;
-                }
+        } catch (ex) {
+            await transaction.rollback();
+            if (ex.name == "SequelizeUniqueConstraintError") {
                 logger.log({
-                    level: 'error',
-                    message: 'error while saving report into database',
-                    error: ex,
-                  });
-                return { success: 0, message: ex };
+                    level: 'info',
+                    message: 'report already exist',
+                });
+                var response = {success: 0, message: "report with this visulaizationid already exit"}
+                return response;
             }
+            logger.log({
+                level: 'error',
+                message: 'error while saving report into database',
+                error: ex,
+            });
+            return {success: 0, message: ex};
+        }
         
 
     },
@@ -165,7 +164,9 @@ var job = {
                 result = await scheduler.reShedulJob(job_name,start_date,end_date,report_data.schedule.cron_exp)
                 await transaction.commit();
                 return {
-                    success: 1, message: "report is updated", report_name: exist_report.report_name,
+                    success: 1,
+                    message: "report is updated",
+                    report_name: exist_report.report_name,
                 };
 
             }
