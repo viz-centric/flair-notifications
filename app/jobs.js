@@ -459,8 +459,7 @@ var job = {
                     },
                     {
                         model: models.ThresholdAlert,
-                        as:'thresholdalert',
-                        where:{ visualizationid: visualizationid }
+                        as:'thresholdalert'
                     },
                     {
                         model: models.SchedulerTask,
