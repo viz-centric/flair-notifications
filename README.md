@@ -91,6 +91,8 @@ To generate SSL certs, run this command:
 
 ```bash
 cd certs
+./generate.sh
+
 ```
 
 Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
