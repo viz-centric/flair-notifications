@@ -3,12 +3,14 @@ const Eureka = require('eureka-js-client').Eureka;
 
 const grpcPort = AppConfig.grpcPort;
 const eurekaUrl = AppConfig.eurekaUrl;
+const discoveryIp = AppConfig.discovery.ip;
+const discoveryHostname = AppConfig.discovery.hostname;
 
 const client = new Eureka({
     instance: {
         app: 'flair-notifications',
-        hostName: 'flair-notifications',
-        ipAddr: '127.0.0.1',
+        hostName: discoveryHostname,
+        ipAddr: discoveryIp,
         port: {
             "$": grpcPort,
             "@enabled": true
