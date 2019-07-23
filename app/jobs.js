@@ -187,7 +187,7 @@ var job = {
 
     },
     deleteJob: async function (visualizationid) {
-
+        logger.info(`Deleting job ${visualizationid}`);
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -197,22 +197,21 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                 ],
-            })
+            });
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
                     var job_name = "JOB_" + report.reportline.visualizationid;
-                    result = scheduler.cancleJob(job_name);
-                    if(result){
-                        await report.destroy({ force: true })
+                    var result = scheduler.cancleJob(job_name);
+                    if (result) {
+                        await report.destroy({force: true});
                         await transaction.commit();
-                        return { message: "Scheduled report is cancelled" };
-                    }
-                    else{
-                        return { message: "Scheduled report has already been cancelled" };
+                        return {success: 1};
+                    } else {
+                        return {success: 0, message: "Scheduled report has already been cancelled"};
                     }
                    
                 }

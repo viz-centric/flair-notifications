@@ -80,15 +80,19 @@ function updateScheduledReport(request) {
 
 /**
  * Delete a scheduled report
- * @param visualizationId
+ * @param request
  * @return {Promise<Message>}
  */
-function deleteScheduledReport(visualizationId) {
+function deleteScheduledReport(request) {
     return new Promise(function (resolve, reject) {
-        jobs.deleteJob(visualizationId).then(function (result) {
-            resolve(new Message(result));
+        jobs.deleteJob(request.visualizationId).then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({message: result.message})
+            }
         }, function (err) {
-            reject(new Message(err))
+            reject({message: err})
         })
     })
 }
