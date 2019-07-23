@@ -7,7 +7,7 @@ const eurekaUrl = AppConfig.eurekaUrl;
 const client = new Eureka({
     instance: {
         app: 'flair-notifications',
-        hostName: 'localhost',
+        hostName: 'flair-notifications',
         ipAddr: '127.0.0.1',
         port: {
             "$": grpcPort,
