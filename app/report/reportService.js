@@ -121,12 +121,13 @@ function getScheduledReport(request) {
 
 /**
  * Retrieve all scheduled reports for user paginated.
- * @param username
- * @param page which page
- * @param size of the page
+ * @param request
  * @return {Promise<any>}
  */
-function getAllScheduledReportForUser(username, page, size) {
+function getAllScheduledReportForUser(request) {
+    let username = request.username;
+    let page = request.page;
+    let size = request.size;
     return new Promise(function (resolve, reject) {
         const page = (+page);
         const pageSize = (+size);

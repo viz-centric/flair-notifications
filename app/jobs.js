@@ -290,6 +290,7 @@ var job = {
         }
     },
     JobsByUser: async function(userName,page,pageSize){
+        logger.info(`Get jobs by user ${userName} page ${page} size ${pageSize}`);
         if(!page){
             page=defaultPage;
         }
@@ -297,7 +298,7 @@ var job = {
             pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
-        var limit = pageSize
+        var limit = pageSize;
         try {
             var reports = await models.Report.findAll({
                 include: [
