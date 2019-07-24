@@ -132,7 +132,9 @@ function getAllScheduledReportForUser(request) {
         const page = (+page);
         const pageSize = (+size);
         jobs.JobsByUser(username, page, pageSize).then(function (result) {
-            resolve(result);
+            resolve({
+                reports: result.reports
+            });
         }, function (err) {
             reject(err);
         })
@@ -141,12 +143,12 @@ function getAllScheduledReportForUser(request) {
 
 /**
  * Retrieve scheduled report counts for the given user.
- * @param username
+ * @param request
  * @return {Promise<any>}
  */
-function getScheduledReportCountsForUser(username) {
+function getScheduledReportCountsForUser(request) {
     return new Promise(function (resolve, reject) {
-        jobs.JobCountByUser(username).then(function (result) {
+        jobs.JobCountByUser(request.username).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);

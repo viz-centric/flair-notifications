@@ -15,7 +15,7 @@ const defaultPageSize=10;
 var job = {
     createJob: async function (params) {
 
-        
+
             const transaction = await db.sequelize.transaction();
             try {
                 //create report object
@@ -315,24 +315,19 @@ var job = {
                     }
                 ],
                 where: {
-                    userid:userName,     
+                    userid: userName,
                 },
                 order: [
                     ['createdAt', 'DESC'],
                 ],
                 limit,
                 offset,
-            })
-            if (reports.length > 0 ) {
-                var all_reports=[];
-                for (var i=0; i< reports.length; i++){
-                   all_reports.push(schedulerDTO(reports[i]))  
-                }
-                return all_reports;
+            });
+            var all_reports=[];
+            for (var i=0; i< reports.length; i++){
+               all_reports.push(schedulerDTO(reports[i]))
             }
-            else {
-                return { message: "Report is not found for the user" };
-            }
+            return { success: 1, reports: all_reports };
         }
         catch (ex) {
             logger.log({
@@ -398,13 +393,13 @@ var job = {
                 include: [
                     {
                         model: models.SchedulerTask,
-                        where:{ active: true }
+                        where: {active: true}
                     },
                 ],
                 where: {
-                    userid:userName
+                    userid: userName
                 }
-            })
+            });
             response = { totalReports: reportCount }
             return response;
         }
