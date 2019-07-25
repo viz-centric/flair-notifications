@@ -1489,7 +1489,7 @@ var configs = {
                         result['maxDim'] = dimensions.length;
                         result['maxMes'] = measures.length;
 
-                        result['colorPattern'] = 'single_color' //VisualizationUtils.getFieldPropertyValue(measures[0], 'Color Pattern').toLowerCase().replace(' ', '_');
+                        result['colorPattern'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Color Pattern').toLowerCase().replace(' ', '_');
 
                         var displayColor = VisualizationUtils.getFieldPropertyValue(measures[0], 'Display colour');
                         result['displayColor'] = (displayColor == null) ? colorSet[0] : displayColor

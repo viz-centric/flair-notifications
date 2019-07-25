@@ -153,7 +153,10 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
 
             generate_chart.then(function (response) {
                 var imagefilename = reports_data['report_obj']['report_name'] + '.jpg';
-                wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
+                if (reports_data.report_line_obj.viz_type != "KPI") {
+                    wkhtmltoimage.generate(response, { output: image_dir + imagefilename });
+                }
+
                 var to_mail_list = [];
                 for (user of reports_data['report_assign_obj']['email_list']) {
                     to_mail_list.push(user['user_email'])
@@ -165,9 +168,9 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                 var share_link = reports_data['report_obj']['share_link']
                 var dash_board = reports_data['report_obj']['dashboard_name']
                 var mailRetryCount = 0;
-                function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename) {
+                function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename, isKPI) {
                     mailRetryCount += 1;
-                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename).then(function (response) {
+                    sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename, isKPI, response).then(function (response) {
 
                         try {
                             let shedularlog = models.SchedulerTaskLog.create({
@@ -190,7 +193,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                                 errMsg: error,
                             });
                             if (mailRetryCount < 2) {
-                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename),
+                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename, isKPI, response),
                                     retryDelay);
                             }
                             else {
@@ -204,7 +207,9 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                         });
 
                 }
-                sendMail(subject, to_mail_list, mail_body, report_title, imagefilename);
+
+                sendMail(subject, to_mail_list, mail_body, report_title, imagefilename, reports_data.report_line_obj.viz_type == "KPI" ? true : false);
+
             }, function (err) {
                 logger.log({
                     level: 'error',

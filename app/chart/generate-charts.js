@@ -82,7 +82,6 @@ var charts = {
 
     var linechart = line();
     var chartConfig = await load_config.lineChartConfig(viz_id);
-
     linechart.config(chartConfig).print(true).data(data);
     linechart(d3.select(linefakeDom.window.document).select('#line'))
     return linechart._getHTML();
@@ -210,7 +209,7 @@ var charts = {
 
     kpiChartobj.config(chartConfig).print(true).data(data);
     kpiChartobj(d3.select(kpiFakeDom.window.document).select('#kpi'))
-   
+
     return kpiChartobj._getHTML();
 
   },
@@ -290,10 +289,10 @@ var charts = {
 
     var bulletFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="bullet" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(bulletFakeDom.window.document)
-    
+
     var bulletChartobj = bullet();
     var chartConfig = await load_config.bulletChartConfig(viz_id);
-   
+
     bulletChartobj.config(chartConfig).print(true).data(data);
     bulletChartobj(d3.select(bulletFakeDom.window.document).select('#bullet'))
     return bulletChartobj._getHTML();
@@ -303,13 +302,13 @@ var charts = {
 
     var sankeyFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="sankey" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(sankeyFakeDom.window.document)
-    
+
     var sankeyChartobj = sankey();
     var chartConfig = await load_config.sankeyChartConfig(viz_id);
-    
+
     sankeyChartobj.config(chartConfig).print(true).data(data);
     sankeyChartobj(d3.select(sankeyFakeDom.window.document).select('#sankey'))
-    return bulletChartobj._getHTML();
+    return sankeyChartobj._getHTML();
   },
 }
 
