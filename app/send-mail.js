@@ -19,7 +19,8 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename) {
+
+exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, encodedUrl,imagefilename) {
     var image_cid=new Date().getTime()+imagefilename;
     var template_data = {
         mail_body: mail_body,
@@ -27,7 +28,8 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
         share_link: share_link,
         build_url: build_url,
         dash_board:dash_board,
-        imageFile: "cid:" + image_cid,
+        image_cid:"cid:"+image_cid,
+        imageFile: encodedUrl,
         AppLogo: "cid:" + appLogo
     }
     return new Promise((resolve, reject) => {
@@ -40,16 +42,19 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                     to: to_mail_list, // list of receivers
                     subject: subject, // Subject line
                     html: html_data,// plain html body
-                    attachments: [{
-                        filename: imagefilename,
-                        path: image_dir + imagefilename,
-                        cid: image_cid //same cid value as in the html img src
+                    attachments: [
+                    {
+                        filename:imagefilename,
+                        content : encodedUrl,
+                        path:encodedUrl,
+                        cid:image_cid
                     },
                     {
                         filename: appLogo,
                         path: __dirname + "/template/" + appLogo,
                         cid: appLogo //same cid value as in the html img src
-                    }]
+                    }
+                ]
                 };
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
