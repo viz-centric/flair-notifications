@@ -5,7 +5,6 @@ var scheduler = require('./shedular');
 var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
-var thresholdAlertExecution=require('./threshold-alert-execution');
 var logger = require('./logger');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -475,9 +474,9 @@ var job = {
                     report_shedular_obj:report.SchedulerTask,
                     report_threshold_alert:report.thresholdalert
                 }
-                execution.loadDataAndSendMail(reports_data);
+                execution.loadDataAndSendMail(reports_data,false);
                 if(reports_data.report_threshold_alert)
-                    thresholdAlertExecution.loadThresholdAlertAndSendMail(reports_data);
+                    execution.loadDataAndSendMail(reports_data,true);
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };

@@ -2,7 +2,6 @@ var scheduler = require('node-schedule');
 var models = require('./database/models/index');
 var moment = require('moment');
 var execution=require('./execution');
-var thresholdAlertExecution=require('./threshold-alert-execution');
 var logger=require('./logger');
 
 
@@ -59,9 +58,9 @@ var shedular = {
                             report_shedular_obj:report.SchedulerTask,
                             report_threshold_alert:report.thresholdalert
                         }
-                        execution.loadDataAndSendMail(reports_data);
+                        execution.loadDataAndSendMail(reports_data,false);
                         if(reports_data.report_threshold_alert)
-                            thresholdAlertExecution.loadThresholdAlertAndSendMail(reports_data);
+                            execution.loadDataAndSendMail(reports_data,true);
                     }).catch(function(err){
                         logger.log({
                             level: 'error',

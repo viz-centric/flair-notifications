@@ -132,9 +132,8 @@ const chartMap = {
     },
 };
 
-exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
-    let query = reports_data.report_line_obj.query;
-
+exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
+    let query = thresholdAlertEmail?reports_data.report_threshold_alert.queryHaving:reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
@@ -146,7 +145,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
             generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
             generate_chart.then(function (response) {
-                var imagefilename = reports_data['report_obj']['report_name'] + '.png';
+                var imagefilename =thresholdAlertEmail?'threshold_alert_chart_':''+reports_data['report_obj']['report_name'] + '.png';
                 var to_mail_list = [];
                 for (user of reports_data['report_assign_obj']['email_list']) {
                     to_mail_list.push(user['user_email'])
@@ -182,7 +181,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
                             function (error) {
                                 logger.log({
                                     level: 'error',
-                                    message: 'error while sending mail',
+                                    message: 'error while sending mail'+thresholdAlertEmail?' for threshold alert':'',
                                     errMsg: error,
                                 });
                                 if (mailRetryCount < 2) {
@@ -205,7 +204,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
             }, function (err) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating chart',
+                    message: 'error while generating chart'+thresholdAlertEmail?' for threshold alert':'',
                     errMsg: err,
                 });
                 let shedularlog = models.SchedulerTaskLog.create({
@@ -219,7 +218,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data) {
         }, function (err) {
             logger.log({
                 level: 'error',
-                message: 'error while fetching records data from GRPC ',
+                message: 'error while fetching records data from GRPC'+thresholdAlertEmail?' for threshold alert':'',
                 errMsg: err,
             });
             if (grpcRetryCount < 2) {
