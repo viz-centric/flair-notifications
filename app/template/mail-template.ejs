@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     body {
       font-family: Helvetica, Arial, sans-serif;
@@ -40,6 +41,7 @@
 
     #chart-container {
       background-color: white;
+      border: 2px solid #ddd;
       border-radius: 5px;
       margin-top: 2px;
       margin-bottom: 20px;
@@ -57,10 +59,17 @@
 
     .chart-title {
       font-family: sans-serif;
-      color: cornflowerblue;
+      color: #439dd3;
       display: inline-block;
-      margin-top: 5px;
-      font-size: 18px;
+      margin: 5px;
+      font-size: 15px;
+    }
+
+    .chart-value {
+      font-family: sans-serif;
+      display: inline-block;
+      margin: 5px;
+      font-size: 15px;
     }
 
     #dashboard-name {
@@ -71,7 +80,6 @@
     .links {
       background-color: white;
       /* color: white; */
-      padding: 10px;
       text-decoration: none;
       margin-top: 10px;
       border-radius: 5px;
@@ -88,7 +96,7 @@
       height: 60px;
       width: 180px;
       border-radius: 5px;
-      opacity: 0.7;
+      opacity: 1;
     }
   </style>
 
@@ -96,14 +104,26 @@
 
 <body>
   <div id="template-container">
-    <p id="mail_body"><%= mail_body %></p>
+
+    <div class="chart-detail">
+      <div>
+        <b class="chart-title"> Deshbaord</b> : <label class="chart-value"><%= dash_board %></label>
+      </div>
+      <div>
+        <b class="chart-title">View</b> : <label class="chart-value"><%= view %></label>
+      </div>
+    </div>
+    <div id="mail_body">
+      <%= mail_body %>
+    </div>
+
 
     <div id="container">
-      <div id="title-container">
+      <!-- <div id="title-container">
         <p class="chart-title"><%= title %></p>
         <p class="chart-title" id="dashboard-name"><%= dash_board %></p>
-      </div>
-      <% if(isKPI){ %>
+      </div> -->
+      <% if(!isImage){ %>
       <%- chartResponse %>
       <% } else{ %>
       <div id="chart-container">
@@ -114,6 +134,7 @@
     </div>
 
     <a class="links" href="<%= share_link %>">Go to Widget</a>
+    <br>
     <a class="links" href="<%= build_url %>">Go to Dashboard</a>
 
     <div id="logo-container">

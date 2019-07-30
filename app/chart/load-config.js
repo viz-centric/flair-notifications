@@ -1379,8 +1379,159 @@ var configs = {
         });
 
         return chartconfigPromise;
+    },
+    chorddiagramChartConfig: function (viz_id) {
+
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config chord diagram',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var result = {};
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimensions = features.dimensions,
+                            measures = features.measures;
+
+                        result['showLabels'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Show Labels');
+                        result['labelColor'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Colour of labels');
+                        result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font style');
+                        result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font weight');
+                        result['fontSize'] = parseInt(VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font size'));
+                        result['colorPattern'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Color Pattern').toLowerCase().replace(' ', '_');
+                        result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Number format');
+                        result['dimension'] = VisualizationUtils.getNames(dimensions);
+                        result['measure'] = VisualizationUtils.getNames(measures)[0];
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config chord diagram',
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config chord diagram',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+        return chartconfigPromise;
 
     },
+
+    textObjectChartConfig: function (viz_id, data) {
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config  textObject',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var result = {};
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimensions = features.dimensions,
+                            measures = features.measures;
+
+                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['maxMes'] = measures.length;
+                        result['descriptive'] = VisualizationUtils.getPropertyValue(properties, 'Descriptive');
+                        result['alignment'] = VisualizationUtils.getPropertyValue(properties, 'Alignment');
+                        result['textFormat'] = VisualizationUtils.getPropertyValue(properties, 'Text format');
+                        result['value'] = [];
+                        result['backgroundColor'] = [];
+                        result['textColor'] = [];
+                        result['underline'] = [];
+                        result['fontStyle'] = [];
+                        result['fontWeight'] = [];
+                        result['fontSize'] = [];
+                        result['icon'] = [];
+                        result['numberFormat'] = [];
+                        result['displayNameForMeasure'] = [];
+                        result['iconExpression'] = [];
+                        result['textColorExpression'] = [];
+
+                        for (var i = 0; i < measures.length; i++) {
+                            result['displayNameForMeasure'].push(
+                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
+                                result['measure'][i]
+                            );
+                            result['value'].push(data[0][result["measure"][i]]);
+                            result['backgroundColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Background Colour'));
+                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
+                            result['underline'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Underline'));
+                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
+                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
+                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
+                            result['icon'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon name'));
+                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
+                            result['iconExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
+                        }
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config  textObject',
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config  textObject',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+
+        return chartconfigPromise;
+
+    },
+
     bulletChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {

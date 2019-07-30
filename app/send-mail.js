@@ -19,7 +19,7 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename, isKPI, response) {
+exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, imagefilename, isImage, response, view) {
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
@@ -27,9 +27,10 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
         share_link: share_link,
         build_url: build_url,
         dash_board: dash_board,
+        view: view,
         imageFile: "cid:" + image_cid,
         AppLogo: "cid:" + appLogo,
-        isKPI: isKPI,
+        isImage: isImage,
         chartResponse: response
     }
     return new Promise((resolve, reject) => {
@@ -38,7 +39,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 reject(err)
             } else {
                 var attachments = [];
-                if (!template_data.isKPI) {
+                if (template_data.isImage) {
                     attachments.push({
                         filename: imagefilename,
                         path: image_dir + imagefilename,

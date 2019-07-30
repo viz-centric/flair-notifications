@@ -18,9 +18,9 @@ const doughnut = require('flair-visualizations/js/charts/doughnut');
 const kpi = require('flair-visualizations/js/charts/kpi');
 const scatter = require('flair-visualizations/js/charts/scatter');
 const gauge = require('flair-visualizations/js/charts/gauge');
-
+const textobject = require('flair-visualizations/js/charts/textobject');
+const chorddiagram = require('flair-visualizations/js/charts/chorddiagram');
 const load_config = require('./load-config');
-
 const jsdom = require('jsdom');
 const chartUtility = require('./chart-util');
 const { JSDOM } = jsdom;
@@ -296,6 +296,32 @@ var charts = {
     bulletChartobj.config(chartConfig).print(true).data(data);
     bulletChartobj(d3.select(bulletFakeDom.window.document).select('#bullet'))
     return bulletChartobj._getHTML();
+  },
+
+  chorddiagramChart: async function (viz_id, data) {
+    var chorddiagramFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="chorddiagram" width="950" height="440"></div></body></html>');
+    chartUtility.configureDomForcharts(chorddiagramFakeDom.window.document)
+
+    var chorddiagramChartobj = chorddiagram();
+    var chartConfig = await load_config.chorddiagramChartConfig(viz_id);
+
+    chorddiagramChartobj.config(chartConfig).print(true).data(data);
+    chorddiagramChartobj(d3.select(chorddiagramFakeDom.window.document).select('#chorddiagram'))
+    return chorddiagramChartobj._getHTML();
+  },
+
+  textObjectChart: async function (viz_id, data) {
+
+    var textobjectFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="textobject" width="950" height="440"></div></body></html>');
+    chartUtility.configureDomForcharts(textobjectFakeDom.window.document)
+
+    var textobjectChartobj = textobject();
+    var chartConfig = await load_config.textObjectChartConfig(viz_id, data);
+
+    textobjectChartobj.config(chartConfig).print(true);
+
+    textobjectChartobj(d3.select(textobjectFakeDom.window.document).select('#textobject'))
+    return textobjectChartobj._getHTML();
   },
 
   sankeyChart: async function (viz_id, data) {
