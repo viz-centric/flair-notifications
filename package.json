@@ -16,6 +16,7 @@
     "chai-http": "^4.2.1",
     "cron-parser": "^2.7.3",
     "d3": "^4.10.0",
+    "dateformat": "^3.0.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#featured/3-viz-integration",
