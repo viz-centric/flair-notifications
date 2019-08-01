@@ -145,14 +145,14 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
             generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
             generate_chart.then(function (response) {
-                var imagefilename =thresholdAlertEmail?'threshold_alert_chart_':''+reports_data['report_obj']['report_name'] + '.png';
+                var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+reports_data['report_obj']['report_name'] + '.png':reports_data['report_obj']['report_name'] + '.png';
                 var to_mail_list = [];
                 for (user of reports_data['report_assign_obj']['email_list']) {
                     to_mail_list.push(user['user_email'])
                 }
                 var mail_body = reports_data['report_obj']['mail_body']
                 var report_title = reports_data['report_obj']['title_name']
-                var subject = reports_data['report_obj']['subject']
+                var subject = thresholdAlertEmail?"Threshold Alert"+reports_data['report_obj']['subject']:reports_data['report_obj']['subject'];
                 var build_url = reports_data['report_obj']['build_url']
                 var share_link = reports_data['report_obj']['share_link']
                 var dash_board = reports_data['report_obj']['dashboard_name']
@@ -228,7 +228,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
-                    task_status: "grpc err:" + err,
+                    task_status: 'error while fetching records data from GRPC'+thresholdAlertEmail?' for threshold alert':'',
                 });
             }
 
