@@ -152,6 +152,36 @@ app.get('/api/jobFilter/', (req, res) => {
     })
 });
 
+app.post('/api/buildVisualizationImage/', function (req, res) {
+    var result = validator.validateBuildVisualizationReqBody(req.body);
+    if (result.error) {
+        logger.log({
+            level: 'error',
+            message: 'error building visualization image due to invalid request body',
+            errMsg: result.error.details[0].message
+        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
+    }
+    else {
+        jobs.buildVisualizationImage(req.body).then(function (result) {
+            if (result.success == 1) {
+                res.status(201).json({
+                    message: result.message,
+                });
+            }
+            else {
+                res.status(302).json({
+                    message: result.message,
+                });
+            }
+        }, function (err) {
+            res.send(err);
+        })
+    }
+
+});
+
 module.exports = app;    //for testing
 
 

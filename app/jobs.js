@@ -5,6 +5,7 @@ var scheduler = require('./shedular');
 var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
+var buildVisualizationService=require('./build-visualization.service');
 var logger = require('./logger');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -559,6 +560,66 @@ var job = {
 
 
     },
+    buildVisualizationImage: async function (params) {
+        var response={};
+        try {
+            let report = {
+                dashboard_name: params.report.dashboard_name,
+                view_name: params.report.view_name,
+                share_link: params.report.share_link,
+                build_url:params.report.build_url,
+                mail_body: params.report.mail_body,
+                subject: params.report.subject,
+                report_name: params.report.report_name,
+                title_name: params.report.title_name,
+                userid:params.report.userid,
+            };
+            let report_line_item ={
+                visualizationid:params.report_line_item.visualizationid,
+                viz_type: params.report_line_item.visualization,
+                dimension: params.report_line_item.dimension,
+                measure: params.report_line_item.measure,
+                query:JSON.parse(params.query),
+            };
+            let assign_report_obj = {
+                channel: params.assign_report.channel,
+                email_list: params.assign_report.email_list,
+            };
+            let shedualar_obj = {
+                cron_exp: params.schedule.cron_exp,
+                active: true,
+                timezone: params.schedule.timezone,
+                start_date: moment(params.schedule.start_date),
+                end_date: moment(params.schedule.end_date)
+            };
+            let threshold_lert={};
+            if(params.thresholdAlert){
+                threshold_lert = {
+                    visualizationid:params.report_line_item.visualizationid,
+                    queryHaving:JSON.parse(params.queryHaving),
+                };
+            }
+            var reports_data={
+                report_obj:report,
+                report_line_obj :report_line_item,
+                report_assign_obj:assign_report_obj,
+                report_shedular_obj:shedualar_obj,
+                report_threshold_alert:threshold_lert
+            }
+            response['visualizationBytes']=buildVisualizationService.loadDataAndBuildVisualization(reports_data,false);
+            if(reports_data.report_threshold_alert)
+                response['visualizationThresholdAlertBytes']=buildVisualizationService.loadDataAndBuildVisualization(reports_data,true);
+            return response;
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while generating image',
+                error: ex,
+              });
+            return {message: 'error while generating image'+ex };
+        }
+},
 }
 
 module.exports = job;
