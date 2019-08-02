@@ -84,33 +84,33 @@ var validator = {
         return result;
     },
     validateBuildVisualizationReqBody: function (reqBody) {
-        var reportBodySchema = Joi.object().keys({
-            userid: Joi.string().allow(null, ''),
-            //dashboard_name: Joi.string().allow(null, ''),
-            //view_name: Joi.string().allow(null, ''),
-            share_link: Joi.string().required(),
-            build_url: Joi.string().required(),
-            //mail_body: Joi.string().allow(null, ''),
-            //subject: Joi.string().allow(null, ''),
-            report_name: Joi.string().required(),
-            title_name: Joi.string().allow(null, ''),
-        });
-        var reportLineSchema = Joi.object().keys({
-            dimension: Joi.array().items(Joi.string()),
-            measure: Joi.array().items(Joi.string()).min(1),
-            visualization: Joi.string().valid(supportedCharts).required(),
-            visualizationid:Joi.string(),
-        });
+        // var reportBodySchema = Joi.object().keys({
+        //     userid: Joi.string().allow(null, ''),
+        //     //dashboard_name: Joi.string().allow(null, ''),
+        //     //view_name: Joi.string().allow(null, ''),
+        //     //share_link: Joi.string().required(),
+        //     //build_url: Joi.string().required(),
+        //     //mail_body: Joi.string().allow(null, ''),
+        //     //subject: Joi.string().allow(null, ''),
+        //     report_name: Joi.string().required(),
+        //     title_name: Joi.string().allow(null, ''),
+        // });
+        // var reportLineSchema = Joi.object().keys({
+        //     dimension: Joi.array().items(Joi.string()),
+        //     measure: Joi.array().items(Joi.string()).min(1),
+        //     visualization: Joi.string().valid(supportedCharts).required(),
+        //     visualizationid:Joi.string(),
+        // });
 
-        var assignReportSchema = Joi.object().keys({
-            channel: Joi.string().valid(['email', 'slack', 'stride']).required(),
-            slack_API_Token: Joi.string().allow(null, ''),
-            channel_id: Joi.string().allow(null, ''),
-            stride_API_Token: Joi.string().allow(null, ''),
-            stride_cloud_id: Joi.string().allow(null, ''),
-            stride_conversation_id: Joi.string().allow(null, ''),
-            //email_list: Joi.array().allow(null, '')
-        });
+        // var assignReportSchema = Joi.object().keys({
+        //     channel: Joi.string().valid(['email', 'slack', 'stride']).required(),
+        //     slack_API_Token: Joi.string().allow(null, ''),
+        //     channel_id: Joi.string().allow(null, ''),
+        //     stride_API_Token: Joi.string().allow(null, ''),
+        //     stride_cloud_id: Joi.string().allow(null, ''),
+        //     stride_conversation_id: Joi.string().allow(null, ''),
+        //     //email_list: Joi.array().allow(null, '')
+        // });
 
         // var scheduleSchema = Joi.object().keys({
         //     cron_exp: Joi.string().allow(null, ''),
@@ -120,13 +120,16 @@ var validator = {
         // });
 
         var reportSchema = Joi.object().keys({
-            report: reportBodySchema,
+            userId: Joi.string().allow(null, ''),
+            reportName: Joi.string().required(),
+            titleName: Joi.string().allow(null, ''),
+            dimension: Joi.array().items(Joi.string()),
+            measure: Joi.array().items(Joi.string()).min(1),
+            //vizType:Joi.string().required(),
+            visualization: Joi.string().valid(supportedCharts).required(),
+            visualizationId:Joi.string(),
             query:Joi.string(),
-            report_line_item: reportLineSchema,
-            assign_report: assignReportSchema,
-            //schedule: scheduleSchema,
-            queryHaving:Joi.string().allow(null, ''),
-            thresholdAlert:Joi.boolean()
+            queryHaving:Joi.string().allow(null, '')
         });
 
         result = Joi.validate(reqBody, reportSchema);
