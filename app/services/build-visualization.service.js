@@ -1,17 +1,8 @@
-var models = require('./database/models/index');
-var wkhtmltoimage = require('wkhtmltoimage');
-var grpc_client = require('./grpc/client');
-var charts = require('./chart/generate-charts');
-var logger = require('./logger');
-var fs = require('fs');
-var AppConfig = require('./load_config');
-var image_dir = AppConfig.imageFolder;
-var base64Img = require('base64-img');
-
-
-const retryDelay = 3000 //in miliseconds
-
-var wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
+var models = require('../database/models/index');
+var grpc_client = require('../grpc/client');
+var charts = require('../chart/generate-charts');
+var logger = require('../logger');
+var imageProcessor = require('./image-processor.service');
 
 const chartMap = {
     'Pie Chart': {
@@ -141,13 +132,10 @@ exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(r
                 generate_chart = chartMap[report.visualization].generateChart(report, json_res.data);
                 generate_chart.then(function (response) {
                     var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+report.visualizationId:report.visualizationId +new Date().getTime()+'.png';
-                    wkhtmltoimage.generate(response, { output: image_dir + imagefilename }, function (code, signal) {
-                        base64Img.base64(image_dir + imagefilename, function(err, data) {
-                            var encodedUrl = "data:image/png;base64,"+ data;
-                            fs.unlink(image_dir + imagefilename);
-                            resolve(encodedUrl);
-                            //return ;
-                        });
+                    imageProcessor.saveImageConvertToBase64(imagefilename,response).then(function (bytes) {
+                        resolve(bytes);
+                    }).catch(function (error) {
+                        reject(error);
                     });
                 }, function (err) {
                     logger.log({
@@ -156,7 +144,6 @@ exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(r
                         errMsg: err,
                     });
                     reject({message: 'error while generating chart : '+err});
-                    //return {message: 'error while generating chart : '+err};
                 });
             }, function (err) {
                 logger.log({
@@ -164,7 +151,6 @@ exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(r
                     message: 'error while fetching records data from GRPC'+err,
                     errMsg: err,
                 });
-                //return {message:'error while fetching records data from GRPC'+err};
                 reject({message:'error while fetching records data from GRPC'+err});
             })
         }

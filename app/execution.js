@@ -1,18 +1,10 @@
 var sendmailtool = require('./send-mail');
 var models = require('./database/models/index');
-var wkhtmltoimage = require('wkhtmltoimage');
 var grpc_client = require('./grpc/client');
 var charts = require('./chart/generate-charts');
 var logger = require('./logger');
-var fs = require('fs');
-var AppConfig = require('./load_config');
-var image_dir = AppConfig.imageFolder;
-var base64Img = require('base64-img');
-
-
+var imageProcessor = require('./services/image-processor.service');
 const retryDelay = 3000 //in miliseconds
-
-var wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
 
 const chartMap = {
     'Pie Chart': {
@@ -159,44 +151,51 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 var mailRetryCount = 0;
                 function sendMail(subject, to_mail_list, mail_body, report_title,imagefilename) {
                     mailRetryCount += 1;
-                    wkhtmltoimage.generate(response, { output: image_dir + imagefilename }, function (code, signal) {
-                        base64Img.base64(image_dir + imagefilename, function(err, data) {
-                            var encodedUrl = "data:image/png;base64,"+ data;
-                            fs.unlink(image_dir + imagefilename);
-                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, encodedUrl,imagefilename).then(function (response) {
-                                try {
-                                    let shedularlog = models.SchedulerTaskLog.create({
-                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                        task_executed: new Date(Date.now()).toISOString(),
-                                        task_status: "success",
-                                    });
-                                } catch (error) {
-                                    logger.log({
-                                        level: 'error',
-                                        message: 'error while saving scheduler log',
-                                    });
-                                }
-        
-                            },
-                            function (error) {
+                    imageProcessor.saveImageConvertToBase64(imagefilename,response).then(function (bytes) {
+                        sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, bytes,imagefilename).then(function (success) {
+                            try {
+                                let shedularlog = models.SchedulerTaskLog.create({
+                                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                    task_executed: new Date(Date.now()).toISOString(),
+                                    task_status: "success",
+                                });
+                            } catch (error) {
                                 logger.log({
                                     level: 'error',
-                                    message: 'error while sending mail'+thresholdAlertEmail?' for threshold alert':'',
-                                    errMsg: error,
+                                    message: 'error while saving scheduler log',
                                 });
-                                if (mailRetryCount < 2) {
-                                    setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, encodedUrl,imagefilename),
-                                        retryDelay);
-                                }
-                                else {
-                                    let shedularlog = models.SchedulerTaskLog.create({
-                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                        task_executed: new Date(Date.now()).toISOString(),
-                                        task_status: "mail " + error,
-                                    });
-                                }
-        
+                            }
+    
+                        },
+                        function (error) {
+                            logger.log({
+                                level: 'error',
+                                message: 'error while sending mail'+thresholdAlertEmail?' for threshold alert':'',
+                                errMsg: error,
                             });
+                            if (mailRetryCount < 2) {
+                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, encodedUrl,imagefilename),
+                                    retryDelay);
+                            }
+                            else {
+                                let shedularlog = models.SchedulerTaskLog.create({
+                                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                    task_executed: new Date(Date.now()).toISOString(),
+                                    task_status: "mail " + error,
+                                });
+                            }
+    
+                        });
+                    }).catch(function (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while generating image'+thresholdAlertEmail?' for threshold alert':'',
+                            errMsg: err,
+                        });
+                        let shedularlog = models.SchedulerTaskLog.create({
+                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                            task_executed: new Date(Date.now()).toISOString(),
+                            task_status: "mail " + error,
                         });
                     });
                 }
