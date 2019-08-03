@@ -164,20 +164,13 @@ app.post('/api/buildVisualizationImage/', function (req, res) {
         res.status(422).end();
     }
     else {
-        jobs.buildVisualizationImage(req.body).then(function (result) {
-            if (result.success == 1) {
-                res.status(201).json({
-                    message: result.message,
-                });
-            }
-            else {
-                res.status(302).json({
-                    message: result.message,
-                });
-            }
-        }, function (err) {
-            res.send(err);
-        })
+        jobs.buildVisualizationImage(req.body).then(function (img) {
+            res.send(img);
+        }).catch(function (error) {
+            res.send({
+                message: error.message
+            });
+        });
     }
 
 });

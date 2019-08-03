@@ -132,38 +132,43 @@ const chartMap = {
 };
 
 exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(report,thresholdAlertEmail) {
-    let query = thresholdAlertEmail?report.queryHaving:report.query;
-    function loadDataFromGrpc(query) {
-        var data_call = grpc_client.getRecords(query);
-        data_call.then(function (response) {
-            var json_res = JSON.parse(response.data);
-            generate_chart = chartMap[report.visualization].generateChart(report, json_res.data);
-            generate_chart.then(function (response) {
-                var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+report.visualizationId:report.visualizationId +new Date().getTime()+'.png';
-                wkhtmltoimage.generate(response, { output: image_dir + imagefilename }, function (code, signal) {
-                    base64Img.base64(image_dir + imagefilename, function(err, data) {
-                        var encodedUrl = "data:image/png;base64,"+ data;
-                        fs.unlink(image_dir + imagefilename);
-                        return encodedUrl;
+    return new Promise((resolve, reject) => {
+        let query = thresholdAlertEmail?report.queryHaving:report.query;
+        function loadDataFromGrpc(query) {
+            var data_call = grpc_client.getRecords(query);
+            data_call.then(function (response) {
+                var json_res = JSON.parse(response.data);
+                generate_chart = chartMap[report.visualization].generateChart(report, json_res.data);
+                generate_chart.then(function (response) {
+                    var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+report.visualizationId:report.visualizationId +new Date().getTime()+'.png';
+                    wkhtmltoimage.generate(response, { output: image_dir + imagefilename }, function (code, signal) {
+                        base64Img.base64(image_dir + imagefilename, function(err, data) {
+                            var encodedUrl = "data:image/png;base64,"+ data;
+                            fs.unlink(image_dir + imagefilename);
+                            resolve(encodedUrl);
+                            //return ;
+                        });
                     });
+                }, function (err) {
+                    logger.log({
+                        level: 'error',
+                        message: 'error while generating chart : '+err,
+                        errMsg: err,
+                    });
+                    reject({message: 'error while generating chart : '+err});
+                    //return {message: 'error while generating chart : '+err};
                 });
             }, function (err) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating chart : '+err,
+                    message: 'error while fetching records data from GRPC'+err,
                     errMsg: err,
                 });
-                return {message: 'error while generating chart : '+err};
-            });
-        }, function (err) {
-            logger.log({
-                level: 'error',
-                message: 'error while fetching records data from GRPC'+err,
-                errMsg: err,
-            });
-            return {message:'error while fetching records data from GRPC'+err};
-        })
-    }
-    loadDataFromGrpc(query);
+                //return {message:'error while fetching records data from GRPC'+err};
+                reject({message:'error while fetching records data from GRPC'+err});
+            })
+        }
+        loadDataFromGrpc(query);
+    });
 }
 

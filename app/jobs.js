@@ -561,36 +561,40 @@ var job = {
 
     },
     buildVisualizationImage: function (params) {
-        var response={};
-        try {
-            let report = {
-                userId: params.userId,
-                reportName: params.reportName,
-                titleName: params.titleName,
-                dimension: params.dimension,
-                measure: params.measure,
-                visualization: params.visualization,
-                visualizationId:params.visualizationId,
-                query:JSON.parse(params.query),
-            };
-            buildVisualizationService.loadDataAndBuildVisualization(report,false).then(function (visualizationBytes) {
-                response['visualizationBytes']=visualizationBytes;
-                return response;
-            });
-            // if(params.queryHaving){
-            //     report['queryHaving']=JSON.parse(params.queryHaving);
-            //     response['visualizationThresholdAlertBytes']=buildVisualizationService.loadDataAndBuildVisualization(report,true);
-            // }
-        }
-        catch (ex) {
-            logger.log({
-                level: 'error',
-                message: 'error while generating image',
-                error: ex,
-              });
-            return {message: 'error while generating image'+ex };
-        }
-},
+        return new Promise((resolve, reject) => {
+            var response={};
+            try {
+                let report = {
+                    userId: params.userId,
+                    reportName: params.reportName,
+                    titleName: params.titleName,
+                    dimension: params.dimension,
+                    measure: params.measure,
+                    visualization: params.visualization,
+                    visualizationId:params.visualizationId,
+                    query:JSON.parse(params.query),
+                };
+                buildVisualizationService.loadDataAndBuildVisualization(report,false).then(function (visualizationBytes) {
+                    response['visualizationBytes']=visualizationBytes;
+                    resolve(response);
+                }).catch(function (error) {
+                    reject({message: 'error while generating image'+error });
+                });
+                // if(params.queryHaving){
+                //     report['queryHaving']=JSON.parse(params.queryHaving);
+                //     response['visualizationThresholdAlertBytes']=buildVisualizationService.loadDataAndBuildVisualization(report,true);
+                // }
+            }
+            catch (ex) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while generating image',
+                    error: ex,
+                });
+                reject({message: 'error while generating image'+ex });
+            }
+        });
+    },
 }
 
 module.exports = job;
