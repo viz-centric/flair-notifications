@@ -29,6 +29,7 @@ var job = {
                     report_name: params.report.report_name,
                     title_name: params.report.title_name,
                     userid:params.report.userid,
+                    thresholdAlert:params.report.thresholdAlert
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
@@ -54,14 +55,6 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
-
-                if(params.thresholdAlert){
-                    let threshold_lert = await models.ThresholdAlert.create({
-                        ReportId: report.id,
-                        visualizationid:params.report_line_item.visualizationid,
-                        queryHaving:JSON.parse(params.queryHaving),
-                    }, { transaction })
-                }
 
                 job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
@@ -115,10 +108,6 @@ var job = {
                 },
                 {
                     model: models.SchedulerTask,
-                },
-                {
-                    model: models.ThresholdAlert,
-                    as:'thresholdalert'
                 }
             ],
 
@@ -136,7 +125,8 @@ var job = {
                     subject: report_data.report.subject,
                     report_name: report_data.report.report_name,
                     title_name: report_data.report.title_name,
-                    userid:report_data.report.userid,},
+                    userid:report_data.report.userid,
+                    thresholdAlert:report_data.report.thresholdAlert},
                     {where: {
                         id: exist_report.id
                     }}, { transaction });
@@ -169,26 +159,6 @@ var job = {
                     ReportId: exist_report.id
                 }}, { transaction });
 
-                if(exist_report.thresholdalert && report_data.thresholdAlert){
-                    let threshold_lert = await models.ThresholdAlert.update({
-                        visualizationid:report_data.report_line_item.visualizationid,
-                        queryHaving:JSON.parse(report_data.queryHaving)},
-                    {where: {
-                        ReportId: exist_report.id
-                    }}, { transaction });
-                }if(!exist_report.thresholdalert && report_data.thresholdAlert){
-                    let threshold_lert = await models.ThresholdAlert.create({
-                        ReportId: exist_report.id,
-                        visualizationid:report_data.report_line_item.visualizationid,
-                        queryHaving:JSON.parse(report_data.queryHaving),
-                    }, { transaction });
-                }if(exist_report.thresholdalert && !report_data.thresholdAlert){
-                    let threshold_lert = await models.ThresholdAlert.destroy({
-                        where: {
-                            visualizationid: report_data.report_line_item.visualizationid
-                        }
-                    }, { transaction });
-                }
                 var job_name="JOB_"+exist_report.reportline.visualizationid;
                 var start_date = moment(report_data.schedule.start_date);
                 var end_date = moment(report_data.schedule.end_date);
@@ -341,11 +311,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
-                    },
-                    {
-                        model: models.ThresholdAlert,
-                        as:'thresholdalert'
-                    },
+                    }
                 ],
                 where: {
                     userid:userName,     
@@ -393,11 +359,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
-                    },
-                    {
-                        model: models.ThresholdAlert,
-                        as:'thresholdalert'
-                    },
+                    }
                 ],
             })
             if ( exist_report ) {
@@ -458,10 +420,6 @@ var job = {
                         model: models.AssignReport
                     },
                     {
-                        model: models.ThresholdAlert,
-                        as:'thresholdalert'
-                    },
-                    {
                         model: models.SchedulerTask,
                         where:{ active: true }
                     }
@@ -472,12 +430,11 @@ var job = {
                     report_obj:report,
                     report_line_obj :report.reportline,
                     report_assign_obj:report.AssignReport,
-                    report_shedular_obj:report.SchedulerTask,
-                    report_threshold_alert:report.thresholdalert
+                    report_shedular_obj:report.SchedulerTask
                 }
-                execution.loadDataAndSendMail(reports_data,false);
-                if(reports_data.report_threshold_alert)
-                    execution.loadDataAndSendMail(reports_data,true);
+                execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
+                if(reports_data.report.thresholdAlert)
+                    execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };
@@ -521,12 +478,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:schedularWhereClause
-                    },
-                    {
-                        model: models.ThresholdAlert,
-                        as:'thresholdalert'
-                    },
-
+                    }
                 ],
                 where: reportWhereClause,
                 order: [
@@ -562,7 +514,6 @@ var job = {
     },
     buildVisualizationImage: function (params) {
         return new Promise((resolve, reject) => {
-            var response={};
             try {
                 let report = {
                     userId: params.userId,
@@ -573,17 +524,13 @@ var job = {
                     visualization: params.visualization,
                     visualizationId:params.visualizationId,
                     query:JSON.parse(params.query),
+                    thresholdAlert:params.thresholdAlert
                 };
-                buildVisualizationService.loadDataAndBuildVisualization(report,false).then(function (visualizationBytes) {
-                    response['visualizationBytes']=visualizationBytes;
-                    resolve(response);
+                buildVisualizationService.loadDataAndBuildVisualization(report,params.thresholdAlert).then(function (visualizationBytes) {
+                    resolve(visualizationBytes);
                 }).catch(function (error) {
                     reject({message: 'error while generating image'+error });
                 });
-                // if(params.queryHaving){
-                //     report['queryHaving']=JSON.parse(params.queryHaving);
-                //     response['visualizationThresholdAlertBytes']=buildVisualizationService.loadDataAndBuildVisualization(report,true);
-                // }
             }
             catch (ex) {
                 logger.log({

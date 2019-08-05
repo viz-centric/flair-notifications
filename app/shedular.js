@@ -43,11 +43,6 @@ var shedular = {
                             where: {
                                 active:true
                             },
-                        },
-                        {
-                            model: models.ThresholdAlert,
-                            as:'thresholdalert',
-                            where:{ visualizationid: visualizationid }
                         }
                     ],
                 }).then(function(report){
@@ -55,12 +50,11 @@ var shedular = {
                             report_obj:report,
                             report_line_obj :report.reportline,
                             report_assign_obj:report.AssignReport,
-                            report_shedular_obj:report.SchedulerTask,
-                            report_threshold_alert:report.thresholdalert
+                            report_shedular_obj:report.SchedulerTask
                         }
-                        execution.loadDataAndSendMail(reports_data,false);
+                        execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
                         if(reports_data.report_threshold_alert)
-                            execution.loadDataAndSendMail(reports_data,true);
+                            execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
                     }).catch(function(err){
                         logger.log({
                             level: 'error',

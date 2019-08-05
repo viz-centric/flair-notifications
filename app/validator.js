@@ -92,7 +92,7 @@ var validator = {
             visualization: Joi.string().valid(supportedCharts).required(),
             visualizationId:Joi.string(),
             query:Joi.string(),
-            queryHaving:Joi.string().allow(null, '')
+            thresholdAlert:Joi.boolean().required()
         });
         result = Joi.validate(reqBody, reportSchema);
         return result;

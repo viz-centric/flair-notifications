@@ -125,7 +125,7 @@ const chartMap = {
 };
 
 exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
-    let query = thresholdAlertEmail?reports_data.report_threshold_alert.queryHaving:reports_data.report_line_obj.query;
+    let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
