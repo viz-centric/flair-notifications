@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     mail_body: DataTypes.TEXT,
     title_name: DataTypes.STRING,
     userid : DataTypes.STRING,
+    thresholdAlert:DataTypes.BOOLEAN
   }, {});
   Report.associate = function(models) {
     Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
     Report.hasOne(models.AssignReport, { onDelete: 'cascade' });
     Report.hasOne(models.SchedulerTask, { onDelete: 'cascade' });
-    Report.hasOne(models.ThresholdAlert,{ as: 'thresholdalert', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
   };
   return Report;
 };
