@@ -132,7 +132,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
         var data_call = grpc_client.getRecords(query);
         data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
-
+            reports_data.report_line_obj.visualizationid=thresholdAlertEmail?reports_data.report_line_obj.visualizationid.split(":")[1]:reports_data.report_line_obj.visualizationid
             //render html chart
             generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
@@ -203,21 +203,19 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
             }, function (err) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating chart'+thresholdAlertEmail?' for threshold alert':'',
+                    message: thresholdAlertEmail?'error while generating chart for threshold alert'+err:'error while generating chart'+err,
                     errMsg: err,
                 });
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
-                    task_status: "chart error " + err,
+                    task_status: thresholdAlertEmail?'error while generating chart for threshold alert'+err:'error while generating chart'+err
                 });
-            })
-
-
+            });
         }, function (err) {
             logger.log({
                 level: 'error',
-                message: 'error while fetching records data from GRPC'+thresholdAlertEmail?' for threshold alert':'',
+                message: thresholdAlertEmail?'error while fetching records from GRPC for threshold alert'+err:'error while fetching records from GRPC'+err,
                 errMsg: err,
             });
             if (grpcRetryCount < 2) {
@@ -227,7 +225,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
-                    task_status: 'error while fetching records data from GRPC'+thresholdAlertEmail?' for threshold alert':'',
+                    task_status: thresholdAlertEmail?'error while fetching records from GRPC for threshold alert'+err:'error while fetching records from GRPC'+err,
                 });
             }
 
