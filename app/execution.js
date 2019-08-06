@@ -144,7 +144,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 }
                 var mail_body = reports_data['report_obj']['mail_body']
                 var report_title = reports_data['report_obj']['title_name']
-                var subject = thresholdAlertEmail?"Threshold Alert"+reports_data['report_obj']['subject']:reports_data['report_obj']['subject'];
+                var subject = thresholdAlertEmail?"Threshold Alert "+reports_data['report_obj']['subject']:reports_data['report_obj']['subject'];
                 var build_url = reports_data['report_obj']['build_url']
                 var share_link = reports_data['report_obj']['share_link']
                 var dash_board = reports_data['report_obj']['dashboard_name']
