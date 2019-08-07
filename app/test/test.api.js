@@ -21,7 +21,8 @@ describe('/api/jobSchedule/', () => {
         "mail_body":"This is a test email to check api functionality", 
         "subject":"Report : Clustered Vertical Bar Chart : Sun Mar 17 21:14:03 IST 2019", 
         "report_name":"report_x3", 
-        "title_name":"Clustered Vertical Bar Chart"
+        "title_name":"Clustered Vertical Bar Chart",
+        "thresholdAlert":false
         },
          "report_line_item":
          {
@@ -60,7 +61,7 @@ describe('/api/jobSchedule/', () => {
           .post('/api/jobSchedule')
           .send(report)
           .end((err, res) => {
-            console.log(res.body)
+            console.log(res.body);
                 res.should.have.status(201);
                 res.body.should.be.a('object');
                 res.body.should.have.property('message');
