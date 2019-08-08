@@ -5,6 +5,7 @@ var scheduler = require('./shedular');
 var moment = require('moment');
 var schedulerDTO = require('./database/DTOs/schedulerDTO');
 var execution=require('./execution');
+var buildVisualizationService=require('./services/build-visualization.service');
 var logger = require('./logger');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -28,6 +29,7 @@ var job = {
                     report_name: params.report.report_name,
                     title_name: params.report.title_name,
                     userid:params.report.userid,
+                    thresholdAlert:params.report.thresholdAlert
                 }, { transaction });
 
                 let report_line_item = await models.ReportLineItem.create({
@@ -53,6 +55,7 @@ var job = {
                     start_date: moment(params.schedule.start_date),
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
+
                 job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
                     job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp)
@@ -105,7 +108,7 @@ var job = {
                 },
                 {
                     model: models.SchedulerTask,
-                },
+                }
             ],
 
         })
@@ -122,7 +125,8 @@ var job = {
                     subject: report_data.report.subject,
                     report_name: report_data.report.report_name,
                     title_name: report_data.report.title_name,
-                    userid:report_data.report.userid,},
+                    userid:report_data.report.userid,
+                    thresholdAlert:report_data.report.thresholdAlert},
                     {where: {
                         id: exist_report.id
                     }}, { transaction });
@@ -154,6 +158,7 @@ var job = {
                 {where: {
                     ReportId: exist_report.id
                 }}, { transaction });
+
                 var job_name="JOB_"+exist_report.reportline.visualizationid;
                 var start_date = moment(report_data.schedule.start_date);
                 var end_date = moment(report_data.schedule.end_date);
@@ -165,6 +170,11 @@ var job = {
 
             }
             catch (ex) {
+                logger.log({
+                    level: 'error',
+                    message: 'error occured while updating report'+ex.message,
+                    errMsg: err,
+                });
                 await transaction.rollback();
                 return { success: 0, message: ex };
             }
@@ -301,7 +311,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
-                    },
+                    }
                 ],
                 where: {
                     userid:userName,     
@@ -349,7 +359,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
-                    },
+                    }
                 ],
             })
             if ( exist_report ) {
@@ -412,7 +422,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
-                    },
+                    }
                 ],
             })
             if ( report ) {
@@ -422,7 +432,9 @@ var job = {
                     report_assign_obj:report.AssignReport,
                     report_shedular_obj:report.SchedulerTask
                 }
-                execution.loadDataAndSendMail(reports_data);
+                execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
+                if(reports_data.report.thresholdAlert)
+                    execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
             }
             else {
                 return { message: "report is not found for visulization Id : "+visualizationid };
@@ -466,7 +478,7 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:schedularWhereClause
-                    },
+                    }
                 ],
                 where: reportWhereClause,
                 order: [
@@ -499,6 +511,36 @@ var job = {
         }
 
 
+    },
+    buildVisualizationImage: function (params) {
+        return new Promise((resolve, reject) => {
+            try {
+                let report = {
+                    userId: params.userId,
+                    reportName: params.reportName,
+                    titleName: params.titleName,
+                    dimension: params.dimension,
+                    measure: params.measure,
+                    visualization: params.visualization,
+                    visualizationId:params.visualizationId,
+                    query:JSON.parse(params.query),
+                    thresholdAlert:params.thresholdAlert
+                };
+                buildVisualizationService.loadDataAndBuildVisualization(report,params.thresholdAlert).then(function (visualizationBytes) {
+                    resolve(visualizationBytes);
+                }).catch(function (error) {
+                    reject({message: 'error while generating image'+error });
+                });
+            }
+            catch (ex) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while generating image',
+                    error: ex,
+                });
+                reject({message: 'error while generating image'+ex });
+            }
+        });
     },
 }
 

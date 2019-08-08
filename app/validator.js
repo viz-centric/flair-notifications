@@ -42,6 +42,7 @@ var validator = {
             subject: Joi.string().allow(null, ''),
             report_name: Joi.string().required(),
             title_name: Joi.string().allow(null, ''),
+            thresholdAlert:Joi.boolean().required()
         });
         var reportLineSchema = Joi.object().keys({
             dimension: Joi.array().items(Joi.string()),
@@ -75,9 +76,24 @@ var validator = {
             query:Joi.string(),
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
-            schedule: scheduleSchema,
+            schedule: scheduleSchema
         });
 
+        result = Joi.validate(reqBody, reportSchema);
+        return result;
+    },
+    validateBuildVisualizationReqBody: function (reqBody) {
+        var reportSchema = Joi.object().keys({
+            userId: Joi.string().allow(null, ''),
+            reportName: Joi.string().required(),
+            titleName: Joi.string().allow(null, ''),
+            dimension: Joi.array().items(Joi.string()),
+            measure: Joi.array().items(Joi.string()).min(1),
+            visualization: Joi.string().valid(supportedCharts).required(),
+            visualizationId:Joi.string(),
+            query:Joi.string(),
+            thresholdAlert:Joi.boolean().required()
+        });
         result = Joi.validate(reqBody, reportSchema);
         return result;
     },

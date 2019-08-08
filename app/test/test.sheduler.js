@@ -1,36 +1,19 @@
 process.env.NODE_ENV = 'test';
-
 chai=require('chai');
-var AppConfig = require('../load_config');
-var image_dir = AppConfig.imageFolder;
-var wkhtmltoimage = require('wkhtmltoimage');
-var scheduler = require('node-schedule');
-var fs = require('fs');
+var expect  = chai.expect;
+var imageProcessorService = require('../services/image-processor.service');
 
-describe('node schedule', () => {
-    
-    it('check node sheduler', (done) => {
-        
-        var date = new Date();
-        var dateAfterTwoSecond = new Date(date.getTime() + 3000);
-        var filetoCheck;
-        scheduler.scheduleJob(dateAfterTwoSecond, function(){
-            var imagefilename='test'+ '_' + new Date().getTime() +'.jpg';
-            wkhtmltoimage.generate('http://example.com/', { output: image_dir + imagefilename });
-            filetoCheck=image_dir+imagefilename;
+
+
+describe('Image Processor Service', () => {
+    it('service return base64 bytes ', (done) => {
+        var imagefilename='test.png'
+        var imageProcessorServiceResponse=imageProcessorService.saveImageConvertToBase64(imagefilename,'http://example.com/')
+        imageProcessorServiceResponse.then(function (response) {
+            done();
+        }).
+        catch(function (done) {
         });
-        
-        setTimeout(() => checkImage(filetoCheck), 7000);
-        function checkImage(path){
-            
-            if (fs.existsSync(path)) {
-                done()
-            }
-            //delete after test
-            fs.unlinkSync(path);
-        }
-        
-        
     });
 
 });

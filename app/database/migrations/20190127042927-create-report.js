@@ -39,6 +39,9 @@ module.exports = {
       userid: {
         type: Sequelize.STRING
       },
+      thresholdAlert:{
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

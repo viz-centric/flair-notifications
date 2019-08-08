@@ -20,8 +20,18 @@ var app = express()
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+app.use(function(req, res, next) {
+    preprocessor(req);
+    next();
+});
 
+const vizIdPrefix='threshold_alert_:';
 
+function preprocessor(req){
+    if(req.method=='POST' || req.method=='PUT'){
+        req.body.report_line_item.visualizationid=req.body.report.thresholdAlert?vizIdPrefix+req.body.report_line_item.visualizationid:req.body.report_line_item.visualizationid;
+    }
+}
 
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
@@ -31,9 +41,8 @@ app.post('/api/jobSchedule/', function (req, res) {
             message: 'error in schedule api due to invalid request body',
             errMsg: result.error.details[0].message
         });
-        res.status(422).json({
-            message: result.error.details[0].message.replace(/\"/g, ""),
-        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
     }
     else {
         jobs.createJob(req.body).then(function (result) {
@@ -56,9 +65,8 @@ app.post('/api/jobSchedule/', function (req, res) {
 app.put('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
-        res.status(422).json({
-            message: result.error.details[0].message.replace(/\"/g, ""),
-        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
     }
     else {
         jobs.modifyJob(req.body).then(function (result) {
@@ -152,6 +160,29 @@ app.get('/api/jobFilter/', (req, res) => {
     }, function (err) {
         res.send(err);
     })
+});
+
+app.post('/api/buildVisualizationImage/', function (req, res) {
+    var result = validator.validateBuildVisualizationReqBody(req.body);
+    if (result.error) {
+        logger.log({
+            level: 'error',
+            message: 'error building visualization image due to invalid request body',
+            errMsg: result.error.details[0].message
+        });
+        res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
+        res.status(422).end();
+    }
+    else {
+        jobs.buildVisualizationImage(req.body).then(function (img) {
+            res.send(img);
+        }).catch(function (error) {
+            res.send({
+                message: error.message
+            });
+        });
+    }
+
 });
 
 module.exports = app;    //for testing

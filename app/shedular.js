@@ -43,8 +43,7 @@ var shedular = {
                             where: {
                                 active:true
                             },
-                        },
-            
+                        }
                     ],
                 }).then(function(report){
                         var reports_data={
@@ -53,7 +52,9 @@ var shedular = {
                             report_assign_obj:report.AssignReport,
                             report_shedular_obj:report.SchedulerTask
                         }
-                        execution.loadDataAndSendMail(reports_data);
+                        execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
+                        if(reports_data.report_threshold_alert)
+                            execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
                     }).catch(function(err){
                         logger.log({
                             level: 'error',

@@ -53,6 +53,22 @@ message Query {
         BIDITOGGLE = 1;
     }
     QueryType queryType = 11;
+
+    message HavingHolder {
+        string featureName = 1;
+        string value = 2;
+        enum ComparatorType {
+            EQ = 0;
+            NEQ = 1;
+            GT = 2;
+            LT = 3;
+            GTE = 4;
+            LTE = 5;
+        }
+        ComparatorType comparatorType = 3;
+    }
+    repeated HavingHolder having = 13;
+    bool enableCaching = 12;
 }
 
 message QueryResponse {
