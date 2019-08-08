@@ -20,6 +20,8 @@ const scatter = require('flair-visualizations/js/charts/scatter');
 const gauge = require('flair-visualizations/js/charts/gauge');
 const textobject = require('flair-visualizations/js/charts/textobject');
 const chorddiagram = require('flair-visualizations/js/charts/chorddiagram');
+const piegrid = require('flair-visualizations/js/charts/piegrid');
+const numbergrid = require('flair-visualizations/js/charts/numbergrid');
 const load_config = require('./load-config');
 const jsdom = require('jsdom');
 const chartUtility = require('./chart-util');
@@ -336,6 +338,32 @@ var charts = {
     sankeyChartobj(d3.select(sankeyFakeDom.window.document).select('#sankey'))
     return sankeyChartobj._getHTML();
   },
+
+  piegridChart: async function (viz_id, data) {
+
+    var piegridFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="piegrid" width="950" height="440"></div></body></html>');
+    chartUtility.configureDomForcharts(piegridFakeDom.window.document)
+
+    var piegridChartobj = piegrid();
+    var chartConfig = await load_config.piegridChartConfig(viz_id);
+
+    piegridChartobj.config(chartConfig).print(true).data(data);
+    piegridChartobj(d3.select(piegridFakeDom.window.document).select('#piegrid'))
+    return piegridChartobj._getHTML();
+  },
+
+  numbergridChart: async function (viz_id, data) {
+
+    var numbergridFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="numbergrid" width="950" height="440"></div></body></html>');
+    chartUtility.configureDomForcharts(numbergridFakeDom.window.document)
+
+    var numbergridChartobj = numbergrid();
+    var chartConfig = await load_config.numbergridChartConfig(viz_id);
+
+    numbergridChartobj.config(chartConfig).print(true).data(data);
+    numbergridChartobj(d3.select(numbergridFakeDom.window.document).select('#numbergrid'))
+    return numbergridChartobj._getHTML();
+  }
 }
 
 module.exports = charts;

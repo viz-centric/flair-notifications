@@ -1685,6 +1685,124 @@ var configs = {
         return chartconfigPromise;
 
     },
+    piegridChartConfig: function (viz_id) {
+
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var result = {};
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimension = features.dimensions,
+                            measure = features.measures;
+                        result['dimension'] = VisualizationUtils.getNames(dimension);
+                        result['measure'] = VisualizationUtils.getNames(measure);
+                        result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
+                        result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
+
+                        result['fontSize'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size');
+                        result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font style');
+                        result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
+                        result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
+                        result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
+
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+
+        return chartconfigPromise;
+
+    },
+    numbergridChartConfig: function (viz_id) {
+
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var result = {};
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimension = features.dimensions,
+                            measure = features.measures;
+                        result['dimension'] = VisualizationUtils.getNames(dimension);
+                        result['measure'] = VisualizationUtils.getNames(measure);
+                        result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
+                        result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
+
+                        result['fontSize'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size');
+                        result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font style');
+                        result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
+                        result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
+                        result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
+
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+
+        return chartconfigPromise;
+
+    }
 }
 
 module.exports = configs;
