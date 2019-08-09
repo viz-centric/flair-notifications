@@ -1,10 +1,10 @@
 const Joi = require('joi');
 const cronParser = require('cron-parser');
 
-const supportedCharts=['Pie Chart','Line Chart','Clustered Vertical Bar Chart','Clustered Horizontal Bar Chart',
-                'Stacked Vertical Bar Chart','Stacked Horizontal Bar Chart','Heat Map','Combo Chart','Tree Map',
-                'Info-graphic','Box Plot','Bullet Chart','Sankey','Table','Pivot Table','Doughnut Chart','KPI',
-                'Scatter plot','Gauge plot']
+const supportedCharts = ['Pie Chart', 'Line Chart', 'Clustered Vertical Bar Chart', 'Clustered Horizontal Bar Chart',
+    'Stacked Vertical Bar Chart', 'Stacked Horizontal Bar Chart', 'Heat Map', 'Combo Chart', 'Tree Map',
+    'Info-graphic', 'Box Plot', 'Bullet Chart', 'Sankey', 'Table', 'Pivot Table', 'Doughnut Chart', 'KPI',
+    'Scatter plot', 'Gauge plot', 'Text Object', 'Chord Diagram', 'Pie Grid', 'Number Grid']
 
 const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
@@ -17,12 +17,12 @@ const customJoi = Joi.extend((joi) => ({
             name: 'valid',
             validate(params, value, state, options) {
                 try {
-                  cronParser.parseExpression(value);
+                    cronParser.parseExpression(value);
                 } catch (err) {
-                  return this.createError('crone.valid', {v: value}, state, options);
+                    return this.createError('crone.valid', { v: value }, state, options);
                 }
                 return value;
-              }
+            }
         },
     ]
 }));
@@ -42,13 +42,13 @@ var validator = {
             subject: Joi.string().allow(null, ''),
             report_name: Joi.string().required(),
             title_name: Joi.string().allow(null, ''),
-            thresholdAlert:Joi.boolean().required()
+            thresholdAlert: Joi.boolean().required()
         });
         var reportLineSchema = Joi.object().keys({
             dimension: Joi.array().items(Joi.string()),
             measure: Joi.array().items(Joi.string()).min(1),
             visualization: Joi.string().valid(supportedCharts).required(),
-            visualizationid:Joi.string(),
+            visualizationid: Joi.string(),
         });
 
         var assignReportSchema = Joi.object().keys({
@@ -73,7 +73,7 @@ var validator = {
 
         var reportSchema = Joi.object().keys({
             report: reportBodySchema,
-            query:Joi.string(),
+            query: Joi.string(),
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
             schedule: scheduleSchema
@@ -90,9 +90,9 @@ var validator = {
             dimension: Joi.array().items(Joi.string()),
             measure: Joi.array().items(Joi.string()).min(1),
             visualization: Joi.string().valid(supportedCharts).required(),
-            visualizationId:Joi.string(),
-            query:Joi.string(),
-            thresholdAlert:Joi.boolean().required()
+            visualizationId: Joi.string(),
+            query: Joi.string(),
+            thresholdAlert: Joi.boolean().required()
         });
         result = Joi.validate(reqBody, reportSchema);
         return result;

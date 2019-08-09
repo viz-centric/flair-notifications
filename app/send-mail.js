@@ -4,7 +4,7 @@ var ejs = require("ejs");
 var AppConfig = require('./load_config');
 
 var image_dir = AppConfig.imageFolder;
-var appLogo = 'flairbi-logo.jpg';
+var appLogo = 'flairbi-logo.png';
 
 var transporter = nodemailer.createTransport({
     host: AppConfig.mailService.host,
