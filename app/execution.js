@@ -7,112 +7,60 @@ var imageProcessor = require('./services/image-processor.service');
 const retryDelay = 3000 //in miliseconds
 
 const chartMap = {
-    'Pie Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.pieChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Line Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.lineChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
     'Clustered Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
     'Clustered Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
-    'Heat Map': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.heatmapChart(config, data);
-        }
-    },
+
     'Stacked Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
     'Stacked Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
             return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
+    'Line Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.lineChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Combo Chart': {
         generateChart: function (report_obj, data) {
             return charts.comboChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
-    'Tree Map': {
-        generateChart: function (report_obj, data) {
-            return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Info-graphic': {
-        generateChart: function (report_obj, data) {
-            return charts.infographicsChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Box Plot': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.boxplotChart(config, data);
-        }
-    },
-    'Bullet Chart': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.bulletChart(config, data);
-        }
-    },
-    'Sankey': {
-        generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.sankeyChart(config, data);
-        }
-    },
-    'Table': {
-        generateChart: function (report_obj, data) {
-            return charts.tableChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Pivot Table': {
-        generateChart: function (report_obj, data) {
-            return charts.pivottableChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'Doughnut Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.doughnutChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
-    'KPI': {
-        generateChart: function (report_obj, data) {
-            return charts.kpiChart(report_obj.report_line_obj.visualizationid, data);
-        }
-    },
+
     'Scatter plot': {
         generateChart: function (report_obj, data) {
             return charts.scatterChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
+
+    'Pie Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.pieChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Doughnut Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.doughnutChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Gauge plot': {
         generateChart: function (report_obj, data) {
             var config = {
@@ -122,6 +70,88 @@ const chartMap = {
             return charts.gaugeChart(config, data);
         }
     },
+
+    'Table': {
+        generateChart: function (report_obj, data) {
+            return charts.tableChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Pivot Table': {
+        generateChart: function (report_obj, data) {
+            return charts.pivottableChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'KPI': {
+        generateChart: function (report_obj, data) {
+            return charts.kpiChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Info-graphic': {
+        generateChart: function (report_obj, data) {
+            return charts.infographicsChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Tree Map': {
+        generateChart: function (report_obj, data) {
+            return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Heat Map': {
+        generateChart: function (report_obj, data) {
+            return charts.heatmapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Box Plot': {
+        generateChart: function (report_obj, data) {
+            var config = {
+                dimension: report_obj.report_line_obj.dimension,
+                measure: report_obj.report_line_obj.measure,
+            }
+            return charts.boxplotChart(config, data);
+        }
+    },
+
+    'Text Object': {
+        generateChart: function (report_obj, data) {
+            return charts.textObjectChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Bullet Chart': {
+        generateChart: function (report_obj, data) {
+            return charts.bulletChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Chord Diagram': {
+        generateChart: function (report_obj, data) {
+            return charts.chorddiagramChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Sankey': {
+        generateChart: function (report_obj, data) {
+            return charts.sankeyChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Pie Grid': {
+        generateChart: function (report_obj, data) {
+            return charts.piegridChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
+    'Number Grid': {
+        generateChart: function (report_obj, data) {
+            return charts.numbergridChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    }
 };
 
 exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
