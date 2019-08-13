@@ -1,5 +1,5 @@
 
-var app = require('../app');
+var app = require('../api');
 var AppConfig = require('../load_config');
 
 var port= AppConfig.port;  
