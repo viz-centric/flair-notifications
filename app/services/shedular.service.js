@@ -1,8 +1,8 @@
 var scheduler = require('node-schedule');
-var models = require('./database/models/index');
+var models = require('../database/models/index');
 var moment = require('moment');
-var execution=require('./execution');
-var logger=require('./logger');
+var execution=require('./build-visualization-sendmail.service');
+var logger=require('../logger');
 
 
 var shedular = {

@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer');
 var ejs = require("ejs");
 
-var AppConfig = require('./load_config');
+var AppConfig = require('../load_config');
 
 var image_dir = AppConfig.imageFolder;
 var appLogo = 'flairbi-logo.png';

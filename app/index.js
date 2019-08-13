@@ -1,6 +1,6 @@
-var app = require('./app');
+var app = require('./api');
 var AppConfig = require('./load_config');
-var restartJobModule=require('./restart-jobs')
+var restartJobModule=require('./services/restart-jobs.service');
 var logger=require('./logger')
 
 var port= AppConfig.port;  
