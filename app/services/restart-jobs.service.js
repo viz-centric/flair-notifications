@@ -1,6 +1,6 @@
-var models = require('./database/models/index');
-var shedular= require('./shedular');
-var logger= require('./logger');
+var models = require('../database/models/index');
+var shedular= require('./shedular.service');
+var logger= require('../logger');
 var retryCount = 1;
 var retryDelay=5000; // in miliseconds
 

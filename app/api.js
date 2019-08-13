@@ -1,9 +1,9 @@
 
 var express = require('express')
 var bodyParser = require('body-parser');
-var jobs = require('./jobs')
+var jobs = require('./services/report-dao.service')
 const fs = require('fs');
-var validator = require('./validator');
+var validator = require('./validation/validator');
 var logger = require('./logger');
 
 var AppConfig = require('./load_config');

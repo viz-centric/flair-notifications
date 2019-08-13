@@ -1,12 +1,12 @@
 
-var models = require('./database/models/index');
-var db = require('./database/models/index');
-var scheduler = require('./shedular');
+var models = require('../database/models/index');
+var db = require('../database/models/index');
+var scheduler = require('./shedular.service');
 var moment = require('moment');
-var schedulerDTO = require('./database/DTOs/schedulerDTO');
-var execution=require('./execution');
-var buildVisualizationService=require('./services/build-visualization.service');
-var logger = require('./logger');
+var schedulerDTO = require('../database/DTOs/schedulerDTO');
+var execution=require('./build-visualization-sendmail.service');
+var buildVisualizationService=require('./build-visualization.service');
+var logger = require('../logger');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const defaultPage=0;

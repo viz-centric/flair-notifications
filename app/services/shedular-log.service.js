@@ -1,7 +1,7 @@
 
 
-var models = require('./database/models/index');
-var db = require('./database/models/index');
+var models = require('../database/models/index');
+var db = require('../database/models/index');
 
 var shedularlog= {
     jobexecuted: async function(params) {

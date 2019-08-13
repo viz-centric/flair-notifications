@@ -1,9 +1,9 @@
-var sendmailtool = require('./send-mail');
-var models = require('./database/models/index');
-var grpc_client = require('./grpc/client');
-var charts = require('./chart/generate-charts');
-var logger = require('./logger');
-var imageProcessor = require('./services/image-processor.service');
+var sendmailtool = require('./email.service');
+var models = require('../database/models/index');
+var grpc_client = require('../grpc/client');
+var charts = require('../chart/generate-charts');
+var logger = require('../logger');
+var imageProcessor = require('./image-processor.service');
 const retryDelay = 3000 //in miliseconds
 
 const chartMap = {
@@ -204,7 +204,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                                 errMsg: error,
                             });
                             if (mailRetryCount < 2) {
-                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, encodedUrl,imagefilename),
+                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title,imagefilename),
                                     retryDelay);
                             }
                             else {
