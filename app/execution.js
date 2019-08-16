@@ -95,6 +95,12 @@ const chartMap = {
         }
     },
 
+    'Map': {
+        generateChart: function (report_obj, data) {
+            return charts.mapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Tree Map': {
         generateChart: function (report_obj, data) {
             return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
@@ -109,11 +115,7 @@ const chartMap = {
 
     'Box Plot': {
         generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.boxplotChart(config, data);
+            return charts.boxplotChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
@@ -153,6 +155,7 @@ const chartMap = {
         }
     }
 };
+
 
 exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
