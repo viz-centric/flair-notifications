@@ -1200,6 +1200,72 @@ var configs = {
         return chartconfigPromise;
 
     },
+    mapChartConfig: function (viz_id) {
+
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config for map chart',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var result = {};
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimension = features.dimensions,
+                            measure = features.measures;
+
+                        result['dimension'] = VisualizationUtils.getNames(dimension);
+                        result['measure'] = VisualizationUtils.getNames(measure);
+
+                        result['colorPattern'] = VisualizationUtils.getPropertyValue(properties, 'Color Pattern').toLowerCase().replace(' ', '_');
+                        result['colorSet'] = colorSet;
+                        result['colourOfLabels'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Colour of labels');
+                        result['displayColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display colour');
+                        result['textColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Text colour');
+                        result['borderColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Border colour');
+                        result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Number format');
+                        result['showValue'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Value on Points');
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config for map chart',
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config for map chart',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+
+        return chartconfigPromise;
+
+    },
+
     treemapChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
@@ -1372,6 +1438,72 @@ var configs = {
                 logger.log({
                     level: 'error',
                     message: 'error while fetching config',
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+        });
+
+        return chartconfigPromise;
+    },
+    boxplotChartConfig: function (viz_id) {
+
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config',
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var result = {};
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimensions = features.dimensions,
+                            measures = features.measures;
+
+                        result['dimension'] = [VisualizationUtils.getNames(dimensions)[0]];
+                        result['measure'] = VisualizationUtils.getNames(measures);
+
+                        result["dimension"] = ['country']//D3Utils.getNames(dimensions)[0];
+                        result["measure"] = ['low', 'qone', 'median', 'qthree', 'high']//D3Utils.getNames(measures);
+
+                        result["showXaxis"] = VisualizationUtils.getPropertyValue(properties, "Show X Axis");
+                        result["showYaxis"] = VisualizationUtils.getPropertyValue(properties, "Show Y Axis");
+                        result["axisColor"] = VisualizationUtils.getPropertyValue(properties, "Axis Colour");
+                        result["colorPattern"] = VisualizationUtils.getPropertyValue(properties, "Color Pattern");
+                        result["numberFormat"] = VisualizationUtils.getFieldPropertyValue(dimensions[0], "Number format");
+
+                        console.log("---------------" + JSON.stringify(result) + "------------")
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config box plot chart ' + viz_id,
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+                });
+
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config box plot chart ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);

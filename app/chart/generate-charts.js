@@ -22,6 +22,7 @@ const textobject = require('flair-visualizations/js/charts/textobject');
 const chorddiagram = require('flair-visualizations/js/charts/chorddiagram');
 const piegrid = require('flair-visualizations/js/charts/piegrid');
 const numbergrid = require('flair-visualizations/js/charts/numbergrid');
+const map = require('flair-visualizations/js/charts/map');
 const load_config = require('./load-config');
 const jsdom = require('jsdom');
 const chartUtility = require('./chart-util');
@@ -211,7 +212,6 @@ var charts = {
 
     kpiChartobj.config(chartConfig).print(true).data(data);
     kpiChartobj(d3.select(kpiFakeDom.window.document).select('#kpi'))
-
     return kpiChartobj._getHTML();
 
   },
@@ -227,6 +227,18 @@ var charts = {
     infographicsChartobj.config(chartConfig).print(true).data(data);
     infographicsChartobj(d3.select(infographicsFakeDom.window.document).select('#infographics'))
     return infographicsChartobj._getHTML();
+  },
+
+  mapChart: async function (viz_id, data) {
+    var mapFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="map" width="950" height="440"></div></body></html>');
+    chartUtility.configureDomForcharts(mapFakeDom.window.document)
+
+    var mapChartobj = map();
+    var chartConfig = await load_config.mapChartConfig(viz_id);
+
+    mapChartobj.config(chartConfig).print(true).data(data);
+    mapChartobj(d3.select(mapFakeDom.window.document).select('#map'))
+    return mapChartobj._getHTML();
   },
 
   treemapChart: async function (viz_id, data) {
@@ -254,37 +266,16 @@ var charts = {
     return heatmapChartobj._getHTML();
   },
 
-  boxplotChart: async function (config, data) {
-
-    var boxplotFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="boxplot" width="950" height="440"/></body></html>');
+  boxplotChart: async function (viz_id, data) {
+    var boxplotFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="boxplot" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(boxplotFakeDom.window.document)
+
     var boxplotChartobj = boxplot();
-    var newConfig = convertConfigToLowerCase(config);
-    var chartConfig = {
-      dimension: newConfig.dimension,
-      measure: newConfig.measure,
-      "showXaxis": true,
-      "showYaxis": true,
-      "axisColor": true,
-      "showLabels": false,
-      "labelColor": "Dimension 1",
-      "numberFormat": [true, true, true, true, true],
-      "displayColor": ["#efefef", "#909090", "#ababab", "#eeaaee", "#121545"]
-    };
-    boxplotChartobj.config(chartConfig).tooltip(false).print(true);
+    var chartConfig = await load_config.boxplotChartConfig(viz_id);
 
-    d3.select(boxplotFakeDom.window.document).select('#boxplot').datum(data).call(boxplotChartobj);
-
-    let chartRenderingPromise = new Promise((resolve, reject) => {
-      setTimeout(function () {
-        var chartHtml = boxplotChartobj._getHTML();
-        resolve(chartHtml)
-      }, 2000);
-    });
-    result = await chartRenderingPromise;
-    return result;
-
-
+    boxplotChartobj.config(chartConfig).print(true).data(data);
+    boxplotChartobj(d3.select(boxplotFakeDom.window.document).select('#boxplot'))
+    return boxplotChartobj._getHTML();
   },
 
   bulletChart: async function (viz_id, data) {
