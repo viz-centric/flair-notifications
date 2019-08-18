@@ -102,10 +102,10 @@ function getScheduledReport(request) {
     return new Promise(function (resolve, reject) {
         jobs.getJob(visualizationId)
             .then(function (result) {
-                if (result.job) {
-                    resolve({report: result.job});
+                if (result.success === 1) {
+                    resolve({report: result.job, message: result.message});
                 } else {
-                    resolve({message: result.message});
+                    reject({message: result.message});
                 }
             }, function (err) {
                 reject(err);

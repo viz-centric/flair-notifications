@@ -96,19 +96,6 @@ app.delete('/api/jobSchedule/', function (req, res) {
     })
 
 });
-app.get('/api/jobSchedule/', function (req, res) {
-    var visualizationid = req.query.visualizationid;
-    jobs.getJob(visualizationid)
-        .then(function (result) {
-            if (result.job) {
-                res.json({report: result.job});
-            } else {
-                res.json({message: result.message});
-            }
-        }, function (err) {
-            res.send(err);
-        })
-});
 
 app.get('/api/user/:userName/reports', (req, res) => {
     var page = (+req.query.page);
