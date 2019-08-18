@@ -42,8 +42,16 @@
   "java": {
     "repositories": [
       {
+        "id": "central",
+        "url": " http://central.maven.org/maven2/"
+      },
+      {
         "id": "dev-azure-com-vizcentric-flair-bi",
-        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-bi/maven/v1"
+        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-bi/maven/v1/"
+      },
+      {
+        "id": "dev-azure-com-vizcentric-flair-messages",
+        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-protobuf-messages/maven/v1/"
       }
     ],
     "dependencies": [
@@ -51,6 +59,12 @@
         "groupId": "com.project.bi",
         "artifactId": "flair-messages",
         "version": "0.0.12"
+      }
+    ],
+    "exclusions": [
+      {
+        "groupId": "io.grpc",
+        "artifactId": "grpc-core"
       }
     ]
   }
