@@ -1,21 +1,20 @@
-
-var express = require('express')
-var bodyParser = require('body-parser');
-var jobs = require('./jobs')
+const express = require('express');
+const bodyParser = require('body-parser');
+const jobs = require('./jobs');
 const fs = require('fs');
-var validator = require('./validator');
-var logger = require('./logger');
+const validator = require('./validator');
+const logger = require('./logger');
 
-var AppConfig = require('./load_config');
+const AppConfig = require('./load_config');
 
-var images_dir = AppConfig.imageFolder;
+const imageDir = AppConfig.imageFolder;
 
 // create image dir if not exit 
-if (!fs.existsSync(images_dir)) {
-    fs.mkdirSync(images_dir);
+if (!fs.existsSync(imageDir)) {
+    fs.mkdirSync(imageDir);
 }
 
-var app = express()
+const app = express();
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -63,6 +62,7 @@ app.post('/api/jobSchedule/', function (req, res) {
 
 });
 app.put('/api/jobSchedule/', function (req, res) {
+    logger.info(`Updating job schedule`, req.body);
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
         res.statusMessage = result.error.details[0].message.replace(/\"/g, "");
@@ -70,7 +70,8 @@ app.put('/api/jobSchedule/', function (req, res) {
     }
     else {
         jobs.modifyJob(req.body).then(function (result) {
-            if (result.success == 1) {
+            logger.info('Modify job result', result);
+            if (result.success === 1) {
                 res.status(200).json({
                     message: result.message,
                 });
@@ -90,21 +91,6 @@ app.delete('/api/jobSchedule/', function (req, res) {
     var visualizationid = req.query.visualizationid;
     jobs.deleteJob(visualizationid).then(function (result) {
         res.send(result);
-    }, function (err) {
-        res.send(err);
-    })
-
-});
-app.get('/api/jobSchedule/', function (req, res) {
-    var visualizationid = req.query.visualizationid;
-    jobs.getJob(visualizationid).then(function (result) {
-        if (result.message) {
-            res.status(204).json({
-                message: result.message,
-            });
-        } else {
-            res.send(result);
-        }
     }, function (err) {
         res.send(err);
     })
