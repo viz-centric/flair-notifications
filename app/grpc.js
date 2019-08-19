@@ -1,6 +1,8 @@
+const AppConfig = require('./load_config');
 const grpc = require('grpc');
 const report = require('./grpc/report');
 const fs = require('fs');
+const logger = require('./logger');
 
 module.exports = {
     start: startServer
@@ -12,6 +14,8 @@ module.exports = {
  * @param config
  */
 function startServer(port, config) {
+    let ipAddress = AppConfig.ipAddress;
+    logger.info(`Starting new server on port ${ipAddress}:${port}`);
     const server = new grpc.Server();
     registerEndpoints(server);
 
@@ -27,7 +31,7 @@ function startServer(port, config) {
         credentials = grpc.ServerCredentials.createInsecure()
     }
 
-    server.bind(`127.0.0.1:${port}`, credentials);
+    server.bind(`${ipAddress}:${port}`, credentials);
     server.start()
 }
 
