@@ -19,7 +19,7 @@ function load_appConfig(configFile){
             AppConfig.mailService.auth.pass=process.env.mailServiceAuthPass;
         }
         if (process.env.EUREKA_URL) {
-            AppConfig.eurekaUrl = process.env.EUREKA_URL;
+            AppConfig.discovery.eureka.url = process.env.EUREKA_URL;
         }
         if (process.env.GRPC_SSL_ENABLED) {
             AppConfig.ssl.enabled = process.env.GRPC_SSL_ENABLED;
@@ -39,7 +39,6 @@ function load_appConfig(configFile){
     }
 }
 
-AppConfig = load_appConfig(configFile);
-
-
-module.exports = AppConfig;
+let appConfig = load_appConfig(configFile);
+logger.info(`App config`, appConfig);
+module.exports = appConfig;
