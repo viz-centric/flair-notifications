@@ -26,6 +26,7 @@
     "jquery": "^3.3.1",
     "js-yaml": "^3.12.1",
     "jsdom": "^13.2.0",
+    "local-ipv4-address": "0.0.2",
     "mocha": "^5.2.0",
     "mochawesome": "^3.1.1",
     "moment": "^2.24.0",

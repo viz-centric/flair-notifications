@@ -4,6 +4,7 @@ LABEL maintainer="admin@vizcentric.com"
 LABEL name="Vizcentric"
 
 RUN apt-get -y update && \
+    apt-get -y install net-tools && \
     apt-get -y install wget tar && \
     wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
     tar -xJvf wkhtmltox*.tar.xz && \
