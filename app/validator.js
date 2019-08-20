@@ -97,7 +97,7 @@ var validator = {
         result = Joi.validate(reqBody, reportSchema);
         return result;
     },
-}
+};
 
 module.exports = validator;
 

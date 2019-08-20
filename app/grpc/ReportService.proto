@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package messages.reports;
+
+option java_package = "com.flair.bi.messages.report";
+option java_multiple_files = true;
+
+import "Report.proto";
+
+message ScheduleReportRequest {
+    ScheduleReport report = 1;
+}
+
+message DeleteScheduledReportRequest {
+    string visualizationId = 1;
+}
+
+message GetScheduledReportRequest {
+    string visualizationId = 1;
+}
+
+message ScheduleReportResponse {
+    ScheduleReport report = 1;
+    string message = 2;
+}
+
+message RepUserReq {
+    string username = 1;
+    int32 pageSize = 2;
+    int32 page = 3;
+}
+message RepUserResp {
+    repeated ScheduleReport reports = 1;
+    string message = 2;
+}
+
+message RepUserCountReq {
+    string username = 1;
+}
+
+message RepUserCountResp {
+    int32 totalReports = 1;
+}
+
+service ReportService {
+    rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
+    rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
+    rpc GetAllScheduledReportsCountsByUser(RepUserCountReq) returns (RepUserCountResp) {};
+    rpc ScheduleReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
+    rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
+    rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
+}
