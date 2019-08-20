@@ -2,23 +2,29 @@ const logger = require('../logger');
 const localIpV4Address = require("local-ipv4-address");
 const AppConfig = require('../load_config');
 
-let ipAddress = '127.0.0.1';
-
 logger.info('Resolving ip...');
+
+let ipDefault = 'localhost';
 
 function init() {
     return new Promise((success) => {
-        localIpV4Address()
-          .then(function (ip) {
-              logger.info(`IP resolved ${ip}`);
-              AppConfig.ipAddress = ip;
-              success(ipAddress);
-          })
-          .catch(function (error) {
-              logger.info('Error resolving ip', error);
-              AppConfig.ipAddress = ipAddress;
-              success(ipAddress);
-          });
+      logger.info(`Node env ${process.env.NODE_ENV}`);
+      if (process.env.NODE_ENV === 'development') {
+            AppConfig.ipAddress = ipDefault;
+            success(AppConfig.ipAddress);
+        } else {
+            localIpV4Address()
+              .then(function (ip) {
+                logger.info(`IP resolved ${ip}`);
+                AppConfig.ipAddress = ip;
+                success(AppConfig.ipAddress);
+              })
+              .catch(function (error) {
+                logger.info('Error resolving ip', error);
+                AppConfig.ipAddress = ipDefault;
+                success(AppConfig.ipAddress);
+            });
+        }
     });
 }
 

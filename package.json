@@ -4,8 +4,8 @@
   "description": "flair-notifications",
   "main": "/flair-notifications/app/index.js",
   "scripts": {
-    "start": "node app/index.js",
-    "test": "node app/test/mocha.js"
+    "start": "NODE_ENV=development node app/index.js",
+    "test": "NODE_ENV=test node app/test/mocha.js"
   },
   "author": "",
   "license": "ISC",
