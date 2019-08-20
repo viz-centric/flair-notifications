@@ -6,7 +6,6 @@ const discovery = require('../discovery');
 const vizUrl = "/api/external/visualMetaDataById";
 
 function getFlairBiUrl() {
-    logger.info('Get Flair bi', discovery.getClient());
     const instances = discovery.getClient().getInstancesByAppId('FLAIRBI');
     let url;
     if (process.env.GRPC_SSL_ENABLED === 'true') {
