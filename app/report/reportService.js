@@ -25,28 +25,29 @@ function Message(message) {
 
 /**
  * Schedule a report.
- * @param report to be scheduled
+ * @param request request
  * @returns {Promise<Message>}
  */
-function scheduleReport(report) {
+function scheduleReport(request) {
     return new Promise(function (resolve, reject) {
-        const result = validator.validateReportReqBody(report);
+        logger.info(`Schedule report with param`, request.report);
+        const result = validator.validateReportReqBody(request.report);
         if (result.error) {
             logger.log({
                 level: 'error',
                 message: 'error in schedule api due to invalid request body',
                 errMsg: result.error.details[0].message
             });
-            reject(new Message(result.error.details[0].message.replace(/"/g, "")));
+            reject({message: result.error.details[0].message.replace(/"/g, "")});
         } else {
-            jobs.createJob(report).then(function (result) {
+            jobs.createJob(request.report).then(function (result) {
                 if (result.success === 1) {
-                    resolve(new Message(result.message));
+                    resolve({});
                 } else {
-                    reject(new Message(result.message));
+                    reject({message: result.message});
                 }
             }, function (err) {
-                reject(new Message(err));
+                reject({message: err});
             });
         }
     });
@@ -54,23 +55,24 @@ function scheduleReport(report) {
 
 /**
  * Update the scheduled report
- * @param report
+ * @param request
  * @return new Promise<Message>
  */
-function updateScheduledReport(report) {
+function updateScheduledReport(request) {
     return new Promise(function (resolve, reject) {
-        const result = validator.validateReportReqBody(report);
+        logger.info(`Update report with param`, request.report);
+        const result = validator.validateReportReqBody(request.report);
         if (result.error) {
-            resolve(new Message(result.error.details[0].message.replace(/"/g, "")))
+            reject({message: result.error.details[0].message.replace(/"/g, "")});
         } else {
-            jobs.modifyJob(report).then(function (result) {
+            jobs.modifyJob(request.report).then(function (result) {
                 if (result.success === 1) {
-                    resolve(new Message(result.message));
+                    resolve({});
                 } else {
-                    reject(new Message(result.message));
+                    reject({message: result.message});
                 }
             }, function (err) {
-                reject(new Message(err));
+                reject({message: err});
             })
         }
     });

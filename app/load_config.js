@@ -34,6 +34,6 @@ function load_appConfig(configFile){
 
 let appConfig = load_appConfig(configFile);
 
-logger.info(`App config`, appConfig);
+logger.info(`App config loaded`);
 
 module.exports = appConfig;

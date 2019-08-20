@@ -26,9 +26,12 @@ message ScheduleReportResponse {
 
 message RepUserReq {
     string username = 1;
+    int32 pageSize = 2;
+    int32 page = 3;
 }
 message RepUserResp {
     repeated ScheduleReport reports = 1;
+    string message = 2;
 }
 
 message RepUserCountReq {
