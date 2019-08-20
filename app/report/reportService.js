@@ -60,6 +60,7 @@ function scheduleReport(request) {
  */
 function updateScheduledReport(request) {
     return new Promise(function (resolve, reject) {
+        logger.info(`Update report with param`, request.report);
         const result = validator.validateReportReqBody(request.report);
         if (result.error) {
             reject({message: result.error.details[0].message.replace(/"/g, "")});
