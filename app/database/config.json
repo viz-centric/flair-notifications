@@ -35,7 +35,7 @@
     "username": "postgres",
     "password": "admin",
     "database": "nodeDB",
-    "host": "flair-ap-pgsql",
+    "host": "flair-notifications-pgsql",
     "port": 5777,
     "dialect": "postgres"
   },
