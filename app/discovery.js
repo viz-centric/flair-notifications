@@ -6,10 +6,12 @@ const eurekaUrl = AppConfig.discovery.eureka.url;
 const discoveryHostname = AppConfig.discovery.hostname;
 const eurekaInstanceId = new Date().getTime();
 
+let client;
+
 function start() {
   const ipAddress = AppConfig.ipAddress;
   logger.info(`Starting eureka ${ipAddress}`);
-  const client = new Eureka({
+  client = new Eureka({
     instance: {
       app: 'flair-notifications',
       instanceId: `flair-notifications-instance-${eurekaInstanceId}`,
@@ -39,6 +41,11 @@ function start() {
   client.start();
 }
 
+function getClient() {
+  return client;
+}
+
 module.exports = {
-  start: start
+  start: start,
+  getClient: getClient
 };

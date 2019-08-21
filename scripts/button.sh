@@ -5,4 +5,4 @@ node_modules/.bin/sequelize db:migrate
 
 sleep 5
 
-npm start
+npm docker
