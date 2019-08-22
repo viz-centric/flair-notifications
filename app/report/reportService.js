@@ -31,16 +31,16 @@ function Message(message) {
 function scheduleReport(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Schedule report with param`, request.report);
-        const result = validator.validateReportReqBody(request.report);
-        if (result.error) {
+        const resultReport = validator.validateReportReqBody(request.report);
+        if (resultReport.error) {
             logger.log({
                 level: 'error',
                 message: 'error in schedule api due to invalid request body',
-                errMsg: result.error.details[0].message
+                errMsg: resultReport.error.details[0].message
             });
-            reject({message: result.error.details[0].message.replace(/"/g, "")});
+            reject({message: resultReport.error.details[0].message.replace(/"/g, "")});
         } else {
-            jobs.createJob(request.report).then(function (result) {
+            jobs.createJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {
@@ -61,11 +61,11 @@ function scheduleReport(request) {
 function updateScheduledReport(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update report with param`, request.report);
-        const result = validator.validateReportReqBody(request.report);
-        if (result.error) {
-            reject({message: result.error.details[0].message.replace(/"/g, "")});
+        const resultReport = validator.validateReportReqBody(request.report);
+        if (resultReport.error) {
+            reject({message: resultReport.error.details[0].message.replace(/"/g, "")});
         } else {
-            jobs.modifyJob(request.report).then(function (result) {
+            jobs.modifyJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {
