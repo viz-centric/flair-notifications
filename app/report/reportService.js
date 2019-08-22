@@ -83,14 +83,18 @@ function updateScheduledReport(request) {
  * @param visualizationId
  * @return {Promise<Message>}
  */
-function deleteScheduledReport(visualizationId) {
+function deleteScheduledReport(request) {
     return new Promise(function (resolve, reject) {
-        jobs.deleteJob(visualizationId).then(function (result) {
-            resolve(new Message(result));
+        jobs.deleteJob(request.visualizationId).then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({message: result.message})
+            }
         }, function (err) {
-            reject(new Message(err))
+            reject({message: err})
         })
-    })
+    });
 }
 
 /**
@@ -122,12 +126,17 @@ function getScheduledReport(request) {
  * @param size of the page
  * @return {Promise<any>}
  */
-function getAllScheduledReportForUser(username, page, size) {
+function getAllScheduledReportForUser(request) {
+    let username = request.username;
+    let page = request.page;
+    let size = request.size;
     return new Promise(function (resolve, reject) {
         const page = (+page);
         const pageSize = (+size);
         jobs.JobsByUser(username, page, pageSize).then(function (result) {
-            resolve(result);
+            resolve({
+                reports: result.reports
+            });
         }, function (err) {
             reject(err);
         })
@@ -139,9 +148,9 @@ function getAllScheduledReportForUser(username, page, size) {
  * @param username
  * @return {Promise<any>}
  */
-function getScheduledReportCountsForUser(username) {
+function getScheduledReportCountsForUser(request) {
     return new Promise(function (resolve, reject) {
-        jobs.JobCountByUser(username).then(function (result) {
+        jobs.JobCountByUser(request.username).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);
