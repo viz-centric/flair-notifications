@@ -186,7 +186,7 @@ var job = {
 
     },
     deleteJob: async function (visualizationid) {
-
+        logger.info(`Deleting job ${visualizationid}`);
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -196,22 +196,22 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                 ],
-            })
+            });
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
                     var job_name = "JOB_" + report.reportline.visualizationid;
-                    result = scheduler.cancleJob(job_name);
+                    var result = scheduler.cancleJob(job_name);
                     if(result){
-                        await report.destroy({ force: true })
+                        await report.destroy({force: true});
                         await transaction.commit();
-                        return { message: "Scheduled report is cancelled" };
+                        return {success: 1};
                     }
                     else{
-                        return { message: "Scheduled report has already been cancelled" };
+                        return {success: 0, message: "Scheduled report has already been cancelled"};
                     }
                    
                 }
@@ -290,6 +290,7 @@ var job = {
         }
     },
     JobsByUser: async function(userName,page,pageSize){
+        logger.info(`Get jobs by user ${userName} page ${page} size ${pageSize}`);
         if(!page){
             page=defaultPage;
         }
@@ -297,7 +298,7 @@ var job = {
             pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
-        var limit = pageSize
+        var limit = pageSize;
         try {
             var reports = await models.Report.findAll({
                 include: [
@@ -310,24 +311,24 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:{ active: true }
+                        where: {active: true}
                     }
                 ],
                 where: {
-                    userid:userName,     
+                    userid: userName,
                 },
                 order: [
                     ['createdAt', 'DESC'],
                 ],
                 limit,
                 offset,
-            })
+            });
             if (reports.length > 0 ) {
                 var all_reports=[];
                 for (var i=0; i< reports.length; i++){
                    all_reports.push(schedulerDTO(reports[i]))  
                 }
-                return all_reports;
+                return { success: 1, reports: all_reports };
             }
             else {
                 return { message: "Report is not found for the user" };
