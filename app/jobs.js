@@ -392,32 +392,20 @@ var job = {
 
 
     },
-    JobCountByUser: async function(userName){
-        try {
-            var reportCount = await models.Report.count({
-                include: [
-                    {
-                        model: models.SchedulerTask,
-                        where:{ active: true }
-                    },
-                ],
-                where: {
-                    userid:userName
-                }
-            })
-            response = { totalReports: reportCount }
-            return response;
-        }
-        catch (ex) {
-            logger.log({
-                level: 'error',
-                message: 'error while fetching reports count for user',
-                error: ex,
-              });
-            return  { success: 0, message: ex };
-        }
-
-
+    JobCountByUser: async function(username){
+        logger.info(`Job count by user ${username}`);
+        var reportCount = await models.Report.count({
+            include: [
+                {
+                    model: models.SchedulerTask,
+                    where: {active: true}
+                },
+            ],
+            where: {
+                userid: username
+            }
+        });
+        return {totalReports: reportCount};
     },
     executeImmediate: async function(visualizationid){
         try {
