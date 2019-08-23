@@ -178,9 +178,10 @@ function getScheduledReportLogs(visualizationId) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function executeReport(visualizationId) {
+function executeReport(request) {
+    logger.info(`Execute report for ${request.visualizationId}`);
     return new Promise(function (resolve, reject) {
-        jobs.executeImmediate(visualizationId).then(function (result) {
+        jobs.executeImmediate(request.visualizationId).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);

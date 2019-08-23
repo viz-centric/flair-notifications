@@ -42,6 +42,14 @@ message RepUserCountResp {
     int32 totalReports = 1;
 }
 
+message ExecuteReportRequest {
+    string visualizationId = 1;
+}
+
+message ExecuteReportResponse {
+
+}
+
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
@@ -49,4 +57,5 @@ service ReportService {
     rpc ScheduleReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
     rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
     rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
+    rpc ExecuteReport(ExecuteReportRequest) returns (ExecuteReportResponse) {};
 }

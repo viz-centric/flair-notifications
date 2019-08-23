@@ -408,48 +408,38 @@ var job = {
         return {totalReports: reportCount};
     },
     executeImmediate: async function(visualizationid){
-        try {
-            var report = await models.Report.findOne({
-                include: [
-                    {
-                        model: models.ReportLineItem,
-                        as: 'reportline',
-                        where:{ visualizationid: visualizationid }
-                    },
-                    {
-                        model: models.AssignReport
-                    },
-                    {
-                        model: models.SchedulerTask,
-                        where:{ active: true }
-                    }
-                ],
-            })
-            if ( report ) {
-                var reports_data={
-                    report_obj:report,
-                    report_line_obj :report.reportline,
-                    report_assign_obj:report.AssignReport,
-                    report_shedular_obj:report.SchedulerTask
+        logger.info(`Job execute report ${visualizationid}`);
+        var report = await models.Report.findOne({
+            include: [
+                {
+                    model: models.ReportLineItem,
+                    as: 'reportline',
+                    where: {visualizationid: visualizationid}
+                },
+                {
+                    model: models.AssignReport
+                },
+                {
+                    model: models.SchedulerTask,
+                    where: {active: true}
                 }
+            ],
+        });
+        if ( report ) {
+            var reports_data = {
+                report_obj: report,
+                report_line_obj: report.reportline,
+                report_assign_obj: report.AssignReport,
+                report_shedular_obj: report.SchedulerTask
+            };
+            execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
+            if (reports_data.report.thresholdAlert) {
                 execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
-                if(reports_data.report.thresholdAlert)
-                    execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
             }
-            else {
-                return { message: "report is not found for visulization Id : "+visualizationid };
-            }
+            return {};
+        } else {
+            return {message: `report is not found for visulization Id : ${visualizationid}` };
         }
-        catch (ex) {
-            logger.log({
-                level: 'error',
-                message: 'error while fetching reports for user',
-                error: ex,
-              });
-            return { success: 0, message: ex };
-        }
-
-
     },
     filterJobs: async function(userName, reportName, startDate, endDate, page, pageSize){
 
