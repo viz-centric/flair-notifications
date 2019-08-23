@@ -145,7 +145,7 @@ function getAllScheduledReportForUser(request) {
 
 /**
  * Retrieve scheduled report counts for the given user.
- * @param username
+ * @param request
  * @return {Promise<any>}
  */
 function getScheduledReportCountsForUser(request) {
