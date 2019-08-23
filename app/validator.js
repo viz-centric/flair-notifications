@@ -27,6 +27,14 @@ const customJoi = Joi.extend((joi) => ({
     ]
 }));
 
+const vizIdPrefix='threshold_alert_:';
+
+function preprocessor(result){
+	result.value.report_line_item.visualizationid=result.value.report.thresholdAlert?vizIdPrefix+result.value.report_line_item.visualizationid:result.value.report_line_item.visualizationid;
+	return result;
+}
+
+
 var validator = {
     validateReportReqBody: function (reqBody) {
 
@@ -80,7 +88,7 @@ var validator = {
         });
 
         result = Joi.validate(reqBody, reportSchema);
-        return result;
+        return preprocessor(result);
     },
     validateBuildVisualizationReqBody: function (reqBody) {
         var reportSchema = Joi.object().keys({

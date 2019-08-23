@@ -19,19 +19,6 @@ const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.use(function(req, res, next) {
-    preprocessor(req);
-    next();
-});
-
-const vizIdPrefix='threshold_alert_:';
-
-function preprocessor(req){
-    if(req.method=='POST' || req.method=='PUT'){
-        req.body.report_line_item.visualizationid=req.body.report.thresholdAlert?vizIdPrefix+req.body.report_line_item.visualizationid:req.body.report_line_item.visualizationid;
-    }
-}
-
 app.post('/api/jobSchedule/', function (req, res) {
     var result = validator.validateReportReqBody(req.body);
     if (result.error) {
