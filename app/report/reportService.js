@@ -163,10 +163,15 @@ function getScheduledReportCountsForUser(request) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function getScheduledReportLogs(visualizationId) {
+function getScheduledReportLogs(request) {
+    logger.info(`Get scheduled report logs via grpc for ${request.visualizationId} page ${request.page} size ${request.pageSize}`);
     return new Promise(function (resolve, reject) {
-        jobs.jobLogs(visualizationId).then(function (result) {
-            resolve(result);
+        jobs.jobLogs(request.visualizationId, request.page, request.pageSize).then(function (result) {
+            if (result.success === 1) {
+                resolve({totalRecords: result.totalRecords, SchedulerLogs: result.SchedulerLogs});
+            } else {
+                reject({message: result.message});
+            }
         }, function (err) {
             reject(err);
         })
