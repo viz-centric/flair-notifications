@@ -19,16 +19,6 @@ const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.get('/api/jobLogs/', (req, res) => {
-    var page = (+req.query.page);
-    var pageSize = (+req.query.pageSize);
-    var visualizationid = req.query.visualizationid;
-    jobs.jobLogs(visualizationid, page, pageSize).then(function (result) {
-        res.send(result);
-    }, function (err) {
-        res.send(err);
-    })
-});
 app.get('/api/jobFilter/', (req, res) => {
     var userName = req.query.userName;
     var reportNameName = req.query.reportName;
