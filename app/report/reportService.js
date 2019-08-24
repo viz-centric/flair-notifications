@@ -11,7 +11,8 @@ module.exports = {
     getScheduledReportLogs: getScheduledReportLogs,
     updateScheduledReport: updateScheduledReport,
     deleteScheduledReport: deleteScheduledReport,
-    executeReport: executeReport
+    executeReport: executeReport,
+    searchReports,
 };
 
 /**
@@ -176,6 +177,28 @@ function getScheduledReportLogs(request) {
             reject(err);
         })
     })
+}
+
+function searchReports(request) {
+    logger.info(`Search reports for ${request}`);
+    return new Promise(function (resolve, reject) {
+        jobs.filterJobs(
+          request.username, request.reportName, request.startDate,
+          request.endDate, request.pageSize, request.page
+        )
+          .then(function (result) {
+              if (result.success === 1) {
+                  resolve({
+                      totalRecords: result.totalRecords,
+                      records: result.records
+                  });
+              } else {
+                  resolve({message: result.message});
+              }
+          }, function (err) {
+              reject(err);
+          });
+    });
 }
 
 /**
