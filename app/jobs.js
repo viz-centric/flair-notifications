@@ -237,7 +237,7 @@ var job = {
             pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
-        var limit = pageSize
+        var limit = pageSize;
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -247,10 +247,10 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                 ],
-            })
+            });
             if (report) {
                 try {
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
@@ -262,19 +262,19 @@ var job = {
                         ],
                         limit,
                         offset,
-                    })
-                    var outputlogs=[]
+                    });
+                    var outputlogs = [];
                     for (var logItem of SchedulerLogs.rows) {
-                        var log={}
+                        var log = {};
                         log.task_status=logItem.task_status;
                         log.task_executed=moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
-                    return response = {
-                           totalRecords:SchedulerLogs.count,
-                           SchedulerLogs:outputlogs
+                    return {
+                        success: 1,
+                        totalRecords: SchedulerLogs.count,
+                        SchedulerLogs: outputlogs
                     };
-                   
                 }
                 catch (ex) {
                     return { success: 0, message: ex };

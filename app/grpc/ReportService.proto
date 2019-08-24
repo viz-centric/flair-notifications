@@ -50,6 +50,18 @@ message ExecuteReportResponse {
 
 }
 
+message GetScheduleReportLogsRequest {
+    string visualizationId = 1;
+    int32 pageSize = 2;
+    int32 page = 3;
+}
+
+message GetScheduleReportLogsResponse {
+    int32 totalRecords = 1;
+    repeated ReportLog SchedulerLogs = 2;
+    string message = 3;
+}
+
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
@@ -58,4 +70,5 @@ service ReportService {
     rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
     rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc ExecuteReport(ExecuteReportRequest) returns (ExecuteReportResponse) {};
+    rpc GetScheduleReportLogs(GetScheduleReportLogsRequest) returns (GetScheduleReportLogsResponse) {};
 }
