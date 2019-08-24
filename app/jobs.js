@@ -467,7 +467,7 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:schedularWhereClause
+                        where: schedularWhereClause
                     }
                 ],
                 where: reportWhereClause,
@@ -476,19 +476,20 @@ var job = {
                 ],
                 limit,
                 offset,
-            })
+            });
             if (reports.count > 0 ) {
                 var all_reports=[];
                 for (var report of reports.rows) {
                     all_reports.push(schedulerDTO(report))
                 }
-                return response = {
-                    totalRecords:reports.count,
-                    records:all_reports
-                   };
+                return {
+                    success: 1,
+                    totalRecords: reports.count,
+                    records: all_reports
+                };
             }
             else {
-                return { message: "report not found" };
+                return { success: 0, message: "report not found" };
             }
         }
         catch (ex) {
