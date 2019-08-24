@@ -19,15 +19,6 @@ const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.get('/api/executeImmediate/', (req, res) => {
-    var visualizationid = req.query.visualizationid;
-    jobs.executeImmediate(visualizationid).then(function (result) {
-        res.send(result);
-    }, function (err) {
-        res.send(err);
-    })
-});
-
 app.get('/api/jobLogs/', (req, res) => {
     var page = (+req.query.page);
     var pageSize = (+req.query.pageSize);
