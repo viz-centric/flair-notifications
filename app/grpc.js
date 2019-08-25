@@ -21,6 +21,7 @@ function startServer(port, config) {
 
     let credentials;
     if (config.enabled) {
+        logger.info(`grpc server with ssl enabled ${config.caCert} ${config.serverCert} ${config.serverKey}`);
         let rootCerts = fs.readFileSync(config.caCert);
         let keyCert = {
             cert_chain: fs.readFileSync(config.serverCert),
@@ -28,6 +29,7 @@ function startServer(port, config) {
         };
         credentials = grpc.ServerCredentials.createSsl(rootCerts, [keyCert], true);
     } else {
+        logger.info(`grpc server with ssl disabled`);
         credentials = grpc.ServerCredentials.createInsecure()
     }
 
