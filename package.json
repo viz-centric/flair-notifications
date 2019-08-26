@@ -4,8 +4,9 @@
   "description": "flair-notifications",
   "main": "/flair-notifications/app/index.js",
   "scripts": {
-    "start": "node app/index.js",
-    "test": "node app/test/mocha.js"
+    "start": "NODE_ENV=development node app/index.js",
+    "docker": "node app/index.js",
+    "test": "NODE_ENV=test node app/test/mocha.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,16 +19,19 @@
     "cron-parser": "^2.7.3",
     "d3": "^4.10.0",
     "ejs": "^2.6.1",
+    "eureka-js-client": "^4.5.0",
     "express": "^4.16.4",
     "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#featured/3-viz-integration",
-    "grpc": "^1.18.0",
+    "grpc": "^1.21.1",
     "joi": "^14.3.1",
     "jquery": "^3.3.1",
     "js-yaml": "^3.12.1",
     "jsdom": "^13.2.0",
+    "local-ipv4-address": "0.0.2",
     "mocha": "^5.2.0",
     "mochawesome": "^3.1.1",
     "moment": "^2.24.0",
+    "node-java-maven": "^0.1.1",
     "node-schedule": "^1.3.1",
     "nodemailer": "^5.1.1",
     "pg": "^7.8.0",
@@ -36,5 +40,34 @@
     "sequelize-cli": "^5.4.0",
     "winston": "^3.2.1",
     "wkhtmltoimage": "^0.1.5"
+  },
+  "java": {
+    "repositories": [
+      {
+        "id": "central",
+        "url": " http://central.maven.org/maven2/"
+      },
+      {
+        "id": "dev-azure-com-vizcentric-flair-bi",
+        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-bi/maven/v1/"
+      },
+      {
+        "id": "dev-azure-com-vizcentric-flair-messages",
+        "url": "https://pkgs.dev.azure.com/VizCentric/_packaging/flair-protobuf-messages/maven/v1/"
+      }
+    ],
+    "dependencies": [
+      {
+        "groupId": "com.project.bi",
+        "artifactId": "flair-messages",
+        "version": "0.0.12"
+      }
+    ],
+    "exclusions": [
+      {
+        "groupId": "io.grpc",
+        "artifactId": "grpc-core"
+      }
+    ]
   }
 }

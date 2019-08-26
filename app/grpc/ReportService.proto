@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package messages.reports;
+
+option java_package = "com.flair.bi.messages.report";
+option java_multiple_files = true;
+
+import "Report.proto";
+
+message ScheduleReportRequest {
+    ScheduleReport report = 1;
+}
+
+message DeleteScheduledReportRequest {
+    string visualizationId = 1;
+}
+
+message GetScheduledReportRequest {
+    string visualizationId = 1;
+}
+
+message ScheduleReportResponse {
+    ScheduleReport report = 1;
+    string message = 2;
+}
+
+message RepUserReq {
+    string username = 1;
+    int32 pageSize = 2;
+    int32 page = 3;
+}
+message RepUserResp {
+    repeated ScheduleReport reports = 1;
+    string message = 2;
+}
+
+message RepUserCountReq {
+    string username = 1;
+}
+
+message RepUserCountResp {
+    int32 totalReports = 1;
+}
+
+message ExecuteReportRequest {
+    string visualizationId = 1;
+}
+
+message ExecuteReportResponse {
+
+}
+
+message GetScheduleReportLogsRequest {
+    string visualizationId = 1;
+    int32 pageSize = 2;
+    int32 page = 3;
+}
+
+message GetScheduleReportLogsResponse {
+    int32 totalRecords = 1;
+    repeated ReportLog SchedulerLogs = 2;
+    string message = 3;
+}
+
+message SearchReportsRequest {
+    string username = 1;
+    string reportName = 2;
+    string startDate = 3;
+    string endDate = 4;
+    int32 pageSize = 5;
+    int32 page = 6;
+}
+
+message SearchReportsResponse {
+    int32 totalRecords = 1;
+    repeated ScheduleReport records = 2;
+}
+
+service ReportService {
+    rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
+    rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
+    rpc GetAllScheduledReportsCountsByUser(RepUserCountReq) returns (RepUserCountResp) {};
+    rpc ScheduleReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
+    rpc UpdateScheduledReport(ScheduleReportRequest) returns (ScheduleReportResponse) {};
+    rpc DeleteScheduledReport(DeleteScheduledReportRequest) returns (ScheduleReportResponse) {};
+    rpc ExecuteReport(ExecuteReportRequest) returns (ExecuteReportResponse) {};
+    rpc GetScheduleReportLogs(GetScheduleReportLogsRequest) returns (GetScheduleReportLogsResponse) {};
+    rpc SearchReports(SearchReportsRequest) returns (SearchReportsResponse) {};
+}

@@ -1,6 +1,10 @@
+https://www:
+    npmjs:
+        com/package/cloud-config-client:
 port: 9000
 imageFolder:
 grpcEndPoint:
+mode:
 mailService:
     serive:
     sender:

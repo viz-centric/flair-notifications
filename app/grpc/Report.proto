@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package messages.reports;
+
+option java_package = "com.flair.bi.messages.report";
+option java_multiple_files = true;
+
+message ScheduleReport {
+    Report report = 1;
+    ReportLineItem report_line_item = 2;
+    AssignReport assign_report = 3;
+    Schedule schedule = 4;
+    string query = 5;
+}
+
+message Report {
+    string userid = 1;
+    string dashboard_name = 2;
+    string view_name = 3;
+    string share_link = 4;
+    string build_url = 5;
+    string mail_body = 6;
+    string subject = 7;
+    string report_name = 8;
+    string title_name = 9;
+    bool thresholdAlert = 10;
+}
+
+message ReportLineItem {
+    string visualizationid = 1;
+    repeated string dimension = 2;
+    repeated string measure = 3;
+    string visualization = 4;
+}
+
+message AssignReport {
+    string channel = 1;
+    string slack_API_Token = 2;
+    string channel_id = 3;
+    string stride_API_Token = 4;
+    string stride_cloud_id = 5;
+    string stride_conversation_id = 6;
+    repeated Email email_list = 7;
+}
+
+message Email {
+    string user_email = 1;
+    string user_name = 2;
+}
+
+message Schedule {
+    string cron_exp = 1;
+    string timezone = 2;
+    string start_date = 3;
+    string end_date = 4;
+}
+
+message ReportLog {
+    string task_status = 1;
+    string task_executed = 2;
+}

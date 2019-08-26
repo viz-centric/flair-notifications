@@ -50,3 +50,55 @@ curl http://localhost:8080/api/jobSchedule/
               }
           }
 ```
+
+#Getting started
+Requirements:
+* NodeJS
+* NPM
+* Docker
+
+
+
+Clone the repository with command
+```bash
+git clone https://github.com/viz-centric/flair-notifications.git
+```
+Navigate to directory
+```bash
+cd  flair-notifications
+```
+Install dependencies
+```bash
+npm i
+```
+Start the database
+```bash
+cd deploy
+docker-compose up -d
+cd ..
+npx sequelize-cli db:migrate
+```
+Start the Server
+```bash
+npm start
+```
+
+## Enabling SSL
+To enable SSL between flair notifications and flair bi, please follow the guide below.
+
+### Enable SSL between flair notifications and flair bi 
+To generate SSL certs, run this command:
+
+```bash
+cd certs
+./generate.sh
+
+```
+
+Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
+these values as is. If you plan to deploy to a real production environment, then change these values to contain real hostnames of the services.
+
+After that, copy the whole contents from `certs/*` to flair-bi projects to the same location
+```bash
+cp certs ../flair-bi/src/main/resources/ssl/notificationscertsgen
+```

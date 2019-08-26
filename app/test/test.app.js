@@ -1,8 +1,7 @@
+const app = require('../app');
+const AppConfig = require('../load_config');
 
-var app = require('../app');
-var AppConfig = require('../load_config');
-
-var port= AppConfig.port;  
+let port = AppConfig.httpPort;
 app.listen(port);
-console.log('Server started! At http://localhost:' + port);
-module.exports= app;
+console.log(`Server started! At http://localhost:${port}`);
+module.exports = app;

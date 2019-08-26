@@ -207,7 +207,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                                 errMsg: error,
                             });
                             if (mailRetryCount < 2) {
-                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, encodedUrl,imagefilename),
+                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title,imagefilename),
                                     retryDelay);
                             }
                             else {

@@ -13,7 +13,7 @@ variables:
   imageName: 'flair-notifications'
   major: 1
   minor: 0
-  patch: 0 # $(Build.BuildId)
+  patch: 1 # $(Build.BuildId)
 
 pr:
   branches:
