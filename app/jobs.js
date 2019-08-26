@@ -186,7 +186,7 @@ var job = {
 
     },
     deleteJob: async function (visualizationid) {
-
+        logger.info(`Deleting job ${visualizationid}`);
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -196,22 +196,22 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                 ],
-            })
+            });
             if (report) {
                 try {
                     const transaction = await db.sequelize.transaction();
                     var job_name = "JOB_" + report.reportline.visualizationid;
-                    result = scheduler.cancleJob(job_name);
+                    var result = scheduler.cancleJob(job_name);
                     if(result){
-                        await report.destroy({ force: true })
+                        await report.destroy({force: true});
                         await transaction.commit();
-                        return { message: "Scheduled report is cancelled" };
+                        return {success: 1};
                     }
                     else{
-                        return { message: "Scheduled report has already been cancelled" };
+                        return {success: 0, message: "Scheduled report has already been cancelled"};
                     }
                    
                 }
@@ -237,7 +237,7 @@ var job = {
             pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
-        var limit = pageSize
+        var limit = pageSize;
         try {
             var report = await models.Report.findOne({
                 include: [
@@ -247,10 +247,10 @@ var job = {
                     {
                         model: models.ReportLineItem,
                         as: 'reportline',
-                        where:{ visualizationid: visualizationid }
+                        where: {visualizationid: visualizationid}
                     },
                 ],
-            })
+            });
             if (report) {
                 try {
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
@@ -262,19 +262,19 @@ var job = {
                         ],
                         limit,
                         offset,
-                    })
-                    var outputlogs=[]
+                    });
+                    var outputlogs = [];
                     for (var logItem of SchedulerLogs.rows) {
-                        var log={}
+                        var log = {};
                         log.task_status=logItem.task_status;
                         log.task_executed=moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
-                    return response = {
-                           totalRecords:SchedulerLogs.count,
-                           SchedulerLogs:outputlogs
+                    return {
+                        success: 1,
+                        totalRecords: SchedulerLogs.count,
+                        SchedulerLogs: outputlogs
                     };
-                   
                 }
                 catch (ex) {
                     return { success: 0, message: ex };
@@ -290,6 +290,7 @@ var job = {
         }
     },
     JobsByUser: async function(userName,page,pageSize){
+        logger.info(`Get jobs by user ${userName} page ${page} size ${pageSize}`);
         if(!page){
             page=defaultPage;
         }
@@ -297,7 +298,7 @@ var job = {
             pageSize=defaultPageSize;
         }
         var offset = page * pageSize;
-        var limit = pageSize
+        var limit = pageSize;
         try {
             var reports = await models.Report.findAll({
                 include: [
@@ -310,24 +311,24 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:{ active: true }
+                        where: {active: true}
                     }
                 ],
                 where: {
-                    userid:userName,     
+                    userid: userName,
                 },
                 order: [
                     ['createdAt', 'DESC'],
                 ],
                 limit,
                 offset,
-            })
+            });
             if (reports.length > 0 ) {
                 var all_reports=[];
                 for (var i=0; i< reports.length; i++){
                    all_reports.push(schedulerDTO(reports[i]))  
                 }
-                return all_reports;
+                return { success: 1, reports: all_reports };
             }
             else {
                 return { message: "Report is not found for the user" };
@@ -391,76 +392,54 @@ var job = {
 
 
     },
-    JobCountByUser: async function(userName){
-        try {
-            var reportCount = await models.Report.count({
-                include: [
-                    {
-                        model: models.SchedulerTask,
-                        where:{ active: true }
-                    },
-                ],
-                where: {
-                    userid:userName
-                }
-            })
-            response = { totalReports: reportCount }
-            return response;
-        }
-        catch (ex) {
-            logger.log({
-                level: 'error',
-                message: 'error while fetching reports count for user',
-                error: ex,
-              });
-            return  { success: 0, message: ex };
-        }
-
-
+    JobCountByUser: async function(username){
+        logger.info(`Job count by user ${username}`);
+        var reportCount = await models.Report.count({
+            include: [
+                {
+                    model: models.SchedulerTask,
+                    where: {active: true}
+                },
+            ],
+            where: {
+                userid: username
+            }
+        });
+        return {totalReports: reportCount};
     },
     executeImmediate: async function(visualizationid){
-        try {
-            var report = await models.Report.findOne({
-                include: [
-                    {
-                        model: models.ReportLineItem,
-                        as: 'reportline',
-                        where:{ visualizationid: visualizationid }
-                    },
-                    {
-                        model: models.AssignReport
-                    },
-                    {
-                        model: models.SchedulerTask,
-                        where:{ active: true }
-                    }
-                ],
-            })
-            if ( report ) {
-                var reports_data={
-                    report_obj:report,
-                    report_line_obj :report.reportline,
-                    report_assign_obj:report.AssignReport,
-                    report_shedular_obj:report.SchedulerTask
+        logger.info(`Job execute report ${visualizationid}`);
+        var report = await models.Report.findOne({
+            include: [
+                {
+                    model: models.ReportLineItem,
+                    as: 'reportline',
+                    where: {visualizationid: visualizationid}
+                },
+                {
+                    model: models.AssignReport
+                },
+                {
+                    model: models.SchedulerTask,
+                    where: {active: true}
                 }
+            ],
+        });
+        if ( report ) {
+            var reports_data = {
+                report_obj: report,
+                report_line_obj: report.reportline,
+                report_assign_obj: report.AssignReport,
+                report_shedular_obj: report.SchedulerTask
+            };
+            execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
+            if (reports_data.report.thresholdAlert) {
                 execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
-                if(reports_data.report.thresholdAlert)
-                    execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
             }
-            else {
-                return { message: "report is not found for visulization Id : "+visualizationid };
-            }
+            return {};
+        } else {
+            return {message: `report is not found for visulization Id : ${visualizationid}` };
         }
-        catch (ex) {
-            logger.log({
-                level: 'error',
-                message: 'error while fetching reports for user',
-                error: ex,
-              });
-            return { success: 0, message: ex };
-        }
-
-
     },
     filterJobs: async function(userName, reportName, startDate, endDate, page, pageSize){
 
@@ -488,7 +467,7 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:schedularWhereClause
+                        where: schedularWhereClause
                     }
                 ],
                 where: reportWhereClause,
@@ -497,19 +476,20 @@ var job = {
                 ],
                 limit,
                 offset,
-            })
+            });
             if (reports.count > 0 ) {
                 var all_reports=[];
                 for (var report of reports.rows) {
                     all_reports.push(schedulerDTO(report))
                 }
-                return response = {
-                    totalRecords:reports.count,
-                    records:all_reports
-                   };
+                return {
+                    success: 1,
+                    totalRecords: reports.count,
+                    records: all_reports
+                };
             }
             else {
-                return { message: "report not found" };
+                return { success: 0, message: "report not found" };
             }
         }
         catch (ex) {

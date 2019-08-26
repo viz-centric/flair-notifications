@@ -36,8 +36,13 @@ function constructReportService(server) {
         updateScheduledReport,
         deleteScheduledReport,
         getScheduledReportLogs,
-        executeReport
+        executeReport,
+        searchReports
     })
+}
+
+function searchReports(call, callback) {
+    handleCall(reportService.searchReports(call.request), callback);
 }
 
 function executeReport(call, callback) {

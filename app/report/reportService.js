@@ -11,7 +11,8 @@ module.exports = {
     getScheduledReportLogs: getScheduledReportLogs,
     updateScheduledReport: updateScheduledReport,
     deleteScheduledReport: deleteScheduledReport,
-    executeReport: executeReport
+    executeReport: executeReport,
+    searchReports,
 };
 
 /**
@@ -83,14 +84,18 @@ function updateScheduledReport(request) {
  * @param visualizationId
  * @return {Promise<Message>}
  */
-function deleteScheduledReport(visualizationId) {
+function deleteScheduledReport(request) {
     return new Promise(function (resolve, reject) {
-        jobs.deleteJob(visualizationId).then(function (result) {
-            resolve(new Message(result));
+        jobs.deleteJob(request.visualizationId).then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({message: result.message})
+            }
         }, function (err) {
-            reject(new Message(err))
+            reject({message: err})
         })
-    })
+    });
 }
 
 /**
@@ -122,12 +127,17 @@ function getScheduledReport(request) {
  * @param size of the page
  * @return {Promise<any>}
  */
-function getAllScheduledReportForUser(username, page, size) {
+function getAllScheduledReportForUser(request) {
+    let username = request.username;
+    let page = request.page;
+    let size = request.size;
     return new Promise(function (resolve, reject) {
         const page = (+page);
         const pageSize = (+size);
         jobs.JobsByUser(username, page, pageSize).then(function (result) {
-            resolve(result);
+            resolve({
+                reports: result.reports
+            });
         }, function (err) {
             reject(err);
         })
@@ -136,12 +146,12 @@ function getAllScheduledReportForUser(username, page, size) {
 
 /**
  * Retrieve scheduled report counts for the given user.
- * @param username
+ * @param request
  * @return {Promise<any>}
  */
-function getScheduledReportCountsForUser(username) {
+function getScheduledReportCountsForUser(request) {
     return new Promise(function (resolve, reject) {
-        jobs.JobCountByUser(username).then(function (result) {
+        jobs.JobCountByUser(request.username).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);
@@ -154,14 +164,41 @@ function getScheduledReportCountsForUser(username) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function getScheduledReportLogs(visualizationId) {
+function getScheduledReportLogs(request) {
+    logger.info(`Get scheduled report logs via grpc for ${request.visualizationId} page ${request.page} size ${request.pageSize}`);
     return new Promise(function (resolve, reject) {
-        jobs.jobLogs(visualizationId).then(function (result) {
-            resolve(result);
+        jobs.jobLogs(request.visualizationId, request.page, request.pageSize).then(function (result) {
+            if (result.success === 1) {
+                resolve({totalRecords: result.totalRecords, SchedulerLogs: result.SchedulerLogs});
+            } else {
+                reject({message: result.message});
+            }
         }, function (err) {
             reject(err);
         })
     })
+}
+
+function searchReports(request) {
+    logger.info(`Search reports for ${request}`);
+    return new Promise(function (resolve, reject) {
+        jobs.filterJobs(
+          request.username, request.reportName, request.startDate,
+          request.endDate, request.pageSize, request.page
+        )
+          .then(function (result) {
+              if (result.success === 1) {
+                  resolve({
+                      totalRecords: result.totalRecords,
+                      records: result.records
+                  });
+              } else {
+                  resolve({message: result.message});
+              }
+          }, function (err) {
+              reject(err);
+          });
+    });
 }
 
 /**
@@ -169,9 +206,10 @@ function getScheduledReportLogs(visualizationId) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function executeReport(visualizationId) {
+function executeReport(request) {
+    logger.info(`Execute report for ${request.visualizationId}`);
     return new Promise(function (resolve, reject) {
-        jobs.executeImmediate(visualizationId).then(function (result) {
+        jobs.executeImmediate(request.visualizationId).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);
