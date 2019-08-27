@@ -53,8 +53,6 @@ var shedular = {
                             report_shedular_obj:report.SchedulerTask
                         }
                         execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
-                        if(reports_data.report_threshold_alert)
-                            execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
                     }).catch(function(err){
                         logger.log({
                             level: 'error',
