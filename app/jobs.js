@@ -433,9 +433,6 @@ var job = {
                 report_shedular_obj: report.SchedulerTask
             };
             execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
-            if (reports_data.report.thresholdAlert) {
-                execution.loadDataAndSendMail(reports_data,reports_data.report_obj.thresholdAlert);
-            }
             return {};
         } else {
             return {message: `report is not found for visulization Id : ${visualizationid}` };
