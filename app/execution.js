@@ -95,6 +95,12 @@ const chartMap = {
         }
     },
 
+    'Map': {
+        generateChart: function (report_obj, data) {
+            return charts.mapChart(report_obj.report_line_obj.visualizationid, data);
+        }
+    },
+
     'Tree Map': {
         generateChart: function (report_obj, data) {
             return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
@@ -109,11 +115,7 @@ const chartMap = {
 
     'Box Plot': {
         generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.boxplotChart(config, data);
+            return charts.boxplotChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
@@ -154,6 +156,7 @@ const chartMap = {
     }
 };
 
+
 exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
@@ -178,11 +181,13 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 var build_url = reports_data['report_obj']['build_url']
                 var share_link = reports_data['report_obj']['share_link']
                 var dash_board = reports_data['report_obj']['dashboard_name']
+                var view_name = reports_data['report_obj']['view_name']
+
                 var mailRetryCount = 0;
                 function sendMail(subject, to_mail_list, mail_body, report_title,imagefilename) {
                     mailRetryCount += 1;
                     imageProcessor.saveImageConvertToBase64(imagefilename,response).then(function (bytes) {
-                        sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, bytes,imagefilename).then(function (success) {
+                        sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board,view_name, bytes,imagefilename).then(function (success) {
                             try {
                                 let shedularlog = models.SchedulerTaskLog.create({
                                     SchedulerJobId: reports_data['report_shedular_obj']['id'],

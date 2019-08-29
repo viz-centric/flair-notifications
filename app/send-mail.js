@@ -20,15 +20,16 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, encodedUrl,imagefilename) {
-    var image_cid=new Date().getTime()+imagefilename;
+exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename) {
+    var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
         title: report_title,
         share_link: share_link,
         build_url: build_url,
-        dash_board:dash_board,
-        image_cid:"cid:"+image_cid,
+        dash_board: dash_board,
+        view_name: view_name,
+        image_cid: "cid:" + image_cid,
         imageFile: encodedUrl,
         AppLogo: "cid:" + appLogo
     }
@@ -43,18 +44,18 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                     subject: subject, // Subject line
                     html: html_data,// plain html body
                     attachments: [
-                    {
-                        filename:imagefilename,
-                        content : encodedUrl,
-                        path:encodedUrl,
-                        cid:image_cid
-                    },
-                    {
-                        filename: appLogo,
-                        path: __dirname + "/template/" + appLogo,
-                        cid: appLogo //same cid value as in the html img src
-                    }
-                ]
+                        {
+                            filename: imagefilename,
+                            content: encodedUrl,
+                            path: encodedUrl,
+                            cid: image_cid
+                        },
+                        {
+                            filename: appLogo,
+                            path: __dirname + "/template/" + appLogo,
+                            cid: appLogo //same cid value as in the html img src
+                        }
+                    ]
                 };
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
