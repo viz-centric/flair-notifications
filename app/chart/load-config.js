@@ -724,8 +724,6 @@ var configs = {
                         result['legend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
                         result['valueAs'] = VisualizationUtils.getPropertyValue(properties, 'Show value as').toLowerCase();
-                        result['valueAsArc'] = VisualizationUtils.getPropertyValue(properties, 'Value as Arc');
-                        result['valuePosition'] = VisualizationUtils.getPropertyValue(properties, 'Value position').toLowerCase();
                         resolve(result);
                     }
                     else {
@@ -789,9 +787,6 @@ var configs = {
                         result['legend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
                         result['valueAs'] = VisualizationUtils.getPropertyValue(properties, 'Show value as').toLowerCase();
-                        result['valueAsArc'] = VisualizationUtils.getPropertyValue(properties, 'Value as Arc');
-                        result['valuePosition'] = VisualizationUtils.getPropertyValue(properties, 'Value position').toLowerCase();
-
                         resolve(result);
                     }
                     else {
@@ -1090,6 +1085,7 @@ var configs = {
                         result['kpiIconColor'] = [];
                         result['kpiIconExpression'] = [];
                         result['FontSizeforDisplayName'] = [];
+                        result['showIcon'] = [];
                         for (var i = 0; i < measures.length; i++) {
                             result['kpiDisplayName'].push(
                                 VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
@@ -1108,6 +1104,7 @@ var configs = {
                             result['kpiIconColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon colour'));
                             result['kpiIconExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Expression'));
                             result['FontSizeforDisplayName'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size for diplay name'));
+                            result['showIcon'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Show Icon'));
                         }
                         resolve(result);
                     }
@@ -1861,6 +1858,7 @@ var configs = {
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
                         result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
                         result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
+                        result['showValue'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Value on Points');
 
                         resolve(result);
                     }
@@ -1920,7 +1918,7 @@ var configs = {
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
                         result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
                         result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
-
+                        result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Font size for diplay name');
                         resolve(result);
                     }
                     else {
