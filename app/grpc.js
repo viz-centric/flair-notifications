@@ -14,7 +14,7 @@ module.exports = {
  * @param config
  */
 function startServer(port, config) {
-    let ipAddress = AppConfig.ipAddress;
+    let ipAddress = AppConfig.getConfig().ipAddress;
     logger.info(`Starting grpc server on port ${ipAddress}:${port}`);
     const server = new grpc.Server();
     registerEndpoints(server);

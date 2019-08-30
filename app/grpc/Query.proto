@@ -52,59 +52,21 @@ message Query {
         UNARY = 0;
         BIDITOGGLE = 1;
     }
-    QueryType queryType = 11;
-
     message HavingHolder {
         string featureName = 1;
         string value = 2;
         enum ComparatorType {
-            EQ = 0;
-            NEQ = 1;
-            GT = 2;
-            LT = 3;
-            GTE = 4;
-            LTE = 5;
+            UNKNOWN = 0;
+            EQ = 1;
+            NEQ = 2;
+            GT = 3;
+            LT = 4;
+            GTE = 5;
+            LTE = 6;
         }
         ComparatorType comparatorType = 3;
     }
     repeated HavingHolder having = 13;
+    QueryType queryType = 11;
     bool enableCaching = 12;
-}
-
-message QueryResponse {
-     string queryId = 1;
-     string userId = 2;
-     string data = 3;
-}
-
-message QueryValidationResponse {
-	message ValidationResult {
-		enum ValidationResultType {
-            SUCCESS = 0;
-            INVALID = 1;
-        }
-        ValidationResultType type = 1;
-        string data = 2;
-    }
-
-    string queryId = 1;
-    string userId = 2;
-    ValidationResult validationResult = 3;
-    string rawQuery = 4;
-}
-
-message RunQueryRequest {
-    Query query = 1;
-    bool retrieveMeta = 2;
-}
-
-message RunQueryResponse {
-    string result = 1;
-}
-
-service QueryService {
-    rpc RunQuery(RunQueryRequest) returns (RunQueryResponse) {};
-    rpc Validate(Query) returns (QueryValidationResponse) {};
-    rpc GetData(Query) returns (QueryResponse) {};
-    rpc GetDataStream(stream Query) returns (stream QueryResponse) {};
 }

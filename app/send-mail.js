@@ -1,24 +1,32 @@
-var nodemailer = require('nodemailer');
-var ejs = require("ejs");
+const nodemailer = require('nodemailer');
+const ejs = require("ejs");
+const AppConfig = require('./load_config');
 
-var AppConfig = require('./load_config');
+const appLogo = 'flairbi-logo.png';
+let transporter;
 
-var image_dir = AppConfig.imageFolder;
-var appLogo = 'flairbi-logo.png';
+function createTransporter() {
+    return nodemailer.createTransport({
+        host: AppConfig.getConfig().mailService.host,
+        port: AppConfig.getConfig().mailService.port,
+        pool: true,
+        secure: false,
+        auth: {
+            user: AppConfig.getConfig().mailService.auth.user,
+            pass: AppConfig.getConfig().mailService.auth.pass
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
+}
 
-var transporter = nodemailer.createTransport({
-    host: AppConfig.mailService.host,
-    port: AppConfig.mailService.port,
-    pool: true,
-    secure: false,
-    auth: {
-        user: AppConfig.mailService.auth.user,
-        pass: AppConfig.mailService.auth.pass
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
+async function init() {
+    await AppConfig.loadConfig();
+    transporter = createTransporter();
+}
+
+init();
 
 exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename) {
     var image_cid = new Date().getTime() + imagefilename;
@@ -39,7 +47,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 reject(err)
             } else {
                 var mailOptions = {
-                    from: AppConfig.mailService.sender, // sender address
+                    from: AppConfig.getConfig().mailService.sender, // sender address
                     to: to_mail_list, // list of receivers
                     subject: subject, // Subject line
                     html: html_data,// plain html body

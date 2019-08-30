@@ -1,13 +1,13 @@
 var wkhtmltoimage = require('wkhtmltoimage');
-var logger = require('../logger');
 var fs = require('fs');
 var AppConfig = require('../load_config');
-var image_dir = AppConfig.imageFolder;
 var base64Img = require('base64-img');
-var wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
+
+wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
 
 var imageProcessor= {
    saveImageConvertToBase64:  function(imageName,svgHtml) {
+      const image_dir = AppConfig.getConfig().imageFolder;
       return new Promise((resolve, reject) => {
          try{
             wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, function (code, signal) {

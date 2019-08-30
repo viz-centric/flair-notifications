@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package messages;
+
+import "Cache.proto";
+import "Connection.proto";
+import "Query.proto";
+
+option java_package = "com.flair.bi.messages";
+option java_multiple_files = true;
+
+message QueryResponse {
+     string queryId = 1;
+     string userId = 2;
+     string data = 3;
+     CacheMetadata cacheMetadata = 4;
+}
+
+message QueryValidationResponse {
+	message ValidationResult {
+		enum ValidationResultType {
+            SUCCESS = 0;
+            INVALID = 1;
+        }
+        ValidationResultType type = 1;
+        string data = 2;
+    }
+
+    string queryId = 1;
+    string userId = 2;
+    ValidationResult validationResult = 3;
+    string rawQuery = 4;
+}
+
+message RunQueryRequest {
+    Query query = 1;
+    bool retrieveMeta = 2;
+}
+
+message RunQueryResponse {
+    string result = 1;
+    CacheMetadata cacheMetadata = 2;
+}
+
+message QueryAllRequest {
+    string connectionLinkId = 1;
+    Query query = 2;
+    Connection connection = 3;
+}
+
+message QueryAllResponse {
+    string queryId = 1;
+    string userId = 2;
+    string data = 3;
+}
+
+service QueryService {
+    rpc RunQuery(RunQueryRequest) returns (RunQueryResponse) {};
+    rpc Validate(Query) returns (QueryValidationResponse) {};
+    rpc GetData(Query) returns (QueryResponse) {};
+    rpc QueryAll(QueryAllRequest) returns (QueryAllResponse) {};
+    rpc GetDataStream(stream Query) returns (stream QueryResponse) {};
+}
