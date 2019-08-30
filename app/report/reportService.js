@@ -180,11 +180,11 @@ function getScheduledReportLogs(request) {
 }
 
 function searchReports(request) {
-    logger.info(`Search reports for ${request}`);
+    logger.info(`Search reports for`, request);
     return new Promise(function (resolve, reject) {
         jobs.filterJobs(
           request.username, request.reportName, request.startDate,
-          request.endDate, request.pageSize, request.page
+          request.endDate, request.page, request.pageSize
         )
           .then(function (result) {
               if (result.success === 1) {
