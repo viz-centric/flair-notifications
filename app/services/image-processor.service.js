@@ -9,17 +9,21 @@ var wkhtmltoimage = wkhtmltoimage.setCommand('/usr/bin/wkhtmltoimage');
 var imageProcessor= {
    saveImageConvertToBase64:  function(imageName,svgHtml) {
       return new Promise((resolve, reject) => {
-         wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, function (code, signal) {
-            base64Img.base64(image_dir + imageName, function(err, base64Bytes) {
-               var encodedUrl = "data:image/png;base64,"+ base64Bytes;
-               fs.unlink(image_dir + imageName);
-               resolve(encodedUrl);
+         try{
+            wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, function (code, signal) {
+               base64Img.base64(image_dir + imageName, function(err, base64Bytes) {
+                  var encodedUrl = "data:image/png;base64,"+ base64Bytes;
+                  fs.unlink(image_dir + imageName);
+                  resolve(encodedUrl);
+               },function(error){
+                  reject(error.message);
+               });
             },function(error){
                reject(error.message);
             });
-         },function(error){
-            reject(error.message);
-         });
+         }catch (ex) {
+            reject(ex.message);
+         }
       });
   }
 }
