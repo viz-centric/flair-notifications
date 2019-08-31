@@ -21,7 +21,7 @@
     "ejs": "^2.6.1",
     "eureka-js-client": "^4.5.0",
     "express": "^4.16.4",
-    "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#featured/3-viz-integration",
+    "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#master",
     "grpc": "^1.21.1",
     "joi": "^14.3.1",
     "jquery": "^3.3.1",
