@@ -10,7 +10,7 @@ function createImageDir() {
 
   // create image dir if not exit
   if (!fs.existsSync(imageDir)) {
-    fs.mkdirSync(imageDir, {recursive: true});
+    fs.mkdirSync(imageDir);
   }
 }
 

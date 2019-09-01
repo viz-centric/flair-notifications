@@ -1,4 +1,4 @@
-FROM node:10.16
+FROM node:8.16.0
 
 LABEL maintainer="admin@vizcentric.com"
 LABEL name="Vizcentric"
