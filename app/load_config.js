@@ -8,10 +8,6 @@ const default_config='./app/default_config.yml';
 let appConfig;
 let appConfigPromise;
 function getConfig() {
-    return appConfig;
-}
-
-function loadConfig() {
     if (appConfigPromise) {
         return appConfigPromise;
     }
@@ -70,6 +66,5 @@ async function loadIpAddress() {
 }
 
 module.exports = {
-    loadConfig,
     getConfig
 };

@@ -11,21 +11,22 @@ module.exports = {
 /**
  * Start the GRPC server on the selected port.
  * @param port
- * @param config
+ * @param sslConfig
  */
-function startServer(port, config) {
-    let ipAddress = AppConfig.getConfig().ipAddress;
+async function startServer(port, sslConfig) {
+    const config = await AppConfig.getConfig();
+    const ipAddress = config.ipAddress;
     logger.info(`Starting grpc server on port ${ipAddress}:${port}`);
     const server = new grpc.Server();
     registerEndpoints(server);
 
     let credentials;
-    if (config.enabled) {
-        logger.info(`grpc server with ssl enabled ${config.caCert} ${config.serverCert} ${config.serverKey}`);
-        let rootCerts = fs.readFileSync(config.caCert);
+    if (sslConfig.enabled) {
+        logger.info(`grpc server with ssl enabled ${sslConfig.caCert} ${sslConfig.serverCert} ${sslConfig.serverKey}`);
+        let rootCerts = fs.readFileSync(sslConfig.caCert);
         let keyCert = {
-            cert_chain: fs.readFileSync(config.serverCert),
-            private_key: fs.readFileSync(config.serverKey)
+            cert_chain: fs.readFileSync(sslConfig.serverCert),
+            private_key: fs.readFileSync(sslConfig.serverKey)
         };
         credentials = grpc.ServerCredentials.createSsl(rootCerts, [keyCert], true);
     } else {

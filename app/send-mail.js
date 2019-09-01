@@ -4,16 +4,17 @@ const AppConfig = require('./load_config');
 
 const appLogo = 'flairbi-logo.png';
 let transporter;
+let config;
 
-function createTransporter() {
+function createTransporter(config) {
     return nodemailer.createTransport({
-        host: AppConfig.getConfig().mailService.host,
-        port: AppConfig.getConfig().mailService.port,
+        host: config.mailService.host,
+        port: config.mailService.port,
         pool: true,
         secure: false,
         auth: {
-            user: AppConfig.getConfig().mailService.auth.user,
-            pass: AppConfig.getConfig().mailService.auth.pass
+            user: config.mailService.auth.user,
+            pass: config.mailService.auth.pass
         },
         tls: {
             rejectUnauthorized: false
@@ -22,8 +23,8 @@ function createTransporter() {
 }
 
 async function init() {
-    await AppConfig.loadConfig();
-    transporter = createTransporter();
+    config = await AppConfig.getConfig();
+    transporter = createTransporter(config);
 }
 
 init();
@@ -47,7 +48,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 reject(err)
             } else {
                 var mailOptions = {
-                    from: AppConfig.getConfig().mailService.sender, // sender address
+                    from: config.mailService.sender, // sender address
                     to: to_mail_list, // list of receivers
                     subject: subject, // Subject line
                     html: html_data,// plain html body

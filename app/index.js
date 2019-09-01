@@ -5,10 +5,10 @@ const grpc = require('./grpc');
 const http = require('./http');
 const discovery = require('./discovery');
 
-function init() {
-  let httpPort = AppConfig.getConfig().httpPort;
-  let grpcPort = AppConfig.getConfig().grpcPort;
-  let sslConfig = AppConfig.getConfig().ssl;
+async function init(config) {
+  let httpPort = config.httpPort;
+  let grpcPort = config.grpcPort;
+  let sslConfig = config.ssl;
 
   logger.log({
     level: 'info',
@@ -19,15 +19,15 @@ function init() {
   });
 
   http.start(httpPort);
-  grpc.start(grpcPort, sslConfig);
+  await grpc.start(grpcPort, sslConfig);
 
   restartJobModule.restartJobs();
 }
 
 async function start() {
-  await AppConfig.loadConfig();
+  const config = await AppConfig.getConfig();
   await discovery.start();
-  init();
+  await init(config);
 }
 
 start();

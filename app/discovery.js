@@ -5,12 +5,13 @@ const logger = require('./logger');
 let client;
 const promises = [];
 
-function start() {
+async function start() {
   logger.info('AppConfig ', AppConfig);
-  const grpcPort = AppConfig.getConfig().grpcPort;
-  const ipAddress = AppConfig.getConfig().ipAddress;
-  const eurekaUrl = AppConfig.getConfig().discovery.eureka.url;
-  const discoveryHostname = AppConfig.getConfig().discovery.hostname;
+  const config = await AppConfig.getConfig();
+  const grpcPort = config.grpcPort;
+  const ipAddress = config.ipAddress;
+  const eurekaUrl = config.discovery.eureka.url;
+  const discoveryHostname = config.discovery.hostname;
   const eurekaInstanceId = new Date().getTime();
   logger.info(`Starting eureka ip ${ipAddress} hostname ${discoveryHostname} url ${eurekaUrl} grpc port ${grpcPort}`);
   client = new Eureka({

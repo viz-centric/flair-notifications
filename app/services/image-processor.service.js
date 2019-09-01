@@ -4,8 +4,8 @@ const AppConfig = require('../load_config');
 const base64Img = require('base64-img');
 const logger = require('./../logger');
 
-function createImageDir() {
-  const imageDir = AppConfig.getConfig().imageFolder;
+function createImageDir(config) {
+  const imageDir = config.imageFolder;
   logger.info(`Creating images dir ${imageDir}`);
 
   // create image dir if not exit
@@ -15,8 +15,8 @@ function createImageDir() {
 }
 
 async function init() {
-  await AppConfig.loadConfig();
-  createImageDir();
+  let config = await AppConfig.getConfig();
+  createImageDir(config);
 }
 
 init();
@@ -45,8 +45,8 @@ function generateImage(svgHtml, image_dir, imageName) {
 
 const imageProcessor = {
   saveImageConvertToBase64: async function (imageName, svgHtml) {
-    const config = await AppConfig.loadConfig();
-    const image_dir = AppConfig.getConfig().imageFolder;
+    const config = await AppConfig.getConfig();
+    const image_dir = config.imageFolder;
     return await generateImage(svgHtml, image_dir, imageName);
   }
 };
