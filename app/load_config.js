@@ -19,6 +19,7 @@ function loadConfig() {
     appConfigPromise = new Promise(async (success, reject) => {
         if (appConfig) {
             logger.info(`Loading app config. Already loaded.`);
+            appConfigPromise = null;
             success(appConfig);
         }
         logger.info(`Loading app config...`);
