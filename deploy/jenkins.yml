@@ -12,9 +12,9 @@ services:
     ports:
     - 5777:5432
     networks:
-    - flair-network
+    - jenkins
 
 networks:
     flair-network:
         external:
-            name: flair-network
+            name: jenkins
