@@ -15,6 +15,6 @@ services:
     - jenkins
 
 networks:
-    flair-network:
+    jenkins:
         external:
             name: jenkins
