@@ -4,18 +4,14 @@ const logger = require('../logger');
 const discovery = require('../discovery');
 
 const vizUrl = "/api/external/visualMetaDataById";
+let flairBiUrl;
 
-function getFlairBiUrl() {
-    const instances = discovery.getClient().getInstancesByAppId('FLAIRBI');
-    let url;
-    if (process.env.GRPC_SSL_ENABLED === 'true') {
-        url = 'https://' + instances[0].hostName + ':' + instances[0].securePort.$
-    } else {
-        url = 'http://' + instances[0].hostName + ':' + instances[0].port.$
-    }
-    logger.info(`Flair bi instances ${url}`);
-    return url + vizUrl;
+async function init() {
+    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + vizUrl;
 }
+
+init();
+
 
 var configs = {
     clusteredverticalBarConfig: function (viz_id) {
@@ -23,7 +19,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -123,7 +119,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -220,7 +216,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -314,7 +310,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -408,7 +404,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -507,7 +503,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -608,7 +604,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -701,7 +697,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -755,7 +751,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -818,7 +814,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -935,7 +931,7 @@ var configs = {
     pivottableChartConfig: function (viz_id) {
         var chartconfigPromise = new Promise((resolve, reject) => {
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1051,7 +1047,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1137,7 +1133,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1279,7 +1275,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1361,7 +1357,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1525,7 +1521,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1587,7 +1583,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1677,7 +1673,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1750,7 +1746,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1830,7 +1826,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',
@@ -1890,7 +1886,7 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(getFlairBiUrl() + "/" + viz_id, function (error, response, body) {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
                         logger.log({
                             level: 'error',

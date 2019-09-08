@@ -4,31 +4,30 @@ const logger = require('./logger');
 const grpc = require('./grpc');
 const http = require('./http');
 const discovery = require('./discovery');
-const envService = require('./services/env.service');
 
-let httpPort = AppConfig.httpPort;
-let grpcPort = AppConfig.grpcPort;
-let sslConfig = AppConfig.ssl;
+async function init(config) {
+  let httpPort = config.httpPort;
+  let grpcPort = config.grpcPort;
+  let sslConfig = config.ssl;
 
-http.start(httpPort);
-
-logger.log({
-  level: 'info',
-  message: 'Server started!',
-  httpPort,
-  grpcPort,
-  sslConfig
-});
-
-restartJobModule.restartJobs();
-
-function init() {
-  grpc.start(grpcPort, sslConfig);
-  discovery.start();
-}
-
-envService.init()
-  .then(() => {
-    init();
+  logger.log({
+    level: 'info',
+    message: 'Server started!',
+    httpPort,
+    grpcPort,
+    sslConfig
   });
 
+  http.start(httpPort);
+  await grpc.start(grpcPort, sslConfig);
+
+  restartJobModule.restartJobs();
+}
+
+async function start() {
+  const config = await AppConfig.getConfig();
+  await discovery.start();
+  await init(config);
+}
+
+start();

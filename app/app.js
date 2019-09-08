@@ -1,18 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jobs = require('./jobs');
-const fs = require('fs');
 const validator = require('./validator');
 const logger = require('./logger');
-
-const AppConfig = require('./load_config');
-
-const imageDir = AppConfig.imageFolder;
-
-// create image dir if not exit 
-if (!fs.existsSync(imageDir)) {
-    fs.mkdirSync(imageDir);
-}
 
 const app = express();
 

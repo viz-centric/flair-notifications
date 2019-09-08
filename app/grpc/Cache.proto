@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package messages;
+
+option java_package = "com.flair.bi.messages";
+option java_multiple_files = true;
+
+
+message CacheMetadata {
+    int64 dateCreated = 1;
+    bool stale = 2;
+}

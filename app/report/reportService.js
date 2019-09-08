@@ -8,7 +8,7 @@ module.exports = {
     scheduleReport: scheduleReport,
     getAllScheduledReportForUser: getAllScheduledReportForUser,
     getScheduledReportCountsForUser: getScheduledReportCountsForUser,
-    getScheduledReportLogs: getScheduledReportLogs,
+    getScheduleReportLogs: getScheduleReportLogs,
     updateScheduledReport: updateScheduledReport,
     deleteScheduledReport: deleteScheduledReport,
     executeReport: executeReport,
@@ -164,7 +164,7 @@ function getScheduledReportCountsForUser(request) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function getScheduledReportLogs(request) {
+function getScheduleReportLogs(request) {
     logger.info(`Get scheduled report logs via grpc for ${request.visualizationId} page ${request.page} size ${request.pageSize}`);
     return new Promise(function (resolve, reject) {
         jobs.jobLogs(request.visualizationId, request.page, request.pageSize).then(function (result) {
