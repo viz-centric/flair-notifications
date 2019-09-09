@@ -1,0 +1,20 @@
+version: "2"
+services:
+  flair-notifications-pgsql:
+    image: postgres:9.4-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nodeDB
+
+  flair-notifications:
+    image: flairbi/flair-notifications:${TAG}
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 9100:8080
+
+networks:
+  default:
+    external:
+      name: flair-network
