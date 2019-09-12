@@ -102,3 +102,15 @@ After that, copy the whole contents from `certs/*` to flair-bi projects to the s
 ```bash
 cp certs ../flair-bi/src/main/resources/ssl/notificationscertsgen
 ```
+
+## Development
+
+### Build docker image
+
+To build docker image, run this command
+
+```
+docker build -t flairbi/flair-notifications:v1.0.0 .
+```
+
+change `v1.0.0` to any version of your choice.
