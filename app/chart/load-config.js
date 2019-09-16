@@ -14,7 +14,7 @@ init();
 
 
 var configs = {
-    clusteredverticalBarConfig: function (viz_id) {
+    barChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
@@ -65,7 +65,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
-
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         for (var i = 0; i < result.maxMes; i++) {
 
                             result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
@@ -82,6 +83,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                         }
 
                         resolve(result);
@@ -114,291 +117,7 @@ var configs = {
         return chartconfigPromise;
 
     },
-    clusteredhorizontalBarConfig: function (viz_id) {
 
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-
-
-                        for (var i = 0; i < result.maxMes; i++) {
-
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
-    stackedverticalBarConfig: function (viz_id) {
-
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var vis
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-                        for (var i = 0; i < result.maxMes; i++) {
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
-    stackedHorizontalBarConfig: function (viz_id) {
-
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-                        for (var i = 0; i < result.maxMes; i++) {
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
     lineChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
@@ -453,6 +172,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         result['lineType'] = [];
                         result['pointType'] = [];
                         for (var i = 0; i < result.maxMes; i++) {
@@ -470,6 +191,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                             result['lineType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Type'));
                             result['pointType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Chart Point type'));
                         }
@@ -552,6 +275,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         result['comboChartType'] = [];
                         result['lineType'] = [];
                         result['pointType'] = [];
@@ -570,6 +295,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                             result['comboChartType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Combo chart type'));
                             result['lineType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Type'));
                             result['pointType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Chart Point type'));
@@ -1067,8 +794,10 @@ var configs = {
                             measures = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measures);
+                        result['kpiAlignment'] = VisualizationUtils.getPropertyValue(properties, 'Text alignment');
+
                         result['kpiDisplayName'] = [];
-                        result['kpiAlignment'] = [];
+
                         result['kpiBackgroundColor'] = [];
                         result['kpiNumberFormat'] = [];
                         result['kpiFontStyle'] = [];
@@ -1087,7 +816,6 @@ var configs = {
                                 VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
                                 result['measure'][i]
                             );
-                            result['kpiAlignment'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text alignment'));
                             result['kpiBackgroundColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Background Colour'));
                             result['kpiNumberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
                             result['kpiFontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
@@ -1395,6 +1123,7 @@ var configs = {
                         result['showIcon'] = [];
                         result['valuePosition'] = [];
                         result['iconName'] = [];
+                        result['iconExpression'] = [];
                         result['iconFontWeight'] = [];
                         result['iconPosition'] = [];
                         result['iconColor'] = [];
@@ -1425,6 +1154,7 @@ var configs = {
                             result['fontWeightForMeasure'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
                             result['fontSizeForMeasure'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
                             result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
+                            result['iconExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Expression'));
                         }
                         resolve(result);
                     }
@@ -1841,11 +1571,17 @@ var configs = {
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
                         var result = {};
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
                         var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
+                        result['colorSet'] = colorSet;
+
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
 
@@ -1901,11 +1637,16 @@ var configs = {
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
                         var result = {};
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
                         var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
+                        result['colorSet'] = colorSet;
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
 

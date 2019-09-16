@@ -35,7 +35,7 @@ var charts = {
     chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
 
     var clusteredverticalBarChartObj = clusteredverticalbar();
-    var chartConfig = await load_config.clusteredverticalBarConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id);
 
     clusteredverticalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredverticalBarChartObj(d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar'))
@@ -47,7 +47,7 @@ var charts = {
     chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
 
     var clusteredhorizontalBarChartObj = clusteredhorizontalbar();
-    var chartConfig = await load_config.clusteredhorizontalBarConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id);
 
     clusteredhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredhorizontalBarChartObj(d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar'))
@@ -59,7 +59,7 @@ var charts = {
     chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
     var stackedverticalBarChartObj = stackedverticalbar();
-    var chartConfig = await load_config.stackedverticalBarConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id);
 
     stackedverticalBarChartObj.config(chartConfig).print(true).data(data);
     stackedverticalBarChartObj(d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar'))
@@ -71,7 +71,7 @@ var charts = {
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
-    var chartConfig = await load_config.stackedHorizontalBarConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id);
 
     stackedhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     stackedhorizontalBarChartObj(d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar'))
