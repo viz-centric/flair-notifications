@@ -122,18 +122,15 @@ function getScheduledReport(request) {
 
 /**
  * Retrieve all scheduled reports for user paginated.
- * @param username
- * @param page which page
- * @param size of the page
+ * @param request
  * @return {Promise<any>}
  */
 function getAllScheduledReportForUser(request) {
     let username = request.username;
-    let page = request.page;
-    let size = request.size;
+    let page = (+request.page);
+    let pageSize = (+request.pageSize);
+    logger.info(`Calling 1 get all reports for user ${username} page ${page} size ${pageSize}`);
     return new Promise(function (resolve, reject) {
-        const page = (+page);
-        const pageSize = (+size);
         jobs.JobsByUser(username, page, pageSize).then(function (result) {
             resolve({
                 reports: result.reports
