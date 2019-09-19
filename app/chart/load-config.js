@@ -23,7 +23,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bar chart' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -92,7 +92,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bar chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -103,7 +103,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for bar chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -127,7 +127,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for line' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -201,7 +201,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for line' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -211,7 +211,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for line' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -230,7 +230,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for combo ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -306,7 +306,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for combo' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -316,7 +316,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for combo' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -335,7 +335,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for scatter Plot' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -400,7 +400,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for scatter Plot' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -409,7 +409,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for scatter Plot' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -428,7 +428,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -452,7 +452,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -462,7 +462,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pie ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -482,7 +482,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -515,7 +515,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -525,7 +525,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for doughnut' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -545,7 +545,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for table' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -633,7 +633,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for table' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -644,7 +644,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for table' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -662,7 +662,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pivot table' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -752,7 +752,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pivot table' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -761,7 +761,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pivot table' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -778,7 +778,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for KPI' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -835,7 +835,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for KPI' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -845,7 +845,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for KPI ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -865,7 +865,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for info graphics ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -912,7 +912,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for info graphics' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -922,7 +922,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for info graphics' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -941,7 +941,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config for map chart',
+                            message: 'error while fetching config for map ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -977,7 +977,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config for map chart',
+                            message: 'error while fetching config for map ' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -987,7 +987,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config for map chart',
+                    message: 'error while fetching config for map' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1007,7 +1007,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for treemap ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1060,7 +1060,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for treemap' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1070,7 +1070,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for treemap' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1089,7 +1089,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for heatmap' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1161,7 +1161,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for heatmap' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1171,7 +1171,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for heatmap ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1189,7 +1189,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for boxplot' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1227,7 +1227,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config box plot chart ' + viz_id,
+                            message: 'error while fetching config for boxplot chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1237,7 +1237,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config box plot chart ' + viz_id,
+                    message: 'error while fetching config for boxplot chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1255,7 +1255,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config chord diagram',
+                            message: 'error while fetching config for chord diagram ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1289,7 +1289,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config chord diagram',
+                            message: 'error while fetching config for chord diagram ' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1299,7 +1299,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config chord diagram',
+                    message: 'error while fetching config for chord diagram ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1317,7 +1317,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config  textObject',
+                            message: 'error while fetching config for text Object' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1377,7 +1377,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config  textObject',
+                            message: 'error while fetching config for text Object' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1387,7 +1387,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config  textObject',
+                    message: 'error while fetching config for text Object' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1407,7 +1407,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bullet' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1451,7 +1451,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bullet chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1461,7 +1461,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for bullet chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1480,7 +1480,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for sankey' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1531,7 +1531,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for sankey chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1541,7 +1541,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for sankey chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1560,7 +1560,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie grid' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1597,7 +1597,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie grid' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1607,7 +1607,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pie grid' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1626,7 +1626,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for number grid' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1661,7 +1661,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for number grid' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1671,7 +1671,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for number grid' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
