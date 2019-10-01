@@ -157,7 +157,7 @@ const chartMap = {
 };
 
 
-exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,thresholdAlertEmail) {
+exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
@@ -165,92 +165,105 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
         var data_call = grpc_client.getRecords(query);
         data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
-            reports_data.report_line_obj.visualizationid=thresholdAlertEmail?reports_data.report_line_obj.visualizationid.split(":")[1]:reports_data.report_line_obj.visualizationid
-            //render html chart
-            generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
+            if (json_res && json_res.data.length > 0) {
+                reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
+                //render html chart
+                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-            generate_chart.then(function (response) {
-                var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+reports_data['report_obj']['report_name'] + '.png':reports_data['report_obj']['report_name'] + '.png';
-                var to_mail_list = [];
-                for (user of reports_data['report_assign_obj']['email_list']) {
-                    to_mail_list.push(user['user_email'])
-                }
-                var mail_body = reports_data['report_obj']['mail_body']
-                var report_title = reports_data['report_obj']['title_name']
-                var subject = thresholdAlertEmail?"Threshold Alert "+reports_data['report_obj']['subject']:reports_data['report_obj']['subject'];
-                var build_url = reports_data['report_obj']['build_url']
-                var share_link = reports_data['report_obj']['share_link']
-                var dash_board = reports_data['report_obj']['dashboard_name']
-                var view_name = reports_data['report_obj']['view_name']
+                generate_chart.then(function (response) {
+                    var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
+                    var to_mail_list = [];
+                    for (user of reports_data['report_assign_obj']['email_list']) {
+                        to_mail_list.push(user['user_email'])
+                    }
+                    var mail_body = reports_data['report_obj']['mail_body']
+                    var report_title = reports_data['report_obj']['title_name']
+                    var subject = thresholdAlertEmail ? "Threshold Alert " + reports_data['report_obj']['subject'] : reports_data['report_obj']['subject'];
+                    var build_url = reports_data['report_obj']['build_url']
+                    var share_link = reports_data['report_obj']['share_link']
+                    var dash_board = reports_data['report_obj']['dashboard_name']
+                    var view_name = reports_data['report_obj']['view_name']
 
-                var mailRetryCount = 0;
-                function sendMail(subject, to_mail_list, mail_body, report_title,imagefilename) {
-                    mailRetryCount += 1;
-                    imageProcessor.saveImageConvertToBase64(imagefilename,response).then(function (bytes) {
-                        sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board,view_name, bytes,imagefilename).then(function (success) {
-                            try {
-                                let shedularlog = models.SchedulerTaskLog.create({
-                                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                    task_executed: new Date(Date.now()).toISOString(),
-                                    task_status: "success",
+                    var mailRetryCount = 0;
+                    function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename) {
+                        mailRetryCount += 1;
+                        imageProcessor.saveImageConvertToBase64(imagefilename, response).then(function (bytes) {
+                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename).then(function (success) {
+                                try {
+                                    let shedularlog = models.SchedulerTaskLog.create({
+                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                        task_executed: new Date(Date.now()).toISOString(),
+                                        task_status: "success",
+                                    });
+                                } catch (error) {
+                                    logger.log({
+                                        level: 'error',
+                                        message: 'error while saving scheduler log',
+                                    });
+                                }
+
+                            },
+                                function (error) {
+                                    logger.log({
+                                        level: 'error',
+                                        message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                        errMsg: error,
+                                    });
+                                    if (mailRetryCount < 2) {
+                                        setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title, imagefilename),
+                                            retryDelay);
+                                    }
+                                    else {
+                                        let shedularlog = models.SchedulerTaskLog.create({
+                                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                            task_executed: new Date(Date.now()).toISOString(),
+                                            task_status: "mail " + error,
+                                        });
+                                    }
+
                                 });
-                            } catch (error) {
-                                logger.log({
-                                    level: 'error',
-                                    message: 'error while saving scheduler log',
-                                });
-                            }
-    
-                        },
-                        function (error) {
+                        }).catch(function (error) {
                             logger.log({
                                 level: 'error',
-                                message: 'error while sending mail'+thresholdAlertEmail?' for threshold alert':'',
-                                errMsg: error,
+                                message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                errMsg: err,
                             });
-                            if (mailRetryCount < 2) {
-                                setTimeout(() => sendMail(subject, to_mail_list, mail_body, report_title,imagefilename),
-                                    retryDelay);
-                            }
-                            else {
-                                let shedularlog = models.SchedulerTaskLog.create({
-                                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                    task_executed: new Date(Date.now()).toISOString(),
-                                    task_status: "mail " + error,
-                                });
-                            }
-    
+                            let shedularlog = models.SchedulerTaskLog.create({
+                                SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                task_executed: new Date(Date.now()).toISOString(),
+                                task_status: "mail " + error,
+                            });
                         });
-                    }).catch(function (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while generating image'+thresholdAlertEmail?' for threshold alert':'',
-                            errMsg: err,
-                        });
-                        let shedularlog = models.SchedulerTaskLog.create({
-                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                            task_executed: new Date(Date.now()).toISOString(),
-                            task_status: "mail " + error,
-                        });
+                    }
+                    sendMail(subject, to_mail_list, mail_body, report_title, imagefilename);
+                }, function (err) {
+                    logger.log({
+                        level: 'error',
+                        message: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
+                        errMsg: err,
                     });
-                }
-                sendMail(subject, to_mail_list, mail_body, report_title,imagefilename);
-            }, function (err) {
+                    let shedularlog = models.SchedulerTaskLog.create({
+                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                        task_executed: new Date(Date.now()).toISOString(),
+                        task_status: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err
+                    });
+                });
+            } else {
                 logger.log({
                     level: 'error',
-                    message: thresholdAlertEmail?'error while generating chart for threshold alert'+err:'error while generating chart'+err,
-                    errMsg: err,
+                    message: "no data found",
+                    errMsg: "no data found",
                 });
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
-                    task_status: thresholdAlertEmail?'error while generating chart for threshold alert'+err:'error while generating chart'+err
+                    task_status: "no data found",
                 });
-            });
+            }
         }, function (err) {
             logger.log({
                 level: 'error',
-                message: thresholdAlertEmail?'error while fetching records from GRPC for threshold alert'+err:'error while fetching records from GRPC'+err,
+                message: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                 errMsg: err,
             });
             if (grpcRetryCount < 2) {
@@ -260,7 +273,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data,threshol
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
-                    task_status: thresholdAlertEmail?'error while fetching records from GRPC for threshold alert'+err:'error while fetching records from GRPC'+err,
+                    task_status: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                 });
             }
 
