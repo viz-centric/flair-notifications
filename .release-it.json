@@ -2,8 +2,8 @@
   "git": {
     "commit": true,
     "commitMessage": "[skip ci] Release ${version}",
-    "requireCleanWorkingDir": true,
-    "requireUpstream": true,
+    "requireCleanWorkingDir": false,
+    "requireUpstream": false,
     "requireCommits": false,
     "addUntrackedFiles": false,
     "tag": true,
@@ -15,7 +15,7 @@
     "pushRepo": "origin"
   },
   "github": {
-    "release": true,
+    "release": false,
     "releaseName": "Release ${version}",
     "releaseNotes": "Released version ${version}",
     "preRelease": false,
