@@ -15,9 +15,9 @@
     "pushRepo": "origin"
   },
   "github": {
-    "release": false,
+    "release": true,
     "releaseName": "Release ${version}",
-    "releaseNotes": null,
+    "releaseNotes": "Released version ${version}",
     "preRelease": false,
     "draft": false,
     "tokenRef": "GITHUB_TOKEN",
