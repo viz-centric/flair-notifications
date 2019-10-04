@@ -5,8 +5,17 @@ ARG ssh_pub_key
 
 COPY package*.json /flair-notifications/
 
+
+# Authorize SSH Host
 # Add the keys and set permissions
-RUN mkdir /root/.ssh && \
+RUN apt-get update && \
+    apt-get install -y \
+        git \
+        openssh-server \
+        libmysqlclient-dev && \
+    mkdir -p /root/.ssh && \
+    chmod 0700 /root/.ssh && \
+    ssh-keyscan github.com > /root/.ssh/known_hosts && \
     echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
     echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub && \
     chmod 600 /root/.ssh/id_rsa && \
