@@ -11,8 +11,7 @@ COPY package*.json /flair-notifications/
 RUN apt-get update && \
     apt-get install -y \
         git \
-        openssh-server \
-        libmysqlclient-dev && \
+        openssh-server && \
     mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
     ssh-keyscan github.com > /root/.ssh/known_hosts && \
