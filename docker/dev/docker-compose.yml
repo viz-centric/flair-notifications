@@ -10,8 +10,8 @@ services:
       context: ../../
       dockerfile: docker/dev/Dockerfile
       args:
-        ssh_prv_key: "`cat ~/.ssh/id_rsa`"
-        ssh_pub_key: "`cat ~/.ssh/id_rsa.pub`"
+        ssh_prv_key: ${GITHUB_SSH_PRIV}
+        ssh_pub_key: ${GITHUB_SSH_PUB}
     volumes:
       - build:/flair-notifications/node_modules
     command: ["npm", "test"]
@@ -20,8 +20,8 @@ services:
       context: ../../
       dockerfile: docker/dev/Dockerfile
       args:
-        ssh_prv_key: "`cat ~/.ssh/id_rsa`"
-        ssh_pub_key: "`cat ~/.ssh/id_rsa.pub`"
+        ssh_prv_key: ${GITHUB_SSH_PRIV}
+        ssh_pub_key: ${GITHUB_SSH_PUB}
     volumes:
       - build:/flair-notifications/node_modules
     command: ["npm", "run", "release", "--", "patch", "--ci"]
