@@ -3,9 +3,10 @@ FROM flairbi/flair-notification-dev
 ARG ssh_prv_key
 ARG ssh_pub_key
 
-COPY package*.json /flair-notifications/
+COPY / /flair-notifications/
 
 
+RUN echo "$ssh_pub_key"
 # Authorize SSH Host
 # Add the keys and set permissions
 RUN apt-get update && \
