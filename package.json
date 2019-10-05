@@ -7,7 +7,10 @@
     "start": "NODE_ENV=development node app/index.js",
     "docker": "node app/index.js",
     "test": "NODE_ENV=test node app/test/mocha.js",
-    "release": "release-it"
+    "release": "release-it",
+    "docker:build": "docker-compose -f docker/dev/docker-compose.yml build",
+    "docker:test": "docker-compose -f docker/dev/docker-compose.yml up test",
+    "docker:release": "docker-compose -f docker/dev/docker-compose.yml up release"
   },
   "author": "",
   "license": "ISC",
