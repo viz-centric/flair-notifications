@@ -2,6 +2,8 @@ FROM flairbi/flair-notification-dev
 
 ARG ssh_prv_key
 ARG ssh_pub_key
+ARG git_author_name
+ARG git_author_email
 
 COPY / /flair-notifications/
 
@@ -19,8 +21,8 @@ RUN apt-get update && \
     echo "Host github.com \nUser git \nPort 22\n Hostname github.com\n IdentityFile /root/.ssh/id_rsa\n TCPKeepAlive yes\n IdentitiesOnly yes" > /root/.ssh/config && \
     chmod 600 /root/.ssh/id_rsa && \
     chmod 600 /root/.ssh/id_rsa.pub && \
-    git config --global user.email "admin@vizcentric.com" && \
-    git config --global user.name "admin-vizcentric"
+    git config --global user.email $git_author_email && \
+    git config --global user.name $git_author_name
 
 WORKDIR /flair-notifications/
 RUN npm install
