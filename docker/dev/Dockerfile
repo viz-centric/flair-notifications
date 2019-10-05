@@ -5,6 +5,11 @@ ARG ssh_pub_key
 ARG git_author_name
 ARG git_author_email
 
+RUN echo $ssh_prv_key
+RUN echo $ssh_pub_key
+RUN echo $git_author_name
+RUN echo $git_author_email
+
 COPY / /flair-notifications/
 
 # Authorize SSH Host
