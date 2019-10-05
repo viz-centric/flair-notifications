@@ -1,0 +1,27 @@
+version: '2'
+
+volumes:
+  build:
+    driver: local
+
+services:
+  test:
+    build: 
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+      args:
+        ssh_prv_key: "`cat ~/.ssh/id_rsa`"
+        ssh_pub_key: "`cat ~/.ssh/id_rsa.pub`"
+    volumes:
+      - build:/flair-notifications/node_modules
+    command: ["npm", "test"]
+  release:
+    build: 
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+      args:
+        ssh_prv_key: "`cat ~/.ssh/id_rsa`"
+        ssh_pub_key: "`cat ~/.ssh/id_rsa.pub`"
+    volumes:
+      - build:/flair-notifications/node_modules
+    command: ["npm", "run", "release", "--", "patch", "--ci"]
