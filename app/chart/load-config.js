@@ -1570,6 +1570,7 @@ var configs = {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
                         var result = {};
                         var colorSet = [];
                         visualizationColors.forEach(function (obj) {
@@ -1635,6 +1636,7 @@ var configs = {
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
+                        var visualizationColors = json_res.visualizationColors;
                         var fields = json_res.visualMetadata.fields;
                         var result = {};
                         var colorSet = [];
@@ -1655,7 +1657,7 @@ var configs = {
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
                         result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
                         result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
-                        result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Font size for diplay name');
+                        result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size for diplay name');
                         resolve(result);
                     }
                     else {
