@@ -51,6 +51,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');
                         result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
@@ -158,7 +159,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
                         result['isFilterGrid'] = false;
@@ -261,6 +262,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');
                         result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
@@ -1118,6 +1120,11 @@ var configs = {
                         result['fontStyleForDimension'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font style');
                         result['fontWeightForDimension'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font weight');
                         result['fontSizeForDimension'] = parseInt(VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font size'));
+                        result["colorPattern"] = VisualizationUtils.getPropertyValue(properties, "Color Pattern").toLowerCase().replace(' ', '_');
+
+                        var displayColor = VisualizationUtils.getPropertyValue(properties, 'Display colour');
+                        result['displayColor'] = (displayColor == null) ? colorSet[0] : displayColor;
+
                         result['displayNameForMeasure'] = [];
                         result['showValues'] = [];
                         result['showIcon'] = [];
@@ -1129,7 +1136,7 @@ var configs = {
                         result['iconColor'] = [];
                         result['colourCoding'] = [];
                         result['valueTextColour'] = [];
-                        result['displayColor'] = [];
+                        result['displayColorMeasure'] = [];
                         result['fontStyleForMeasure'] = [];
                         result['fontWeightForMeasure'] = [];
                         result['fontSizeForMeasure'] = [];
@@ -1149,7 +1156,7 @@ var configs = {
                             result['iconColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
                             result['colourCoding'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
                             result['valueTextColour'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            result['displayColor'].push(colorSet[i]);
+                            result['displayColorMeasure'].push(colorSet[i]);
                             result['fontStyleForMeasure'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
                             result['fontWeightForMeasure'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
                             result['fontSizeForMeasure'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
