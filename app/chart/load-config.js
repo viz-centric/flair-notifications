@@ -161,6 +161,7 @@ var configs = {
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
                         result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
+                        result['stacked'] = VisualizationUtils.getPropertyValue(properties, 'Stacked');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
                         result['isFilterGrid'] = false;
                         result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
