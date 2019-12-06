@@ -183,7 +183,7 @@ var charts = {
 
   tableChart: async function (viz_id, data) {
 
-    var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="table" width="950" height="440"></div></body></html>');
+    var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="table" ></div></body></html>');
     chartUtility.configureDomForcharts(tableFakeDom.window.document)
     var tableChartobj = table();
 

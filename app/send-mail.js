@@ -29,7 +29,7 @@ async function init() {
 
 init();
 
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename) {
+exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
@@ -40,7 +40,9 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
         view_name: view_name,
         image_cid: "cid:" + image_cid,
         imageFile: encodedUrl,
-        AppLogo: "cid:" + appLogo
+        AppLogo: "cid:" + appLogo,
+        chartHtml: chartHtml,
+        chartType: chartType
     }
     return new Promise((resolve, reject) => {
         ejs.renderFile(__dirname + "/template/mail-template.ejs", template_data, function (err, html_data) {
