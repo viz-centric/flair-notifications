@@ -11,6 +11,7 @@ message ScheduleReport {
     AssignReport assign_report = 3;
     Schedule schedule = 4;
     string query = 5;
+    string constraints = 6;
 }
 
 message Report {
