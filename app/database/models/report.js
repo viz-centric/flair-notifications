@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Report.associate = function(models) {
     Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
+    Report.hasOne(models.ReportConstraints,{ as: 'constraints', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
     Report.hasOne(models.AssignReport, { onDelete: 'cascade' });
     Report.hasOne(models.SchedulerTask, { onDelete: 'cascade' });
   };
