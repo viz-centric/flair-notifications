@@ -6,7 +6,7 @@ var queryDTO = require('./queryDTO');
 
 function scedulerDTO(schedulerObj){
     return {
-      report:reportDTO(schedulerObj.userid,schedulerObj.dashboard_name,schedulerObj.view_name,schedulerObj.share_link,schedulerObj.build_url,
+      report:reportDTO(schedulerObj.userid,schedulerObj.dashboard_name,schedulerObj.view_name,schedulerObj.view_id,schedulerObj.share_link,schedulerObj.build_url,
       schedulerObj.mail_body,schedulerObj.subject,schedulerObj.report_name,schedulerObj.title_name,schedulerObj.createdAt,schedulerObj.thresholdAlert), 
       report_line_item:reportlineitemDTO(schedulerObj.reportline),
       assign_report:assignreportDTO(schedulerObj.AssignReport),
