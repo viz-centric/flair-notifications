@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const ReportConstraints = sequelize.define('ReportConstraints', {
+  const ReportConstraints = sequelize.define('ReportConstraint', {
     constraints: {type:DataTypes.JSON, allowNull: true},
     createdAt : DataTypes.DATE,
     updatedAt : DataTypes.DATE,

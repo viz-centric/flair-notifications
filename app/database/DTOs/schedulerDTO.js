@@ -11,7 +11,8 @@ function scedulerDTO(schedulerObj){
       report_line_item:reportlineitemDTO(schedulerObj.reportline),
       assign_report:assignreportDTO(schedulerObj.AssignReport),
       schedule:schedulertaskDTO(schedulerObj.SchedulerTask),
-      query:schedulerObj.thresholdalert?JSON.stringify(schedulerObj.thresholdalert.queryHaving):JSON.stringify(schedulerObj.reportline.query)
+      query:schedulerObj.thresholdalert?JSON.stringify(schedulerObj.thresholdalert.queryHaving):JSON.stringify(schedulerObj.reportline.query),
+      constraints:JSON.stringify(schedulerObj.ReportConstraint.constraints)
       }
   }
 
