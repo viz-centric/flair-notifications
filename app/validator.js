@@ -44,6 +44,7 @@ var validator = {
             userid: Joi.string().allow(null, ''),
             dashboard_name: Joi.string().required(),
             view_name: Joi.string().required(),
+            view_id: Joi.string().required(),
             share_link: Joi.string().required(),
             build_url: Joi.string().required(),
             mail_body: Joi.string().allow(null, ''),

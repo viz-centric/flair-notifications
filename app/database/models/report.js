@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define('Report', {
     dashboard_name: DataTypes.STRING,
     view_name: DataTypes.STRING,
+    view_id: DataTypes.BIGINT,
     share_link: DataTypes.STRING,
     build_url: DataTypes.STRING,
     report_name: {type:DataTypes.STRING, allowNull: true},

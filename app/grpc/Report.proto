@@ -18,6 +18,7 @@ message Report {
     string userid = 1;
     string dashboard_name = 2;
     string view_name = 3;
+    string view_id = 11;
     string share_link = 4;
     string build_url = 5;
     string mail_body = 6;

@@ -21,6 +21,7 @@ var job = {
             let report = await models.Report.create({
                 dashboard_name: params.report.dashboard_name,
                 view_name: params.report.view_name,
+                view_id: params.report.view_id,
                 share_link: params.report.share_link,
                 build_url: params.report.build_url,
                 mail_body: params.report.mail_body,
@@ -137,6 +138,7 @@ var job = {
                 let report = await models.Report.update({
                     dashboard_name: report_data.report.dashboard_name,
                     view_name: report_data.report.view_name,
+                    view_id: report_data.report.view_id,
                     share_link: report_data.report.share_link,
                     build_url: report_data.report.build_url,
                     mail_body: report_data.report.mail_body,
