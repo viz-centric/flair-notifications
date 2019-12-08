@@ -40,7 +40,12 @@ var shedularlog= {
             cron_exp: params.cron_exp,
             active: true,
             timezone: params.schedule.timezone
-        },{transaction})    
+        },{transaction})
+
+        let constraints_obj = await models.ReportConstraint.create({
+              reportId: report.id,
+              constraints: params.constraints,
+          }, {transaction});
 
         await transaction.commit();
  

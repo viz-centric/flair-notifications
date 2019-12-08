@@ -94,7 +94,8 @@ var validator = {
             query: Joi.string(),
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
-            schedule: scheduleSchema
+            schedule: scheduleSchema,
+            constraints: Joi.string().allow(null, ''),
         });
 
         result = Joi.validate(reqBody, reportSchema);
