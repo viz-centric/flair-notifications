@@ -1,6 +1,6 @@
 [![Build Status](https://dev.azure.com/VizCentric/Flair%20BI/_apis/build/status/viz-centric.flair-notifications?branchName=master)](https://dev.azure.com/VizCentric/Flair%20BI/_build/latest?definitionId=6&branchName=master)
 
-# Flair-Reporting-Engine
+# Flair-Reporting-Engine v3.0.0
 
 Application expose an api to schedule a job in cron fashion.
 At scheduled time, it will call grpc server and get data, render chart of that data. Type of chart depend on the request body. After that it will create a image of that chart and store in file system and then send mail to user defined in request body including that image inside html.
