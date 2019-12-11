@@ -1,8 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const AssignReport = sequelize.define('AssignReport', {
-    email_list: DataTypes.JSON,
-    channel: DataTypes.STRING,
+    communication_list: DataTypes.JSON,
+    channel: DataTypes.JSON,
   }, {});
   AssignReport.associate = function(models) {
     AssignReport.belongsTo(models.Report, {

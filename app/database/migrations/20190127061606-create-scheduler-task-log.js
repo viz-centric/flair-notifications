@@ -14,6 +14,20 @@ module.exports = {
       task_status: {
         type: Sequelize.STRING
       },
+      threshold_mat: {
+        type: Sequelize.BOOLEAN
+      },
+      email_sent:
+      {
+        type: Sequelize.BOOLEAN
+      },
+      team_notification_sent:
+      {
+        type: Sequelize.BOOLEAN
+      },
+      ticket: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
