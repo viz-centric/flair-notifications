@@ -62,5 +62,13 @@
     "host": "flair-ap-pgsql",
     "port": 5777,
     "dialect": "postgres"
+  },
+  "kube": {
+    "username": "postgres",
+    "password": "admin",
+    "database": "flairnotify",
+    "host": "flair-notifications-pg-postgresql",
+    "port": 5432,
+    "dialect": "postgres"
   }
 }
