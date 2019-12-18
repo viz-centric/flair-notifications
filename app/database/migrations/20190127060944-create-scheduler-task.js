@@ -14,6 +14,9 @@ module.exports = {
       active: {
         type: Sequelize.BOOLEAN
       },
+      channel: {
+        type: Sequelize.STRING
+      },
       timezone: {
         type: Sequelize.STRING
       },

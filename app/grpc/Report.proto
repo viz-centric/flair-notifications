@@ -34,18 +34,29 @@ message ReportLineItem {
 }
 
 message AssignReport {
-    string channel = 1;
+    repeated string channel = 1;
     string slack_API_Token = 2;
     string channel_id = 3;
     string stride_API_Token = 4;
     string stride_cloud_id = 5;
     string stride_conversation_id = 6;
-    repeated Email email_list = 7;
+    Communication communication_list = 7;
+}
+
+message Communication {
+    repeated Email email = 1;
+    Teams teams = 2;
 }
 
 message Email {
     string user_email = 1;
     string user_name = 2;
+    string channel_config_id = 3;
+}
+
+message Teams {
+    string webhook = 1;
+    string channel_config_id = 2;
 }
 
 message Schedule {
@@ -58,4 +69,7 @@ message Schedule {
 message ReportLog {
     string task_status = 1;
     string task_executed = 2;
+    string threshold_met = 3;
+    string notification_sent = 4;
+    string channel = 5;
 }

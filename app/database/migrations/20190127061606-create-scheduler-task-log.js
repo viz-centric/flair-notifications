@@ -14,16 +14,15 @@ module.exports = {
       task_status: {
         type: Sequelize.STRING
       },
-      threshold_mat: {
+      threshold_met: {
         type: Sequelize.BOOLEAN
       },
-      email_sent:
+      notification_sent:
       {
         type: Sequelize.BOOLEAN
       },
-      team_notification_sent:
-      {
-        type: Sequelize.BOOLEAN
+      channel: {
+        type: Sequelize.STRING
       },
       ticket: {
         type: Sequelize.STRING

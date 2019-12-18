@@ -4,7 +4,7 @@ const cronParser = require('cron-parser');
 const supportedCharts = ['Pie Chart', 'Line Chart', 'Clustered Vertical Bar Chart', 'Clustered Horizontal Bar Chart',
     'Stacked Vertical Bar Chart', 'Stacked Horizontal Bar Chart', 'Heat Map', 'Combo Chart', 'Tree Map',
     'Info-graphic', 'Box Plot', 'Bullet Chart', 'Sankey', 'Table', 'Pivot Table', 'Doughnut Chart', 'KPI',
-    'Scatter plot', 'Gauge plot', 'Text Object', 'Chord Diagram', 'Pie Grid', 'Number Grid','Map']
+    'Scatter plot', 'Gauge plot', 'Text Object', 'Chord Diagram', 'Pie Grid', 'Number Grid', 'Map']
 
 const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
@@ -27,11 +27,11 @@ const customJoi = Joi.extend((joi) => ({
     ]
 }));
 
-const vizIdPrefix='threshold_alert_:';
+const vizIdPrefix = 'threshold_alert_:';
 
-function preprocessor(result){
-	result.value.report_line_item.visualizationid=result.value.report.thresholdAlert?vizIdPrefix+result.value.report_line_item.visualizationid:result.value.report_line_item.visualizationid;
-	return result;
+function preprocessor(result) {
+    result.value.report_line_item.visualizationid = result.value.report.thresholdAlert ? vizIdPrefix + result.value.report_line_item.visualizationid : result.value.report_line_item.visualizationid;
+    return result;
 }
 
 
@@ -59,18 +59,31 @@ var validator = {
             visualizationid: Joi.string(),
         });
 
+        var email = Joi.object().keys({
+            user_name: Joi.string(),
+            user_email: Joi.string(),
+            channel_config_id: Joi.string(),
+        })
+
+        var teams = Joi.object().keys({
+            webhook: Joi.string(),
+            channel_config_id: Joi.string(),
+        })
+
+        var communicationList = Joi.object().keys({
+            email: Joi.array().items(email),
+            teams: teams
+        })
+
         var assignReportSchema = Joi.object().keys({
-            channel: Joi.string().valid(['email', 'slack', 'stride']).required(),
+            channel: Joi.array().items(Joi.string()),
             slack_API_Token: Joi.string().allow(null, ''),
             channel_id: Joi.string().allow(null, ''),
             stride_API_Token: Joi.string().allow(null, ''),
             stride_cloud_id: Joi.string().allow(null, ''),
             stride_conversation_id: Joi.string().allow(null, ''),
-            email_list: Joi.array().items(Joi.object({
-                user_name: Joi.string().required(),
-                user_email: Joi.string().required(),
-            })),
-        });
+            communication_list: communicationList
+        })
 
         var scheduleSchema = Joi.object().keys({
             cron_exp: cronSchema,

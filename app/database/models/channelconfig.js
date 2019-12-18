@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
         config: DataTypes.JSON
     }, {});
     ChannelConfig.associate = function (models) {
-        ChannelConfig.hasOne(models.CommunicationChannels, { as: 'communication_channel', foreignKey: 'communication_channel_id' }, { onDelete: 'cascade' });
+        ChannelConfig.belongsTo(models.Report, {
+            foreignKey: 'communication_channel_id',
+            onDelete: 'CASCADE',
+        });
     };
     return ChannelConfig;
 };

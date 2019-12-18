@@ -31,7 +31,7 @@ var shedularlog= {
         let assign_report_obj= await models.AssignReport.create({
             reportId: report.id,
             channel:params.assign_report.channel,
-            email_list: params.assign_report.email_list,
+            communication_list: params.assign_report.communication_list,
             condition: params.assign_report.condition,
             },{transaction}) 
             
