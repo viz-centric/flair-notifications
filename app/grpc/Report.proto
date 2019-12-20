@@ -40,23 +40,17 @@ message AssignReport {
     string stride_API_Token = 4;
     string stride_cloud_id = 5;
     string stride_conversation_id = 6;
-    Communication communication_list = 7;
+    CommunicationList communication_list = 7;
 }
 
-message Communication {
-    repeated Email email = 1;
-    Teams teams = 2;
+message CommunicationList{
+	repeated Email email = 1;
+	repeated int32 teams = 2;
 }
 
 message Email {
     string user_email = 1;
     string user_name = 2;
-    string channel_config_id = 3;
-}
-
-message Teams {
-    string webhook = 1;
-    string channel_config_id = 2;
 }
 
 message Schedule {

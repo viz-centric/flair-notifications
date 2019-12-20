@@ -264,7 +264,7 @@ var job = {
         var offset = page * pageSize;
         var limit = pageSize;
         try {
-            var report = await models.Report.findOne({
+            var report = await models.Report.findAll({
                 include: [
                     {
                         model: models.SchedulerTask,
@@ -278,9 +278,14 @@ var job = {
             });
             if (report) {
                 try {
+
+                    schedulerTaskId = [];
+                    for (let index = 0; index < report.length; index++) {
+                        schedulerTaskId.push(report[index].SchedulerTask.id)
+                    }
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
                         where: {
-                            SchedulerJobId: report.SchedulerTask.id
+                            SchedulerJobId: schedulerTaskId
                         },
                         order: [
                             ['createdAt', 'DESC'],
@@ -294,7 +299,7 @@ var job = {
                         log.task_status = logItem.task_status;
                         log.threshold_met = logItem.threshold_met;
                         log.notification_sent = logItem.notification_sent;
-                        log.channel=logItem.channel
+                        log.channel = logItem.channel
                         log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
@@ -436,6 +441,8 @@ var job = {
         return { totalReports: reportCount };
     },
     executeImmediate: async function (visualizationid) {
+
+
         logger.info(`Job execute report ${visualizationid}`);
         var report = await models.Report.findAll({
             include: [
@@ -455,18 +462,18 @@ var job = {
         });
         if (report) {
             for (let index = 0; index < report.length; index++) {
-              
+
                 var reports_data = {
                     report_obj: report[index],
                     report_line_obj: report[index].reportline,
                     report_assign_obj: report[index].AssignReport,
                     report_shedular_obj: report[index].SchedulerTask
                 };
-                execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
-            }
-          
-            return { message: `report executetion done : ${visualizationid}` };
 
+                var r = await execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
+
+            }
+            return { message: `report executetion done : ${visualizationid}` };
         } else {
             return { message: `report is not found for visulization Id : ${visualizationid}` };
         }
@@ -563,6 +570,148 @@ var job = {
             }
         });
     },
+
+    addChannel: async function (request) {
+        if (request) {
+            const transaction = await db.sequelize.transaction();
+            try {
+                //create report object
+                let channel = await models.CommunicationChannels.create({
+                    id: request.communication_channel_id,
+                    channel_parameters: request.channel_parameters
+                }, { transaction });
+
+                await transaction.commit();
+
+                logger.log({
+                    level: 'info',
+                    message: 'new Channel is saved into database',
+                    channel: channel.communication_channel_id,
+                });
+                return ({
+                    success: 1, message: "Channel is added successfully", channel: channel.communication_channel_id
+                });
+
+            }
+            catch (ex) {
+                await transaction.rollback();
+                if (ex.name == "SequelizeUniqueConstraintError") {
+                    logger.log({
+                        level: 'info',
+                        message: 'channel already exist',
+                    });
+                    var response = { success: 0, message: "channel already exist" }
+                    return response;
+                }
+                logger.log({
+                    level: 'error',
+                    message: 'error while saving channel into database',
+                    error: ex,
+                });
+                return { success: 0, message: ex };
+            }
+        }
+    },
+
+    getChannel: async function () {
+
+        try {
+            var channel = await models.CommunicationChannels.findAll();
+            if (channel) {
+                return {
+                    success: 1,
+                    records: channel
+                };
+            }
+            else {
+                return { success: 0, message: "report not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching channel',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+
+
+    },
+
+    getChannelByChannelName: async function (request) {
+        if (request) {
+            try {
+                var channel = await models.CommunicationChannels.findOne({
+                    where: {
+                        id: request
+                    }
+                });
+                if (channel) {
+                    return {
+                        success: 1,
+                        records: channel.channel_parameters
+                    };
+                }
+                else {
+                    return { success: 0, message: "report not found" };
+                }
+            }
+            catch (ex) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching channel',
+                    error: ex,
+                });
+                return { success: 0, message: ex };
+            }
+
+        }
+    },
+
+    updateChannelByChannelName: async function (request) {
+        if (request) {
+            var exist_channel = await models.CommunicationChannels.findOne({
+                where: {
+                    id: request.communication_channel_id
+                }
+            });
+
+            if (exist_channel) {
+                const transaction = await db.sequelize.transaction();
+                try {
+                    let channel = await models.CommunicationChannels.update({
+                        channel_parameters: request.channel_parameters,
+                    },
+                        {
+                            where: {
+                                id: request.communication_channel_id
+                            }
+                        }, { transaction });
+
+                    await transaction.commit();
+                    return { success: 1, message: 'Channel updated successfully' };
+                }
+                catch (ex) {
+                    await transaction.rollback();
+                    logger.log({
+                        level: 'error',
+                        message: 'error while fetching channel',
+                        error: ex,
+                    });
+                    return { success: 0, message: ex };
+                }
+            }
+            else {
+                logger.log({
+                    level: 'info',
+                    message: 'channel not found'
+                });
+                return { success: 0, message: message };
+            }
+        }
+    }
+
 }
 
 module.exports = job;

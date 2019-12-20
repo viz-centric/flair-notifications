@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.4.0",
+    "axios": "^0.19.0",
     "base64-img": "^1.0.4",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
@@ -28,6 +29,7 @@
     "express": "^4.16.4",
     "flair-visualizations": "git://github.com/viz-centric/flair-visualizations.git#master",
     "grpc": "^1.21.1",
+    "image-to-base64": "^2.0.1",
     "joi": "^14.3.1",
     "jquery": "^3.3.1",
     "js-yaml": "^3.12.1",
@@ -43,6 +45,8 @@
     "nodemailer": "^5.1.1",
     "pg": "^7.8.0",
     "request": "^2.88.0",
+    "resize-image": "^0.1.0",
+    "resize-img": "^2.0.0",
     "sequelize": "^5.18.4",
     "sequelize-cli": "^5.5.1",
     "winston": "^3.2.1",
@@ -67,7 +71,7 @@
       {
         "groupId": "com.project.bi",
         "artifactId": "flair-messages",
-        "version": "0.0.12"
+        "version": "0.0.35"
       }
     ],
     "exclusions": [

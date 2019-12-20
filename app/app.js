@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const jobs = require('./jobs');
 const validator = require('./validator');
 const logger = require('./logger');
-
 const app = express();
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -69,7 +68,7 @@ app.post('/api/jobSchedule/', function (req, res) {
             res.send(err);
         })
     }
- 
+
 });
 
 
@@ -84,6 +83,65 @@ app.get('/api/jobLogs/', (req, res) => {
     })
 });
 
+//Channel testing 
+app.post('/api/addChannel/', function (req, res) {
+    if (req.body) {
+
+        jobs.addChannel(req.body).then(function (result) {
+            if (result.success == 1) {
+                res.status(201).json({
+                    message: result.message,
+                });
+            }
+            else {
+                res.status(302).json({
+                    message: result.message,
+                });
+            }
+        }, function (err) {
+            res.send(err);
+        })
+    }
+});
+
+
+app.get('/api/getChannelByChannelName/', (req, res) => {
+    var channel = req.query.channel;
+    jobs.getChannelByChannelName(channel).then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
+
+
+app.post('/api/updateChannelByChannelName/', function (req, res) {
+    if (req.body) {
+        jobs.updateChannelByChannelName(req.body).then(function (result) {
+            if (result.success == 1) {
+                res.status(201).json({
+                    message: result.message,
+                });
+            }
+            else {
+                res.status(302).json({
+                    message: result.message,
+                });
+            }
+        }, function (err) {
+            res.send(err);
+        })
+    }
+});
+
+
+app.get('/api/getChannel/', (req, res) => {
+    jobs.getChannel().then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
 
 module.exports = app;    //for testing
 

@@ -60,7 +60,7 @@ async function loadIpAddress() {
         logger.info(`IP resolved ${ip}`);
         return ip;
     } catch (e) {
-        logger.error(`Error resolving ip, falling back to default ${ip}`, e);
+       // logger.error(`Error resolving ip, falling back to default ${ip}`, e);
         return '127.0.0.1';
     }
 }

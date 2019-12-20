@@ -8,10 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      communication_channel_id: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
+    
       config: {
         allowNull: false,
         type: Sequelize.JSON
@@ -23,7 +20,16 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      communication_channel_id: {
+        type: Sequelize.STRING,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'CommunicationChannels',
+          key: 'id',
+        },
+        allowNull: false
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

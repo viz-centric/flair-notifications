@@ -65,10 +65,7 @@ var validator = {
             channel_config_id: Joi.string(),
         })
 
-        var teams = Joi.object().keys({
-            webhook: Joi.string(),
-            channel_config_id: Joi.string(),
-        })
+        var teams =  Joi.array().items(Joi.number())
 
         var communicationList = Joi.object().keys({
             email: Joi.array().items(email),
