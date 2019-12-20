@@ -22,6 +22,7 @@ var job = {
                 let report = await models.Report.create({
                     dashboard_name: params.report.dashboard_name,
                     view_name: params.report.view_name,
+                    view_id: params.report.view_id,
                     share_link: params.report.share_link,
                     build_url:params.report.build_url,
                     mail_body: params.report.mail_body,
@@ -56,6 +57,11 @@ var job = {
                     end_date: moment(params.schedule.end_date)
                 }, { transaction })
 
+                let constraints_obj = await models.ReportConstraint.create({
+                    ReportId: report.id,
+                    constraints: JSON.parse(params.constraints),
+                }, {transaction});
+
                 job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp,shedualar_obj.start_date,shedualar_obj.end_date)
                 if(job===null){
                     job = scheduler.shedulJob(report_line_item.visualizationid,shedualar_obj.cron_exp)
@@ -84,7 +90,7 @@ var job = {
                 }
                 logger.log({
                     level: 'error',
-                    message: 'error while saving report into database',
+                    message: 'error while saving report into database ' + ex,
                     error: ex,
                   });
                 return { success: 0, message: ex };
@@ -108,6 +114,9 @@ var job = {
                 },
                 {
                     model: models.SchedulerTask,
+                },
+                {
+                    model: models.ReportConstraint,
                 }
             ],
 
@@ -119,6 +128,7 @@ var job = {
                 let report = await models.Report.update({
                     dashboard_name: report_data.report.dashboard_name,
                     view_name: report_data.report.view_name,
+                    view_id: report_data.report.view_id,
                     share_link: report_data.report.share_link,
                     build_url:report_data.report.build_url,
                     mail_body: report_data.report.mail_body,
@@ -142,11 +152,23 @@ var job = {
                     }}, { transaction });
 
                 let assign_report_obj = await models.AssignReport.update({
-                    channel: report_data.assign_report.channel,
-                    email_list: report_data.assign_report.email_list,},
-                    {where: {
-                        ReportId: exist_report.id
-                    }}, { transaction });
+                      channel: report_data.assign_report.channel,
+                      email_list: report_data.assign_report.email_list,
+                  },
+                  {
+                      where: {
+                          ReportId: exist_report.id
+                      }
+                  }, {transaction});
+
+                let constraints_obj = await models.ReportConstraint.update({
+                      constraints: JSON.parse(report_data.constraints),
+                  },
+                  {
+                      where: {
+                          ReportId: exist_report.id
+                      }
+                  }, {transaction});
 
                 let shedualar_obj = await models.SchedulerTask.update({
                     cron_exp: report_data.schedule.cron_exp,
@@ -173,7 +195,7 @@ var job = {
                 logger.log({
                     level: 'error',
                     message: 'error occured while updating report'+ex.message,
-                    errMsg: err,
+                    errMsg: ex.message,
                 });
                 await transaction.rollback();
                 return { success: 0, message: ex };
@@ -198,6 +220,9 @@ var job = {
                         as: 'reportline',
                         where: {visualizationid: visualizationid}
                     },
+                    {
+                        model: models.ReportConstraint
+                    }
                 ],
             });
             if (report) {
@@ -249,6 +274,9 @@ var job = {
                         as: 'reportline',
                         where: {visualizationid: visualizationid}
                     },
+                    {
+                        model: models.ReportConstraint
+                    }
                 ],
             });
             if (report) {
@@ -312,6 +340,9 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where: {active: true}
+                    },
+                    {
+                        model: models.ReportConstraint
                     }
                 ],
                 where: {
@@ -361,11 +392,14 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where:{ active: true }
+                    },
+                    {
+                        model: models.ReportConstraint
                     }
                 ],
             });
             if ( exist_report ) {
-                logger.info(`Get job for visualization id ${visualizationid} was found`, exist_report);
+                logger.info(`Get job for visualization id ${visualizationid} was found`, exist_report.id);
                 return {
                     success: 1,
                     job: schedulerDTO(exist_report)
@@ -381,7 +415,7 @@ var job = {
         catch (ex) {
             logger.log({
                 level: 'error',
-                message: 'error while fetching reports for user',
+                message: 'error while fetching reports for user ' + ex,
                 error: ex,
               });
             return {
@@ -422,6 +456,9 @@ var job = {
                 {
                     model: models.SchedulerTask,
                     where: {active: true}
+                },
+                {
+                    model: models.ReportConstraint
                 }
             ],
         });
@@ -465,6 +502,9 @@ var job = {
                     {
                         model: models.SchedulerTask,
                         where: schedularWhereClause
+                    },
+                    {
+                        model: models.ReportConstraint
                     }
                 ],
                 where: reportWhereClause,
@@ -492,7 +532,7 @@ var job = {
         catch (ex) {
             logger.log({
                 level: 'error',
-                message: 'error while fetching reports for user',
+                message: 'error while fetching reports for user ' + ex,
                 error: ex,
               });
             return { success: 0, message: ex };

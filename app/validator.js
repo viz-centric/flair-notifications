@@ -44,6 +44,7 @@ var validator = {
             userid: Joi.string().allow(null, ''),
             dashboard_name: Joi.string().required(),
             view_name: Joi.string().required(),
+            view_id: Joi.string().required(),
             share_link: Joi.string().required(),
             build_url: Joi.string().required(),
             mail_body: Joi.string().allow(null, ''),
@@ -84,7 +85,8 @@ var validator = {
             query: Joi.string(),
             report_line_item: reportLineSchema,
             assign_report: assignReportSchema,
-            schedule: scheduleSchema
+            schedule: scheduleSchema,
+            constraints: Joi.string().allow(null, ''),
         });
 
         result = Joi.validate(reqBody, reportSchema);
