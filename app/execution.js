@@ -6,6 +6,7 @@ var grpc_client = require('./grpc/client');
 var charts = require('./chart/generate-charts');
 var logger = require('./logger');
 var imageProcessor = require('./services/image-processor.service');
+const queryService = require('./services/query-service');
 const retryDelay = 3000 //in miliseconds
 
 const chartMap = {
@@ -163,7 +164,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
-        var data_call = grpc_client.getRecords(query);
+        const rawQuery = queryService.preProcessQuery(query);
+        var data_call = grpc_client.getRecords(rawQuery);
         data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
@@ -201,8 +203,9 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                             if (channels.indexOf('Email') >= 0) {
                                 var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
-                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
+                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
                                     try {
+                                        const transaction = await db.sequelize.transaction();
                                         let shedularlog = models.SchedulerTaskLog.create({
                                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                             task_executed: new Date(Date.now()).toISOString(),
@@ -210,7 +213,13 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             threshold_met: thresholdAlertEmail,
                                             notification_sent: true,
                                             channel: "Email"
-                                        });
+                                        }, {transaction});
+
+                                        let schedulerLogMeta = await models.SchedulerTaskMeta.create({
+                                            SchedulerTaskLogId: shedularlog.id,
+                                            rawQuery: JSON.parse(rawQuery),
+                                        }, {transaction});
+                                        await transaction.commit();
                                     } catch (error) {
                                         logger.log({
                                             level: 'error',
