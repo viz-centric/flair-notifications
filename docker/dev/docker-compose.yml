@@ -1,0 +1,48 @@
+version: '2'
+
+volumes:
+  build:
+    driver: local
+
+services:
+  base:
+    build: 
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+      args:
+        ssh_prv_key: ${GITHUB_SSH_PRIV}
+        ssh_pub_key: ${GITHUB_SSH_PUB}
+        git_author_email: ${GIT_AUTHOR_EMAIL}
+        git_author_name: ${GIT_AUTHOR_NAME}
+    image: flair-notification
+
+  test:
+    image: flair-notification
+    links:
+      - db:flair-notifications-pgsql
+    environment:
+      NODE_ENV: "production"
+    volumes:
+      - build:/flair-notifications/node_modules
+    command: ["npm", "test"]
+  release:
+    image: flair-notification
+    volumes:
+      - build:/flair-notifications/node_modules
+    command: ["npm", "run", "release", "--", "patch", "--ci"]
+
+  db:
+    image: postgres:9.4-alpine
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "nodeDB"
+
+  agent:
+    image: jmenga/ansible
+    links:
+      - db
+    environment:
+      PROBE_HOST: "db"
+      PROBE_PORT: "5432"
+    command: ["probe.yml"]

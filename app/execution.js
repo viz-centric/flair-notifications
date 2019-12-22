@@ -188,7 +188,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                     function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
                         imageProcessor.saveImageConvertToBase64(imagefilename, response).then(function (bytes) {
-                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename).then(function (success) {
+                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
                                 try {
                                     let shedularlog = models.SchedulerTaskLog.create({
                                         SchedulerJobId: reports_data['report_shedular_obj']['id'],

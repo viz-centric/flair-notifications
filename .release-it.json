@@ -1,0 +1,32 @@
+{
+  "git": {
+    "commit": true,
+    "commitMessage": "[skip ci] Release ${version}",
+    "requireCleanWorkingDir": false,
+    "requireUpstream": false,
+    "requireCommits": false,
+    "addUntrackedFiles": false,
+    "tag": true,
+    "tagName": "v${version}",
+    "tagAnnotation": "Release ${version}",
+    "tagArgs": "",
+    "push": true,
+    "pushArgs": "--follow-tags",
+    "pushRepo": "origin"
+  },
+  "github": {
+    "release": false,
+    "releaseName": "Release ${version}",
+    "releaseNotes": "Released version ${version}",
+    "preRelease": false,
+    "draft": false,
+    "tokenRef": "GITHUB_TOKEN",
+    "assets": null,
+    "host": null,
+    "timeout": 0,
+    "proxy": null
+  },
+  "npm": {
+    "publish": true
+  }
+}

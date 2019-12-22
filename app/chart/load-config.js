@@ -14,7 +14,7 @@ init();
 
 
 var configs = {
-    clusteredverticalBarConfig: function (viz_id) {
+    barChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
@@ -23,7 +23,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bar chart' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -51,6 +51,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');
                         result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
@@ -65,7 +66,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
-
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         for (var i = 0; i < result.maxMes; i++) {
 
                             result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
@@ -82,6 +84,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                         }
 
                         resolve(result);
@@ -89,7 +93,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bar chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -100,7 +104,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for bar chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -114,291 +118,7 @@ var configs = {
         return chartconfigPromise;
 
     },
-    clusteredhorizontalBarConfig: function (viz_id) {
 
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-
-
-                        for (var i = 0; i < result.maxMes; i++) {
-
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
-    stackedverticalBarConfig: function (viz_id) {
-
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var vis
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-                        for (var i = 0; i < result.maxMes; i++) {
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
-    stackedHorizontalBarConfig: function (viz_id) {
-
-        var chartconfigPromise = new Promise((resolve, reject) => {
-
-            try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
-                    if (error) {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: error.message,
-                        });
-                        reject(error.message);
-                        return;
-                    }
-                    if (response && response.statusCode == 200) {
-                        var json_res = JSON.parse(body);
-                        var properties = json_res.visualMetadata.properties;
-                        var fields = json_res.visualMetadata.fields;
-                        var visualizationColors = json_res.visualizationColors;
-                        var colorSet = [];
-                        visualizationColors.forEach(function (obj) {
-                            colorSet.push(obj.code)
-                        });
-                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
-                            dimensions = features.dimensions,
-                            measures = features.measures;
-                        var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
-                        result['maxMes'] = measures.length;
-                        result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
-                        result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
-                        result['xAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'X Axis Colour');
-                        result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
-                        result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
-                        result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
-                        result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
-                        result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
-                        result['isFilterGrid'] = false;
-                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
-                        result['showValues'] = [];
-                        result['displayNameForMeasure'] = [];
-                        result['fontStyle'] = [];
-                        result['fontWeight'] = [];
-                        result['fontSize'] = [];
-                        result['numberFormat'] = [];
-                        result['textColor'] = [];
-                        result['displayColor'] = [];
-                        result['borderColor'] = [];
-                        for (var i = 0; i < result.maxMes; i++) {
-                            result['showValues'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Value on Points'));
-                            result['displayNameForMeasure'].push(
-                                VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
-                                result['measure'][i]
-                            );
-                            result['fontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
-                            result['fontWeight'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
-                            result['fontSize'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
-                            result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
-                            result['textColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            var displayColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour');
-                            result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
-                            var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
-                            result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
-                        }
-
-                        resolve(result);
-                    }
-                    else {
-                        logger.log({
-                            level: 'error',
-                            message: 'error while fetching config',
-                            errMsg: JSON.parse(body).message,
-                        });
-                        reject(JSON.parse(body).message);
-                    }
-
-
-                });
-            } catch (error) {
-                logger.log({
-                    level: 'error',
-                    message: 'error while fetching config',
-                    errMsg: error.message,
-                });
-                reject(error);
-            }
-        });
-
-        return chartconfigPromise;
-
-    },
     lineChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
@@ -408,7 +128,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for line' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -439,8 +159,9 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
+                        result['stacked'] = VisualizationUtils.getPropertyValue(properties, 'Stacked');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
                         result['isFilterGrid'] = false;
                         result['displayName'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Display name') || result['dimension'][0];
@@ -453,6 +174,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         result['lineType'] = [];
                         result['pointType'] = [];
                         for (var i = 0; i < result.maxMes; i++) {
@@ -470,6 +193,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                             result['lineType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Type'));
                             result['pointType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Chart Point type'));
                         }
@@ -478,7 +203,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for line' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -488,7 +213,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for line' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -507,7 +232,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for combo ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -538,6 +263,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');
                         result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
@@ -552,6 +278,8 @@ var configs = {
                         result['textColor'] = [];
                         result['displayColor'] = [];
                         result['borderColor'] = [];
+                        result['displayColorExpression'] = [];
+                        result['textColorExpression'] = [];
                         result['comboChartType'] = [];
                         result['lineType'] = [];
                         result['pointType'] = [];
@@ -570,6 +298,8 @@ var configs = {
                             result['displayColor'].push((displayColor == null) ? colorSet[i] : displayColor);
                             var borderColor = VisualizationUtils.getFieldPropertyValue(measures[i], 'Border colour');
                             result['borderColor'].push((borderColor == null) ? colorSet[i] : borderColor);
+                            result['displayColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
+                            result['textColorExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour expression'));
                             result['comboChartType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Combo chart type'));
                             result['lineType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Type'));
                             result['pointType'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Line Chart Point type'));
@@ -579,7 +309,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for combo' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -589,7 +319,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for combo' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -608,7 +338,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for scatter Plot' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -673,7 +403,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for scatter Plot' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -682,7 +412,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for scatter Plot' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -701,7 +431,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -725,7 +455,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -735,7 +465,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pie ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -755,7 +485,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -788,7 +518,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -798,7 +528,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for doughnut' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -818,7 +548,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for table' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -906,7 +636,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for table' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -917,7 +647,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for table' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -935,7 +665,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pivot table' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1025,7 +755,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pivot table' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1034,7 +764,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pivot table' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1051,7 +781,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for KPI' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1067,8 +797,10 @@ var configs = {
                             measures = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measures);
+                        result['kpiAlignment'] = VisualizationUtils.getPropertyValue(properties, 'Text alignment');
+
                         result['kpiDisplayName'] = [];
-                        result['kpiAlignment'] = [];
+
                         result['kpiBackgroundColor'] = [];
                         result['kpiNumberFormat'] = [];
                         result['kpiFontStyle'] = [];
@@ -1087,7 +819,6 @@ var configs = {
                                 VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
                                 result['measure'][i]
                             );
-                            result['kpiAlignment'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text alignment'));
                             result['kpiBackgroundColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Background Colour'));
                             result['kpiNumberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
                             result['kpiFontStyle'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
@@ -1107,7 +838,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for KPI' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1117,7 +848,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for KPI ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1137,7 +868,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for info graphics ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1184,7 +915,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for info graphics' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1194,7 +925,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for info graphics' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1213,7 +944,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config for map chart',
+                            message: 'error while fetching config for map ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1249,7 +980,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config for map chart',
+                            message: 'error while fetching config for map ' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1259,7 +990,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config for map chart',
+                    message: 'error while fetching config for map' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1279,7 +1010,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for treemap ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1332,7 +1063,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for treemap' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1342,7 +1073,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for treemap' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1361,7 +1092,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for heatmap' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1390,17 +1121,23 @@ var configs = {
                         result['fontStyleForDimension'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font style');
                         result['fontWeightForDimension'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font weight');
                         result['fontSizeForDimension'] = parseInt(VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font size'));
+                        result["colorPattern"] = VisualizationUtils.getPropertyValue(properties, "Color Pattern").toLowerCase().replace(' ', '_');
+
+                        var displayColor = VisualizationUtils.getPropertyValue(properties, 'Display colour');
+                        result['displayColor'] = (displayColor == null) ? colorSet[0] : displayColor;
+
                         result['displayNameForMeasure'] = [];
                         result['showValues'] = [];
                         result['showIcon'] = [];
                         result['valuePosition'] = [];
                         result['iconName'] = [];
+                        result['iconExpression'] = [];
                         result['iconFontWeight'] = [];
                         result['iconPosition'] = [];
                         result['iconColor'] = [];
                         result['colourCoding'] = [];
                         result['valueTextColour'] = [];
-                        result['displayColor'] = [];
+                        result['displayColorMeasure'] = [];
                         result['fontStyleForMeasure'] = [];
                         result['fontWeightForMeasure'] = [];
                         result['fontSizeForMeasure'] = [];
@@ -1420,18 +1157,19 @@ var configs = {
                             result['iconColor'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
                             result['colourCoding'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Display colour expression'));
                             result['valueTextColour'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Text colour'));
-                            result['displayColor'].push(colorSet[i]);
+                            result['displayColorMeasure'].push(colorSet[i]);
                             result['fontStyleForMeasure'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font style'));
                             result['fontWeightForMeasure'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font weight'));
                             result['fontSizeForMeasure'].push(parseInt(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size')));
                             result['numberFormat'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Number format'));
+                            result['iconExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Expression'));
                         }
                         resolve(result);
                     }
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for heatmap' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1441,7 +1179,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for heatmap ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1459,7 +1197,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for boxplot' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1497,7 +1235,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config box plot chart ' + viz_id,
+                            message: 'error while fetching config for boxplot chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1507,7 +1245,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config box plot chart ' + viz_id,
+                    message: 'error while fetching config for boxplot chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1525,7 +1263,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config chord diagram',
+                            message: 'error while fetching config for chord diagram ' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1559,7 +1297,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config chord diagram',
+                            message: 'error while fetching config for chord diagram ' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1569,7 +1307,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config chord diagram',
+                    message: 'error while fetching config for chord diagram ' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1587,7 +1325,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config  textObject',
+                            message: 'error while fetching config for text Object' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1647,7 +1385,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config  textObject',
+                            message: 'error while fetching config for text Object' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1657,7 +1395,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config  textObject',
+                    message: 'error while fetching config for text Object' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1677,7 +1415,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bullet' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1721,7 +1459,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for bullet chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1731,7 +1469,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for bullet chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1750,7 +1488,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for sankey' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1801,7 +1539,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for sankey chart' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1811,7 +1549,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for sankey chart' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1830,7 +1568,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie grid' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1840,12 +1578,19 @@ var configs = {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
                         var fields = json_res.visualMetadata.fields;
+                        var visualizationColors = json_res.visualizationColors;
                         var result = {};
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
                         var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
+                        result['colorSet'] = colorSet;
+
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
 
@@ -1861,7 +1606,7 @@ var configs = {
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for pie grid' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1871,7 +1616,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for pie grid' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);
@@ -1890,7 +1635,7 @@ var configs = {
                     if (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for number grid' + viz_id,
                             errMsg: error.message,
                         });
                         reject(error.message);
@@ -1899,13 +1644,19 @@ var configs = {
                     if (response && response.statusCode == 200) {
                         var json_res = JSON.parse(body);
                         var properties = json_res.visualMetadata.properties;
+                        var visualizationColors = json_res.visualizationColors;
                         var fields = json_res.visualMetadata.fields;
                         var result = {};
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
                         var features = VisualizationUtils.getDimensionsAndMeasures(fields),
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
+                        result['colorSet'] = colorSet;
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
 
@@ -1914,13 +1665,13 @@ var configs = {
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
                         result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
                         result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
-                        result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Font size for diplay name');
+                        result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size for diplay name');
                         resolve(result);
                     }
                     else {
                         logger.log({
                             level: 'error',
-                            message: 'error while fetching config',
+                            message: 'error while fetching config for number grid' + viz_id,
                             errMsg: JSON.parse(body).message,
                         });
                         reject(JSON.parse(body).message);
@@ -1930,7 +1681,7 @@ var configs = {
             } catch (error) {
                 logger.log({
                     level: 'error',
-                    message: 'error while fetching config',
+                    message: 'error while fetching config for number grid' + viz_id,
                     errMsg: error.message,
                 });
                 reject(error);

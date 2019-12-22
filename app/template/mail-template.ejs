@@ -121,10 +121,15 @@
       <div id="title-container">
         <p class="chart-title"><%= title %></p>
       </div>
+
+      <% if(chartType=="Table"){ %>
+      <%- chartHtml %>
+
+      <% }else{ %>
       <div id="chart-container">
         <img id="chartimg" src="<%= image_cid %>" alt="Report Image">
       </div>
-
+      <% } %>
     </div>
 
     <a class="links" href="<%= share_link %>">Go to Widget</a>

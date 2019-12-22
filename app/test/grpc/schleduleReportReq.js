@@ -3,6 +3,7 @@ const payload = {
         userid: "flairadmin",
         dashboard_name: "Ecommerce",
         view_name: "Ecom View",
+        view_id: 177,
         share_link: "http://localhost:8002/",
         build_url: "http://localhost:8002/",
         mail_body: "This is a test email to check api functionality",

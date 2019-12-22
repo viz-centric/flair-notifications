@@ -43,6 +43,9 @@ var shedular = {
                             where: {
                                 active:true
                             },
+                        },
+                        {
+                            model: models.ReportConstraint
                         }
                     ],
                 }).then(function(report){
