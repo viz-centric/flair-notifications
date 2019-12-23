@@ -174,7 +174,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 //render html chart
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                generate_chart.then(async function (response) {
+                generate_chart.then(function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
                     var to_mail_list = [];
 
@@ -222,6 +222,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         }, {transaction});
                                         await transaction.commit();
                                     } catch (error) {
+                                        await transaction.rollback();
                                         logger.log({
                                             level: 'error',
                                             message: 'error while saving scheduler log',
