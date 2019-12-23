@@ -1,9 +1,12 @@
-const logger = require('./logger');
+const logger = require('./../logger');
 
 function preProcessQuery(query) {
-  const result = query.split('$__FLAIR_NOW()').join(new Date().toString());
-  logger.info(`Pre-processing query ${query} to ${result}`);
-  return result;
+  logger.info(`Pre-processing query ${query}`);
+  const stringQuery = JSON.stringify(query);
+  const result = stringQuery.split('__FLAIR_NOW()')
+    .join("__FLAIR_CAST(timestamp, '" + new Date().toISOString() + "')");
+  logger.info(`Pre-processing query result ${result}`);
+  return JSON.parse(result);
 }
 
 module.exports = {
