@@ -173,7 +173,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                 //render html chart
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                generate_chart.then(async function (response) {
+                generate_chart.then(function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
                     var to_mail_list = [];
                     for (user of reports_data['report_assign_obj']['email_list']) {
@@ -192,26 +192,27 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                         mailRetryCount += 1;
                         imageProcessor.saveImageConvertToBase64(imagefilename, response).then(function (bytes) {
                             sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
-                                try {
-                                    const transaction = await db.sequelize.transaction();
-                                    const shedularlog = models.SchedulerTaskLog.create({
-                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                        task_executed: new Date(Date.now()).toISOString(),
-                                        task_status: "success",
-                                    }, {transaction});
+                                  const transaction = await db.sequelize.transaction();
+                                  try {
+                                      const shedularlog = await models.SchedulerTaskLog.create({
+                                          SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                          task_executed: new Date(Date.now()).toISOString(),
+                                          task_status: "success",
+                                      }, {transaction});
 
-                                    const schedulerLogMeta = await models.SchedulerTaskMeta.create({
-                                        SchedulerTaskLogId: shedularlog.id,
-                                        rawQuery: rawQuery,
-                                    }, {transaction});
-                                    await transaction.commit();
-                                } catch (error) {
-                                    logger.log({
-                                        level: 'error',
-                                        message: 'error while saving scheduler log',
-                                        errMsg: error,
-                                    });
-                                }
+                                      const schedulerLogMeta = await models.SchedulerTaskMeta.create({
+                                          SchedulerTaskLogId: shedularlog.id,
+                                          rawQuery: rawQuery,
+                                      }, {transaction});
+                                      await transaction.commit();
+                                  } catch (error) {
+                                      await transaction.rollback();
+                                      logger.log({
+                                          level: 'error',
+                                          message: 'error while saving scheduler log',
+                                          errMsg: error,
+                                      });
+                                  }
 
                             },
                                 function (error) {
