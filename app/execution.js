@@ -1,5 +1,6 @@
 var sendmailtool = require('./send-mail');
 var models = require('./database/models/index');
+const db = require('./database/models/index');
 var grpc_client = require('./grpc/client');
 var charts = require('./chart/generate-charts');
 var logger = require('./logger');
@@ -172,7 +173,7 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                 //render html chart
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                generate_chart.then(function (response) {
+                generate_chart.then(async function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
                     var to_mail_list = [];
                     for (user of reports_data['report_assign_obj']['email_list']) {
@@ -193,21 +194,22 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                             sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
                                 try {
                                     const transaction = await db.sequelize.transaction();
-                                    let shedularlog = models.SchedulerTaskLog.create({
+                                    const shedularlog = models.SchedulerTaskLog.create({
                                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                         task_executed: new Date(Date.now()).toISOString(),
                                         task_status: "success",
                                     }, {transaction});
 
-                                    let schedulerLogMeta = await models.SchedulerTaskMeta.create({
+                                    const schedulerLogMeta = await models.SchedulerTaskMeta.create({
                                         SchedulerTaskLogId: shedularlog.id,
-                                        rawQuery: JSON.parse(rawQuery),
+                                        rawQuery: rawQuery,
                                     }, {transaction});
                                     await transaction.commit();
                                 } catch (error) {
                                     logger.log({
                                         level: 'error',
                                         message: 'error while saving scheduler log',
+                                        errMsg: error,
                                     });
                                 }
 
