@@ -29,10 +29,10 @@ describe('/api/jobSchedule/', () => {
                 "dimension": ["order_status"],
                 "measure": ["order_item_quantity", "order_item_subtotal"],
                 "visualization": "Clustered Vertical Bar Chart",
-                "visualizationid": "1135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0"
+                "visualizationid": "2135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0"
             },
             "query": `{
-          "queryId": "1135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0",
+          "queryId": "2135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0",
           "userId": "flairadmin",
           "sourceId": "1715917d-fff8-44a1-af02-ee2cd41a3609",
           "source": "Ecommerce",
@@ -53,9 +53,8 @@ describe('/api/jobSchedule/', () => {
                     "email": [
                         { "user_email": "khushbum.wa@gmail.com", "user_name": "khushbu" }
                     ],
-                    "teams": {
-                        "webhook": "www.google.com"
-                    }
+                    "teams": [1,2,3]
+                    
                 }
 
             },
@@ -81,24 +80,20 @@ describe('/api/jobSchedule/', () => {
 
 });
 
+describe('/api/executeImmediate/', () => {
+    it('execute Immediate  jab', (done) => {
 
+        chai.request(app)
+            .get('/api/executeImmediate')
+            .query({ visualizationid: 'caf8fe78085dacb80d969164550004bf--391ce147-082f-44f4-a07e-80d141bd8d64' })
+            .end((err, res) => {
+                console.log(res.body);
+                res.should.have.status(201);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
+                done();
+            });
+    });
 
-// describe('/api/executeImmediate/', () => {
-//     it('execute Immediate  jab', (done) => {
-
-
-
-//         chai.request(app)
-//             .get('/api/executeImmediate')
-//             .query({ visualizationid: 'caf8fe78085dacb80d969164550004bf--391ce147-082f-44f4-a07e-80d141bd8d64' })
-//             .end((err, res) => {
-//                 console.log(res.body);
-//                 res.should.have.status(201);
-//                 res.body.should.be.a('object');
-//                 res.body.should.have.property('message');
-//                 done();
-//             });
-//     });
-
-// });
+});
 

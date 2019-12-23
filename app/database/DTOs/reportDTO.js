@@ -1,4 +1,6 @@
 var moment = require('moment');
+var util= require('../../util');
+
 function reportDTO(userid,dashboard_name,view_name,share_link,build_url,mail_body,subject,report_name,title_name,createdAt,thresholdAlert){
     return {
         userid:userid,
@@ -10,7 +12,7 @@ function reportDTO(userid,dashboard_name,view_name,share_link,build_url,mail_bod
         subject:subject, 
         report_name:report_name, 
         title_name:title_name,
-        createdAt:moment(createdAt).format("YYYY-MM-DD HH:mm"),
+        createdAt:moment(createdAt).format(util.dateFormat),
         thresholdAlert:thresholdAlert
       }
   }

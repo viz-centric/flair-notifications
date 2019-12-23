@@ -1,4 +1,6 @@
 var moment = require('moment');
+var util= require('../../util');
+
 function schedulertaskDTO(schedulerTaskObj) {
   return {
     cron_exp: schedulerTaskObj.cron_exp,
@@ -7,7 +9,7 @@ function schedulertaskDTO(schedulerTaskObj) {
     notification_sent: schedulerTaskObj.notification_sent,
     channel: schedulerTaskObj.channel,
     ticket: schedulerTaskObj.ticket,
-    start_date: moment(schedulerTaskObj.start_date).format("YYYY-MM-DD HH:mm"),
+    start_date: moment(schedulerTaskObj.start_date).format(util.dateFormat),
     end_date: moment(schedulerTaskObj.end_date).format("YYYY-MM-DD")
   }
 }

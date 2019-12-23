@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const jobs = require('./jobs');
+const jobs = require('./jobs/schedulerJobs');
+const channelJobs = require('./jobs/channelJobs');
+
 const validator = require('./validator');
 const logger = require('./logger');
 const app = express();
@@ -54,16 +56,7 @@ app.post('/api/jobSchedule/', function (req, res) {
     }
     else {
         jobs.createJob(req.body).then(function (result) {
-            if (result.success == 1) {
-                res.status(201).json({
-                    message: result.message,
-                });
-            }
-            else {
-                res.status(302).json({
-                    message: result.message,
-                });
-            }
+            res.status(result.success ===1? 201: 302).json({message:result.message})
         }, function (err) {
             res.send(err);
         })
@@ -87,17 +80,8 @@ app.get('/api/jobLogs/', (req, res) => {
 app.post('/api/addChannel/', function (req, res) {
     if (req.body) {
 
-        jobs.addChannel(req.body).then(function (result) {
-            if (result.success == 1) {
-                res.status(201).json({
-                    message: result.message,
-                });
-            }
-            else {
-                res.status(302).json({
-                    message: result.message,
-                });
-            }
+        channelJobs.addChannel(req.body).then(function (result) {
+            res.status(result.success ===1? 201: 302).json({message:result.message})
         }, function (err) {
             res.send(err);
         })
@@ -107,7 +91,7 @@ app.post('/api/addChannel/', function (req, res) {
 
 app.get('/api/getChannelByChannelName/', (req, res) => {
     var channel = req.query.channel;
-    jobs.getChannelByChannelName(channel).then(function (result) {
+    channelJobs.getChannelByChannelName(channel).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -117,17 +101,8 @@ app.get('/api/getChannelByChannelName/', (req, res) => {
 
 app.post('/api/updateChannelByChannelName/', function (req, res) {
     if (req.body) {
-        jobs.updateChannelByChannelName(req.body).then(function (result) {
-            if (result.success == 1) {
-                res.status(201).json({
-                    message: result.message,
-                });
-            }
-            else {
-                res.status(302).json({
-                    message: result.message,
-                });
-            }
+        channelJobs.updateChannelByChannelName(req.body).then(function (result) {
+            res.status(result.success ===1? 201: 302).json({message:result.message})
         }, function (err) {
             res.send(err);
         })
@@ -136,7 +111,7 @@ app.post('/api/updateChannelByChannelName/', function (req, res) {
 
 
 app.get('/api/getChannel/', (req, res) => {
-    jobs.getChannel().then(function (result) {
+    channelJobs.getChannel().then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);

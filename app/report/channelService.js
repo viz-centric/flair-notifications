@@ -1,13 +1,13 @@
-const jobs = require('./../jobs');
+const jobs = require('./../jobs/schedulerJobs');
 const validator = require('./../validator');
 const logger = require('./../logger');
-
 
 module.exports = {
     addChannel: addChannel,
     getChannel: getChannel,
     getChannelByChannelName: getChannelByChannelName,
-    updateChannelByChannelName: updateChannelByChannelName
+    updateChannelByChannelName: updateChannelByChannelName,
+    addChannelConfig : addChannelConfig
 };
 
 /**
@@ -113,3 +113,27 @@ function addChannel(request) {
     });
 }
 
+
+
+/**
+ * add channel config
+ * @param
+ * @return {Promise<any>}
+ */
+function addChannelConfig(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`add channel with param`, request);
+
+        if (request) {
+            jobs.addChannelConfig(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve({});
+                } else {
+                    reject({ message: result.message });
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}

@@ -4,7 +4,6 @@ var moment = require('moment');
 var execution = require('./execution');
 var logger = require('./logger');
 
-
 var shedular = {
     shedulJob: function (visualizationid, cron_exp, start_date, end_date) {
         if (start_date && end_date) {
@@ -40,9 +39,6 @@ var shedular = {
                             model: models.AssignReport,
                         },
                         {
-                            model: models.Report,
-                        },
-                        {
                             model: models.SchedulerTask,
                             where: {
                                 active: true
@@ -51,13 +47,11 @@ var shedular = {
                     ],
                 }).then(function (reports) {
                     for (var i = 0; i < reports.length; i++) {
-
                         job = shedular.shedulJob(reports[i].reportline.visualizationid, reports[i].SchedulerTask.cron_exp,
                             reports[i].SchedulerTask.start_date, reports[i].SchedulerTask.end_date)
                         if (job === null) {
                             job = shedular.shedulJob(reports[i].reportline.visualizationid, reports[i].SchedulerTask.cron_exp)
                         }
-
                     }
 
                 }).catch(function (err) {
@@ -84,8 +78,6 @@ var shedular = {
                     task_status: ex,
                 });
             }
-
-
         }.bind(null, visualizationid));
         return job;
 
@@ -115,7 +107,5 @@ var shedular = {
 
     }
 }
-
-
 
 module.exports = shedular;

@@ -1,4 +1,4 @@
-const jobs = require('./../jobs');
+const jobs = require('./../jobs/schedulerJobs');
 const validator = require('./../validator');
 const logger = require('./../logger');
 
