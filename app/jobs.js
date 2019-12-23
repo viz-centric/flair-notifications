@@ -441,8 +441,6 @@ var job = {
         return { totalReports: reportCount };
     },
     executeImmediate: async function (visualizationid) {
-
-
         logger.info(`Job execute report ${visualizationid}`);
         var report = await models.Report.findAll({
             include: [

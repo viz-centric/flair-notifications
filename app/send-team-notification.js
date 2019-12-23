@@ -1,7 +1,10 @@
 
 const axios = require('axios');
 var models = require('./database/models/index');
+var logger = require('./logger');
+
 let config;
+
 let WebhookURL = 'https://outlook.office.com/webhook/f79eb495-6984-4ca3-bf67-5357e4f9edd5@2c081cf3-e47d-4c70-a618-68662c113c38/IncomingWebhook/b7fc7559a6b34d87b1a05d26d1a830b8/90ac3273-dc32-484d-ba49-b6ea1b4fcd4f';
 let base64 = '';
 
@@ -21,6 +24,7 @@ config = {
             "value": "Order View"
         }],
         "activitySubtitle": "Larry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new taskLarry Bryant created a new task",
+
         "markdown": true
     }],
     "potentialAction": [
@@ -45,12 +49,35 @@ config = {
 exports.sendTeamNotification = function sendNotification(teamConfig, reportData) {
 
     config.title = teamConfig.reportTitle;
+
+    var tbody = "- |";
+
+    var tablekey = Object.keys(teamConfig.tableData[0]);
+
+    for (var j = 0; j < tablekey.length; j++) {
+
+        tbody += tablekey[j] + " | ";
+    }
+    tbody += "\r";
+    for (let index = 0; index < teamConfig.tableData.length; index++) {
+        const element = teamConfig.tableData[index];
+
+        tbody += "- | "
+        for (var j = 0; j < tablekey.length; j++) {
+
+            tbody += element[tablekey[j]] + " | ";
+        }
+        tbody += "\r"
+    }
+
+    config.sections[0].text = tbody;
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
     config.potentialAction[0].targets[0].uri = teamConfig.build_url;
     config.potentialAction[1].targets[0].uri = teamConfig.share_link;
     config.text = '![chart image](' + teamConfig.base64 + ')';
+    
     // webhookURL=webhookURL;
     axios.post(WebhookURL, config)
         .then((res) => {
@@ -69,7 +96,7 @@ exports.sendTeamNotification = function sendNotification(teamConfig, reportData)
                     let shedularlog = models.SchedulerTaskLog.create({
                         SchedulerJobId: reportData['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
-                        task_status: "Error while seding message to team "+res.data ,
+                        task_status: "Error while seding message to team " + res.data,
                         threshold_met: reportData.report_obj.thresholdAlert,
                         notification_sent: true,
                         channel: reportData.report_shedular_obj.channel
@@ -94,7 +121,7 @@ exports.sendTeamNotification = function sendNotification(teamConfig, reportData)
         .catch((error) => {
             logger.log({
                 level: 'error',
-                message: 'error while sending team message ' + thresholdAlertEmail ? ' for threshold alert' : '',
+                message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                 errMsg: error,
             });
             let shedularlog = models.SchedulerTaskLog.create({

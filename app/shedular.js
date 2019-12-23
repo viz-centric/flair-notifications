@@ -40,6 +40,9 @@ var shedular = {
                             model: models.AssignReport,
                         },
                         {
+                            model: models.Report,
+                        },
+                        {
                             model: models.SchedulerTask,
                             where: {
                                 active: true
@@ -67,7 +70,7 @@ var shedular = {
                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
                         task_status: ex,
-                        threshold_met: false,
+                        threshold_met: reports_data.Report.thresholdAlert,
                         notification_sent: false,
                         channel: reports_data.SchedulerTask.channel
                     });

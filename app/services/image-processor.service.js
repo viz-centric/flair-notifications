@@ -2,7 +2,7 @@ const wkhtmltoimage = require('wkhtmltoimage').setCommand('/usr/bin/wkhtmltoimag
 const fs = require('fs');
 const AppConfig = require('../load_config');
 const base64Img = require('base64-img');
-const resizeImg = require('resize-img');
+var compress_images = require('compress-images');
 
 const logger = require('./../logger');
 var models = require('../database/models/index');
@@ -35,23 +35,25 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
 
             if (channel == "team") {
               (async () => {
-                const image = await resizeImg(fs.readFileSync(image_dir + imageName), {
-                  width: 600,
-                  height: 200
-                });
+                compress_images(image_dir + imageName, './compress-images/', { compress_force: false, statistic: true, autoupdate: true }, false,
+                  { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
+                  { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
+                  { svg: { engine: 'svgo', command: '--multipass' } },
+                  { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
 
-                fs.writeFileSync(image_dir + 'unicorn-128x128.png', image);
-
-                base64Img.base64(image_dir + 'unicorn-128x128.png', function (err, base64Bytes) {
-                  encodedUrl =  base64Bytes;
-                  fs.unlinkSync(image_dir + imageName);
-                  resolve(encodedUrl);
-                });
+                    if (completed === true) {
+                      base64Img.base64('./compress-images/' + imageName, function (err, base64Bytes) {
+                        encodedUrl = base64Bytes;
+                        fs.unlinkSync('./compress-images/' + imageName);
+                        resolve(encodedUrl);
+                      });
+                    }
+                  });
 
               })();
             }
             else {
-              fs.unlinkSync(image_dir + imageName);
+              // fs.unlinkSync(image_dir + imageName);
               resolve(encodedUrl);
             }
           }

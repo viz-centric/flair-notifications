@@ -161,17 +161,17 @@ const chartMap = {
 exports.loadDataAndSendNotification = async function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
-    function loadDataFromGrpc(query) {
+     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
         var data_call = grpc_client.getRecords(query);
-        data_call.then(function (response) {
+         data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
-                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
+                generate_chart =  chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                generate_chart.then(function (response) {
+                 generate_chart.then(function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
                     var to_mail_list = [];
                     var webhookURL = '';
@@ -194,9 +194,9 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                     var view_name = reports_data['report_obj']['view_name']
                     var channel = reports_data.report_shedular_obj.channel;
                     var mailRetryCount = 0;
-                    function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
+                    async function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
-                        imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
+                        await imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
 
                             if (channel == "email") {
                                 sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
@@ -248,7 +248,8 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                                     reportTitle: report_title,
                                     build_url: build_url,
                                     share_link: share_link,
-                                    base64: bytes
+                                    base64: bytes,
+                                    tableData: json_res.data
                                 }
                                 sendNotification.sendTeamNotification(teamData, reports_data);
                             }
@@ -269,10 +270,8 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                             });
                         });
                     }
-                    return new Promise((resolve, reject) => {
-                        sendReport(subject, to_mail_list, mail_body, report_title, imagefilename);
-                    });
-                    
+
+                    sendReport(subject, to_mail_list, mail_body, report_title, imagefilename);
 
                 }, function (err) {
                     logger.log({
