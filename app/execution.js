@@ -1,9 +1,11 @@
 var sendmailtool = require('./send-mail');
 var models = require('./database/models/index');
+const db = require('./database/models/index');
 var grpc_client = require('./grpc/client');
 var charts = require('./chart/generate-charts');
 var logger = require('./logger');
 var imageProcessor = require('./services/image-processor.service');
+const queryService = require('./services/query-service');
 const retryDelay = 3000 //in miliseconds
 
 const chartMap = {
@@ -162,7 +164,8 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
-        var data_call = grpc_client.getRecords(query);
+        const rawQuery = queryService.preProcessQuery(query);
+        var data_call = grpc_client.getRecords(rawQuery);
         data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
@@ -188,19 +191,28 @@ exports.loadDataAndSendMail = function loadDataAndSendMail(reports_data, thresho
                     function sendMail(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
                         imageProcessor.saveImageConvertToBase64(imagefilename, response).then(function (bytes) {
-                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
-                                try {
-                                    let shedularlog = models.SchedulerTaskLog.create({
-                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                        task_executed: new Date(Date.now()).toISOString(),
-                                        task_status: "success",
-                                    });
-                                } catch (error) {
-                                    logger.log({
-                                        level: 'error',
-                                        message: 'error while saving scheduler log',
-                                    });
-                                }
+                            sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
+                                  const transaction = await db.sequelize.transaction();
+                                  try {
+                                      const shedularlog = await models.SchedulerTaskLog.create({
+                                          SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                          task_executed: new Date(Date.now()).toISOString(),
+                                          task_status: "success",
+                                      }, {transaction});
+
+                                      const schedulerLogMeta = await models.SchedulerTaskMeta.create({
+                                          SchedulerTaskLogId: shedularlog.id,
+                                          rawQuery: rawQuery,
+                                      }, {transaction});
+                                      await transaction.commit();
+                                  } catch (error) {
+                                      await transaction.rollback();
+                                      logger.log({
+                                          level: 'error',
+                                          message: 'error while saving scheduler log',
+                                          errMsg: error,
+                                      });
+                                  }
 
                             },
                                 function (error) {
