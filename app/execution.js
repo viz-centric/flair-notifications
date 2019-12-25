@@ -285,7 +285,7 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                         task_status: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
                         threshold_met: thresholdAlertEmail,
                         notification_sent: false,
-                        channel: channel
+                        channel: reports_data.report_shedular_obj.channel
                     });
                 });
             } else {
@@ -300,7 +300,7 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                     task_status: "no data found",
                     threshold_met: thresholdAlertEmail,
                     notification_sent: false,
-                    channel: channel
+                    channel: reports_data.report_shedular_obj.channel
                 });
             }
         }, function (err) {
@@ -319,7 +319,7 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                     task_status: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                     threshold_met: thresholdAlertEmail,
                     notification_sent: false,
-                    channel: channel,
+                    channel: reports_data.report_shedular_obj.channel,
                     base64: encodeURI
                 });
             }

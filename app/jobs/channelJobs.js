@@ -5,22 +5,52 @@ var logger = require('../logger');
 var util = require('../util');
 
 var job = {
+    getChannelProperties: async function () {
+        try {
+            var channel = await models.CommunicationChannels.findAll();
+            if (channel) {
+                return {
+                    success: 1,
+                    records: channel
+                };
+            }
+            else {
+                return { success: 0, message: "channel not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching channel',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+    },
 
-    addChannel: async function (request) {
+    addChannelConfigs: async function (request) {
         if (request) {
             const transaction = await db.sequelize.transaction();
             try {
-                //create report object
-                let channel = await models.CommunicationChannels.create({
-                    id: request.communication_channel_id,
-                    channel_parameters: request.channel_parameters
+                if (request.communication_channel_id == "team") {
+                    var webhook = util.encrypt(request.config.webhook);
+                    request.config.webhook = webhook
+                }
+                else if (request.communication_channel_id == "email") {
+                    var password = util.encrypt(request.config.password);
+                    request.config.password = password
+                }
+
+                let channel = await models.ChannelConfigs.create({
+                    config: request.config,
+                    communication_channel_id: request.communication_channel_id
                 }, { transaction });
 
                 await transaction.commit();
 
                 logger.log({
                     level: 'info',
-                    message: 'new Channel is saved into database',
+                    message: 'new channel info is saved into database',
                     channel: channel.communication_channel_id,
                 });
                 return ({
@@ -30,14 +60,7 @@ var job = {
             }
             catch (ex) {
                 await transaction.rollback();
-                if (ex.name == "SequelizeUniqueConstraintError") {
-                    logger.log({
-                        level: 'info',
-                        message: 'channel already exist',
-                    });
-                    var response = { success: 0, message: "channel already exist" }
-                    return response;
-                }
+
                 logger.log({
                     level: 'error',
                     message: 'error while saving channel into database',
@@ -51,15 +74,26 @@ var job = {
     getChannel: async function () {
 
         try {
-            var channel = await models.CommunicationChannels.findAll();
+            var channel = await models.ChannelConfigs.findAll();
             if (channel) {
+
+                for (let index = 0; index < channel.length; index++) {
+                    if (channel[index].communication_channel_id == "team") {
+                        var webhook = util.decrypt(channel[index].config.webhook);
+                        channel[index].config.webhook = webhook
+                    }
+                    else if (channel[index].communication_channel_id == "email") {
+                        var password = util.decrypt(channel[index].config.password);
+                        channel[index].config.password = password
+                    }
+                }
                 return {
                     success: 1,
                     records: channel
                 };
             }
             else {
-                return { success: 0, message: "report not found" };
+                return { success: 0, message: "channel not found" };
             }
         }
         catch (ex) {
@@ -77,19 +111,30 @@ var job = {
     getChannelByChannelName: async function (request) {
         if (request) {
             try {
-                var channel = await models.CommunicationChannels.findOne({
+                var channel = await models.ChannelConfigs.findAll({
                     where: {
-                        id: request
+                        communication_channel_id: request
                     }
                 });
                 if (channel) {
+
+                    for (let index = 0; index < channel.length; index++) {
+                        if (channel[index].communication_channel_id == "team") {
+                            var webhook = util.decrypt(channel[index].config.webhook);
+                            channel[index].config.webhook = webhook
+                        }
+                        else if (channel[index].communication_channel_id == "email") {
+                            var password = util.decrypt(channel[index].config.password);
+                            channel[index].config.password = password
+                        }
+                    }
                     return {
                         success: 1,
-                        records: channel.channel_parameters
+                        records: channel
                     };
                 }
                 else {
-                    return { success: 0, message: "report not found" };
+                    return { success: 0, message: "channel not found" };
                 }
             }
             catch (ex) {
@@ -104,23 +149,32 @@ var job = {
         }
     },
 
-    updateChannelByChannelName: async function (request) {
+    updateChannel: async function (request) {
         if (request) {
-            var exist_channel = await models.CommunicationChannels.findOne({
+            var exist_channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: request.communication_channel_id
+                    id: request.id
                 }
             });
 
             if (exist_channel) {
                 const transaction = await db.sequelize.transaction();
                 try {
-                    let channel = await models.CommunicationChannels.update({
-                        channel_parameters: request.channel_parameters,
+                    if (request.communication_channel_id == "team") {
+                        var webhook = util.encrypt(request.config.webhook);
+                        request.config.webhook = webhook
+                    }
+                    else if (request.communication_channel_id == "email") {
+                        var password = util.encrypt(request.config.password);
+                        request.config.password = password
+                    }
+
+                    let channel = await models.ChannelConfigs.update({
+                        config: request.config,
                     },
                         {
                             where: {
-                                id: request.communication_channel_id
+                                communication_channel_id: request.communication_channel_id
                             }
                         }, { transaction });
 
@@ -144,6 +198,45 @@ var job = {
                 });
                 return { success: 0, message: message };
             }
+        }
+    },
+
+    deleteChannelConfig: async function (id) {
+
+        var exist_channel = await models.ChannelConfigs.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (exist_channel) {
+            const transaction = await db.sequelize.transaction();
+            try {
+                await exist_channel.destroy({ force: true });
+                await transaction.commit();
+
+                logger.log({
+                    level: 'info',
+                    message: 'Channel config deleted successfully'
+                });
+                return { success: 1, message: 'Channel config deleted successfully' };
+            }
+            catch (ex) {
+                await transaction.rollback();
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching channel config',
+                    error: ex,
+                });
+                return { success: 0, message: ex };
+            }
+        }
+        else {
+            logger.log({
+                level: 'info',
+                message: 'channel config not found'
+            });
+            return { success: 0, message: message };
         }
     }
 

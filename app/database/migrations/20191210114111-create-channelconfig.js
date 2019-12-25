@@ -1,25 +1,17 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('ChannelConfig', {
-      channel_config_id: {
+    return queryInterface.createTable('ChannelConfigs', {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-    
+
       config: {
         allowNull: false,
         type: Sequelize.JSON
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       },
       communication_channel_id: {
         type: Sequelize.STRING,
@@ -30,9 +22,17 @@ module.exports = {
         },
         allowNull: false
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('ChannelConfig');
+    return queryInterface.dropTable('ChannelConfigs');
   }
 };

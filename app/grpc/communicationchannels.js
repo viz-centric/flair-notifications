@@ -16,25 +16,37 @@ function handleCall(promise, callback) {
 
 function constructChannelService(server) {
     server.addService({
-        addChannel,
         getChannel,
-        updateChannelByChannelName,
-        getChannelByChannelName
+        addChannelConfigs,
+        updateChannel,
+        getChannelByChannelName,
+        getChannelProperties,
+        deleteChannelConfig
+
     })
 }
 
-function addChannel(call, callback) {
-    handleCall(channelService.addChannel(call.request), callback);
+function addChannelConfigs(call, callback) {
+    handleCall(channelService.addChannelConfigs(call.request), callback);
+}
+
+function getChannelProperties(call, callback) {
+    handleCall(channelService.getChannelProperties(call.request), callback);
+}
+
+function deleteChannelConfig(call, callback) {
+    handleCall(channelService.deleteChannelConfig(call.request), callback);
 }
 
 function getChannel(call, callback) {
     handleCall(channelService.getChannel(call.request), callback);
 }
 
-function updateChannelByChannelName(call, callback) {
-    handleCall(channelService.updateChannelByChannelName(call.request), callback);
+function updateChannel(call, callback) {
+    handleCall(channelService.updateChannel(call.request), callback);
 }
 
 function getChannelByChannelName(call, callback) {
     handleCall(channelService.getChannelByChannelName(call.request), callback);
 }
+

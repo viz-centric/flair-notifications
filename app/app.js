@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jobs = require('./jobs/schedulerJobs');
 const channelJobs = require('./jobs/channelJobs');
-
+const util = require('./util')
 const validator = require('./validator');
 const logger = require('./logger');
 const app = express();
@@ -30,12 +30,20 @@ app.post('/api/buildVisualizationImage/', function (req, res) {
             });
         });
     }
-
 });
 
 app.get('/api/executeImmediate/', (req, res) => {
     var visualizationid = req.query.visualizationid;
     jobs.executeImmediate(visualizationid).then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
+
+app.get('/api/deleteJob/', (req, res) => {
+    var visualizationid = req.query.visualizationid;
+    jobs.deleteJob(visualizationid).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -56,12 +64,23 @@ app.post('/api/jobSchedule/', function (req, res) {
     }
     else {
         jobs.createJob(req.body).then(function (result) {
-            res.status(result.success ===1? 201: 302).json({message:result.message})
+            res.status(result.success === 1 ? 201 : 302).json({ message: result.message })
         }, function (err) {
             res.send(err);
         })
     }
 
+});
+
+
+app.get('/api/user/:userName/reports', (req, res) => {
+    var page = (+req.query.page);
+    var pageSize = (+req.query.pageSize);
+    jobs.JobsByUser(req.params.userName, page, pageSize).then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
 });
 
 
@@ -77,17 +96,15 @@ app.get('/api/jobLogs/', (req, res) => {
 });
 
 //Channel testing 
-app.post('/api/addChannel/', function (req, res) {
+app.post('/api/addChannelConfigs/', function (req, res) {
     if (req.body) {
-
-        channelJobs.addChannel(req.body).then(function (result) {
-            res.status(result.success ===1? 201: 302).json({message:result.message})
+        channelJobs.addChannelConfigs(req.body).then(function (result) {
+            res.status(result.success === 1 ? 201 : 302).json({ message: result.message })
         }, function (err) {
             res.send(err);
         })
     }
 });
-
 
 app.get('/api/getChannelByChannelName/', (req, res) => {
     var channel = req.query.channel;
@@ -98,17 +115,15 @@ app.get('/api/getChannelByChannelName/', (req, res) => {
     })
 });
 
-
-app.post('/api/updateChannelByChannelName/', function (req, res) {
+app.post('/api/updateChannel/', function (req, res) {
     if (req.body) {
-        channelJobs.updateChannelByChannelName(req.body).then(function (result) {
-            res.status(result.success ===1? 201: 302).json({message:result.message})
+        channelJobs.updateChannel(req.body).then(function (result) {
+            res.status(result.success === 1 ? 201 : 302).json(result)
         }, function (err) {
             res.send(err);
         })
     }
 });
-
 
 app.get('/api/getChannel/', (req, res) => {
     channelJobs.getChannel().then(function (result) {
@@ -117,6 +132,24 @@ app.get('/api/getChannel/', (req, res) => {
         res.send(err);
     })
 });
+
+app.get('/api/getChannelProperties/', (req, res) => {
+    channelJobs.getChannelProperties().then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
+
+app.get('/api/deleteChannel/', (req, res) => {
+    var id = req.query.id;
+    channelJobs.deleteChannelConfig(id).then(function (result) {
+        res.send(result);
+    }, function (err) {
+        res.send(err);
+    })
+});
+
 
 module.exports = app;    //for testing
 

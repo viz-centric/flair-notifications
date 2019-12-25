@@ -1,13 +1,14 @@
-const jobs = require('./../jobs/schedulerJobs');
+const jobs = require('./../jobs/channelJobs');
 const validator = require('./../validator');
 const logger = require('./../logger');
 
 module.exports = {
-    addChannel: addChannel,
+    getChannelProperties, getChannelProperties,
     getChannel: getChannel,
     getChannelByChannelName: getChannelByChannelName,
-    updateChannelByChannelName: updateChannelByChannelName,
-    addChannelConfig : addChannelConfig
+    updateChannel: updateChannel,
+    addChannelConfigs: addChannelConfigs,
+    deleteChannelConfig: deleteChannelConfig
 };
 
 /**
@@ -20,15 +21,35 @@ function Message(message) {
 }
 
 /**
+ * get Channel Properties
+ * @param channel
+ * @return {Promise<any>}
+ */
+function getChannelProperties(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`Get channel config for ${request.channel}`);
+        jobs.getChannelProperties(request).then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+    });
+}
+
+/**
  * update channel details by channel name
  * @param channel
  * @return {Promise<any>}
  */
-function updateChannelByChannelName(request) {
+function updateChannel(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
-        jobs.updateChannelByChannelName(request).then(function (result) {
+        jobs.updateChannel(request).then(function (result) {
             if (result.success === 1) {
                 resolve({});
             } else {
@@ -51,7 +72,7 @@ function getChannelByChannelName(request) {
     return new Promise(function (resolve, reject) {
         if (request.channel) {
             logger.info(`Get channel config for ${request.channel}`);
-            jobs.updateChannelByChannelName(request).then(function (result) {
+            jobs.updateChannel(request).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {
@@ -72,35 +93,30 @@ function getChannelByChannelName(request) {
  */
 function getChannel(request) {
     return new Promise(function (resolve, reject) {
-        if (request.channel) {
-            logger.info(`Get channel list`);
-            jobs.getChannel().then(function (result) {
-                if (result.success === 1) {
-                    resolve({});
-                } else {
-                    reject({ message: result.message });
-                }
-            }, function (err) {
-                reject({ message: err });
-            })
+        logger.info(`Get channel list`);
+        jobs.getChannel().then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
 
-        }
     });
 }
-
-
 
 /**
  * add new channel
  * @param
  * @return {Promise<any>}
  */
-function addChannel(request) {
+function addChannelConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
-
         if (request) {
-            jobs.addChannel(request).then(function (result) {
+            jobs.addChannelConfigs(request).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {
@@ -113,19 +129,16 @@ function addChannel(request) {
     });
 }
 
-
-
 /**
- * add channel config
+ * add new channel
  * @param
  * @return {Promise<any>}
  */
-function addChannelConfig(request) {
+function deleteChannelConfig(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
-
         if (request) {
-            jobs.addChannelConfig(request).then(function (result) {
+            jobs.deleteChannelConfig(request.id).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {

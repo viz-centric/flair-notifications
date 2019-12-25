@@ -9,7 +9,7 @@ function schedulertaskDTO(schedulerTaskObj) {
     notification_sent: schedulerTaskObj.notification_sent,
     channel: schedulerTaskObj.channel,
     ticket: schedulerTaskObj.ticket,
-    start_date: moment(schedulerTaskObj.start_date).format(util.dateFormat),
+    start_date: moment(schedulerTaskObj.start_date).format(util.dateFormat()),
     end_date: moment(schedulerTaskObj.end_date).format("YYYY-MM-DD")
   }
 }

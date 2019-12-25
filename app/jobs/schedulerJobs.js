@@ -356,15 +356,16 @@ var job = {
                 limit,
                 offset,
             });
+            var all_reports = [];
             if (reports.length > 0) {
-                var all_reports = [];
+
                 for (var i = 0; i < reports.length; i++) {
                     all_reports.push(schedulerDTO(reports[i]))
                 }
                 return { success: 1, reports: all_reports };
             }
             else {
-                return { message: "Report is not found for the user" };
+                return { success: 0, message: "Report is not found for the user" };
             }
         }
         catch (ex) {

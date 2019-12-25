@@ -12,7 +12,7 @@ function reportDTO(userid,dashboard_name,view_name,share_link,build_url,mail_bod
         subject:subject, 
         report_name:report_name, 
         title_name:title_name,
-        createdAt:moment(createdAt).format(util.dateFormat),
+        createdAt:moment(createdAt).format(util.dateFormat()),
         thresholdAlert:thresholdAlert
       }
   }

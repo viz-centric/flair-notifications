@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     channel_parameters: DataTypes.JSON
   }, {});
   CommunicationChannels.associate = function (models) {
-    CommunicationChannels.hasOne(models.ChannelConfig, { as: 'ChannelConfig', foreignKey: 'communication_channel_id' }, { onDelete: 'cascade' });
+    CommunicationChannels.hasOne(models.ChannelConfigs, { as: 'ChannelConfigs', foreignKey: 'communication_channel_id' }, { onDelete: 'cascade' });
 
   };
   return CommunicationChannels;
