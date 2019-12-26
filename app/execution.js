@@ -161,27 +161,26 @@ const chartMap = {
 exports.loadDataAndSendNotification = async function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
-     function loadDataFromGrpc(query) {
+    function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
         var data_call = grpc_client.getRecords(query);
-         data_call.then(function (response) {
+        data_call.then(function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
-                generate_chart =  chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
+                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                 generate_chart.then(function (response) {
+                generate_chart.then(function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
                     var to_mail_list = [];
-                    var webhookURL = '';
 
                     //get communication lists
                     var communication_list = reports_data['report_assign_obj']['communication_list'];
 
                     //getting email communication lists
                     var email_communication_list = communication_list.email;
-
+                    var webhookURL = communication_list.teams;
                     for (user of email_communication_list) {
                         to_mail_list.push(user['user_email'])
                     }
@@ -198,7 +197,7 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                         mailRetryCount += 1;
                         await imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
 
-                            if (channel == "email") {
+                            if (channel == "Email") {
                                 sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
                                     try {
                                         let shedularlog = models.SchedulerTaskLog.create({
@@ -215,7 +214,6 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                                             message: 'error while saving scheduler log',
                                         });
                                     }
-
                                 },
                                     function (error) {
                                         logger.log({
@@ -240,7 +238,7 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
 
                                     });
                             }
-                            else if (channel == "team") {
+                            else if (channel == "Teams") {
                                 var teamData = {
                                     dashboard: dash_board,
                                     view: view_name,
@@ -249,7 +247,8 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                                     build_url: build_url,
                                     share_link: share_link,
                                     base64: bytes,
-                                    tableData: json_res.data
+                                    tableData: json_res.data,
+                                    webhookURL: webhookURL
                                 }
                                 sendNotification.sendTeamNotification(teamData, reports_data);
                             }

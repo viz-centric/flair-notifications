@@ -33,7 +33,7 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
 
           if (fs.existsSync(image_dir + imageName)) {
 
-            if (channel == "team") {
+            if (channel == "Teams") {
               (async () => {
                 compress_images(image_dir + imageName, './compress-images/', { compress_force: false, statistic: true, autoupdate: true }, false,
                   { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
@@ -44,8 +44,10 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
                     if (completed === true) {
                       base64Img.base64('./compress-images/' + imageName, function (err, base64Bytes) {
                         encodedUrl = base64Bytes;
-                        fs.unlinkSync('./compress-images/' + imageName);
-                        resolve(encodedUrl);
+                        if (fs.existsSync('./compress-images/' + imageName)) {
+                          fs.unlinkSync('./compress-images/' + imageName);
+                          resolve(encodedUrl);
+                        }
                       });
                     }
                   });

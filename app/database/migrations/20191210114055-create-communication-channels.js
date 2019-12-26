@@ -23,17 +23,51 @@ module.exports = {
       return queryInterface.bulkInsert('CommunicationChannels', [{
         id: 'email',
         channel_parameters: JSON.stringify({
-          "host": "host name",
-          "sender": "sender email",
-          "user": "user name",
-          "password": "password of sender"
+          "id": "Email",
+          "connectionProperties": [
+            {
+              "displayName": "Host Name",
+              "fieldName": "host",
+              "order": 0,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "Sender Email",
+              "fieldName": "sender",
+              "order": 1,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "User Name",
+              "fieldName": "user",
+              "order": 2,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "Password",
+              "fieldName": "password",
+              "order": 3,
+              "fieldType": "String",
+              "required": true
+            }]
         }),
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
         id: 'team',
         channel_parameters: JSON.stringify({
-          webhookURL: 'team channel webhookURL'
+          "id": "Teams",
+          "connectionProperties": [
+            {
+              "displayName": "Webhook URL",
+              "fieldName": "webhook",
+              "order": 0,
+              "fieldType": "String",
+              "required": true
+            }]
         }),
         createdAt: new Date(),
         updatedAt: new Date()

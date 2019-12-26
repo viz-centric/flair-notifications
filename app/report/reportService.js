@@ -43,7 +43,7 @@ function scheduleReport(request) {
         } else {
             jobs.createJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve(result);
                 } else {
                     reject({ message: result.message });
                 }
@@ -68,7 +68,7 @@ function updateScheduledReport(request) {
         } else {
             jobs.modifyJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve(result);
                 } else {
                     reject({ message: result.message });
                 }
@@ -88,7 +88,7 @@ function deleteScheduledReport(request) {
     return new Promise(function (resolve, reject) {
         jobs.deleteJob(request.visualizationId).then(function (result) {
             if (result.success === 1) {
-                resolve({});
+                resolve(result);
             } else {
                 reject({ message: result.message })
             }

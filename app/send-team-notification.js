@@ -2,6 +2,7 @@
 const axios = require('axios');
 var models = require('./database/models/index');
 var logger = require('./logger');
+const channelJob = require('./jobs/channelJobs');
 
 let config;
 
@@ -59,7 +60,7 @@ config = {
 }
 
 
-exports.sendTeamNotification = function sendNotification(teamConfig, reportData) {
+exports.sendTeamNotification = async function sendNotification(teamConfig, reportData) {
 
     config.title = teamConfig.reportTitle;
 
@@ -83,42 +84,43 @@ exports.sendTeamNotification = function sendNotification(teamConfig, reportData)
         tbody += "\r"
     }
 
-  //  config.sections[0].text = tbody;
+    config.sections[0].text = tbody;
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
     config.potentialAction[0].targets[0].uri = teamConfig.share_link;
     config.potentialAction[1].targets[0].uri = teamConfig.build_url;
+    config.potentialAction[2].targets[0].uri = teamConfig.share_link.replace('visual', 'visual-table');
+
     config.text = '![chart image](' + teamConfig.base64 + ')';
-    
-    // webhookURL=webhookURL;
-    axios.post(WebhookURL, config)
-        .then((res) => {
-            try {
-                if (res.data == "1") {
-                    let shedularlog = models.SchedulerTaskLog.create({
-                        SchedulerJobId: reportData['report_shedular_obj']['id'],
-                        task_executed: new Date(Date.now()).toISOString(),
-                        task_status: "success",
-                        threshold_met: reportData.report_obj.thresholdAlert,
-                        notification_sent: true,
-                        channel: reportData.report_shedular_obj.channel
+
+    webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
+
+    var notification_sent = false;
+    for (let index = 0; index < webhookURL.records.length; index++) {
+
+        await axios.post(webhookURL.records[index].config.webhook, config)
+            .then((res) => {
+                try {
+                    if (res.data == "1") {
+                        notification_sent = true;
+                    }
+                    else {
+                        notification_sent = false;
+                    }
+                } catch (error) {
+                    logger.log({
+                        level: 'error',
+                        message: 'error while sending team' + thresholdAlertEmail ? ' for threshold alert' : '',
+                        errMsg: error,
                     });
                 }
-                else {
-                    let shedularlog = models.SchedulerTaskLog.create({
-                        SchedulerJobId: reportData['report_shedular_obj']['id'],
-                        task_executed: new Date(Date.now()).toISOString(),
-                        task_status: "Error while seding message to team " + res.data,
-                        threshold_met: reportData.report_obj.thresholdAlert,
-                        notification_sent: true,
-                        channel: reportData.report_shedular_obj.channel
-                    });
-                }
-            } catch (error) {
+
+            })
+            .catch((error) => {
                 logger.log({
                     level: 'error',
-                    message: 'error while sending team' + thresholdAlertEmail ? ' for threshold alert' : '',
+                    message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                     errMsg: error,
                 });
                 let shedularlog = models.SchedulerTaskLog.create({
@@ -126,24 +128,17 @@ exports.sendTeamNotification = function sendNotification(teamConfig, reportData)
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "team " + error,
                     threshold_met: reportData.report_obj.thresholdAlert,
-                    notification_sent: true,
+                    notification_sent: false,
                     channel: reportData.report_shedular_obj.channel
                 });
-            }
-        })
-        .catch((error) => {
-            logger.log({
-                level: 'error',
-                message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
-                errMsg: error,
-            });
-            let shedularlog = models.SchedulerTaskLog.create({
-                SchedulerJobId: reportData['report_shedular_obj']['id'],
-                task_executed: new Date(Date.now()).toISOString(),
-                task_status: "team " + error,
-                threshold_met: reportData.report_obj.thresholdAlert,
-                notification_sent: true,
-                channel: reportData.report_shedular_obj.channel
-            });
-        })
+            })
+    }
+    let shedularlog = models.SchedulerTaskLog.create({
+        SchedulerJobId: reportData['report_shedular_obj']['id'],
+        task_executed: new Date(Date.now()).toISOString(),
+        task_status: notification_sent == true ? "success" : "team " + error,
+        threshold_met: reportData.report_obj.thresholdAlert,
+        notification_sent: notification_sent,
+        channel: reportData.report_shedular_obj.channel
+    });
 }

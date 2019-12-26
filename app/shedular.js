@@ -103,8 +103,6 @@ var shedular = {
         all_jobs = scheduler.scheduledJobs;
         result = all_jobs[jobName].reschedule(cron_expression);
         return result;
-
-
     }
 }
 

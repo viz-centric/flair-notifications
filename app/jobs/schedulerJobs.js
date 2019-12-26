@@ -48,10 +48,11 @@ var job = {
                 query: JSON.parse(params.query),
             }, { transaction })
 
+            let shedualar_obj;
             for (let index = 0; index < params.assign_report.channel.length; index++) {
                 const channel = params.assign_report.channel[index];
 
-                let shedualar_obj = await models.SchedulerTask.create({
+                shedualar_obj = await models.SchedulerTask.create({
                     ReportId: report.id,
                     channel: channel,
                     cron_exp: params.schedule.cron_exp,

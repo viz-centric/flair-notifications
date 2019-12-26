@@ -9,10 +9,7 @@ var job = {
         try {
             var channel = await models.CommunicationChannels.findAll();
             if (channel) {
-                return {
-                    success: 1,
-                    records: channel
-                };
+                return channel;
             }
             else {
                 return { success: 0, message: "channel not found" };
@@ -36,7 +33,7 @@ var job = {
                     var webhook = util.encrypt(request.config.webhook);
                     request.config.webhook = webhook
                 }
-                else if (request.communication_channel_id == "email") {
+                else if (request.communication_channel_id == "Email") {
                     var password = util.encrypt(request.config.password);
                     request.config.password = password
                 }
@@ -72,7 +69,6 @@ var job = {
     },
 
     getChannel: async function () {
-
         try {
             var channel = await models.ChannelConfigs.findAll();
             if (channel) {
@@ -82,7 +78,7 @@ var job = {
                         var webhook = util.decrypt(channel[index].config.webhook);
                         channel[index].config.webhook = webhook
                     }
-                    else if (channel[index].communication_channel_id == "email") {
+                    else if (channel[index].communication_channel_id == "Email") {
                         var password = util.decrypt(channel[index].config.password);
                         channel[index].config.password = password
                     }
@@ -123,7 +119,7 @@ var job = {
                             var webhook = util.decrypt(channel[index].config.webhook);
                             channel[index].config.webhook = webhook
                         }
-                        else if (channel[index].communication_channel_id == "email") {
+                        else if (channel[index].communication_channel_id == "Email") {
                             var password = util.decrypt(channel[index].config.password);
                             channel[index].config.password = password
                         }
@@ -163,10 +159,6 @@ var job = {
                     if (request.communication_channel_id == "team") {
                         var webhook = util.encrypt(request.config.webhook);
                         request.config.webhook = webhook
-                    }
-                    else if (request.communication_channel_id == "email") {
-                        var password = util.encrypt(request.config.password);
-                        request.config.password = password
                     }
 
                     let channel = await models.ChannelConfigs.update({
@@ -238,7 +230,41 @@ var job = {
             });
             return { success: 0, message: message };
         }
-    }
+    },
+
+    getWebhookList: async function (ids) {
+        try {
+            var channel = await models.ChannelConfigs.findAll({
+                where: {
+                    id: ids
+                }
+            });
+            if (channel) {
+
+                for (let index = 0; index < channel.length; index++) {
+                    if (channel[index].communication_channel_id == "team") {
+                        var webhook = util.decrypt(channel[index].config.webhook);
+                        channel[index].config.webhook = webhook
+                    }
+                }
+                return {
+                    success: 1,
+                    records: channel
+                };
+            }
+            else {
+                return { success: 0, message: "channel not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching channel',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+    },
 
 }
 
