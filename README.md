@@ -34,7 +34,7 @@ curl http://localhost:8080/api/jobSchedule/
               "visualization": "pie"
             },
             "assign_report": {
-              "channel": "email",
+              "channel": "Email",
               "slack_API_Token":"xxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxx-xxxxxxxxxxxxxxxxx",
               "channel_id":"C9ZK2705U",
               "stride_API_Token":"xxxxxx-xxxxxx",

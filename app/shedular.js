@@ -26,7 +26,7 @@ var shedular = {
                 visualizationid: visualizationid,
             });
             try {
-                models.Report.findAll({
+                models.Report.findOne({
                     include: [
                         {
                             model: models.ReportLineItem,
@@ -45,13 +45,15 @@ var shedular = {
                             },
                         }
                     ],
-                }).then(function (reports) {
-                    for (var i = 0; i < reports.length; i++) {
-                        job = shedular.shedulJob(reports[i].reportline.visualizationid, reports[i].SchedulerTask.cron_exp,
-                            reports[i].SchedulerTask.start_date, reports[i].SchedulerTask.end_date)
-                        if (job === null) {
-                            job = shedular.shedulJob(reports[i].reportline.visualizationid, reports[i].SchedulerTask.cron_exp)
-                        }
+                }).then(function (report) {
+                    var reports_data = {
+                        report_obj: report,
+                        report_line_obj: report.reportline,
+                        report_assign_obj: report.AssignReport,
+                        report_shedular_obj: report.SchedulerTask
+                    }
+                    for (let index = 0; index < reports_data.report_assign_obj.channel.length; index++) {
+                        execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert, reports_data.report_assign_obj.channel[index]);
                     }
 
                 }).catch(function (err) {

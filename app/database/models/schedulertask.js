@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const SchedulerTask = sequelize.define('SchedulerTask', {
     cron_exp: DataTypes.STRING,
     active: DataTypes.BOOLEAN,
-    channel: DataTypes.STRING,
     timezone: DataTypes.STRING,
     start_date: DataTypes.DATE,
     end_date: DataTypes.DATE,

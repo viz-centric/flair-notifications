@@ -28,7 +28,7 @@ function Message(message) {
 function getChannelProperties(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Get channel config for ${request.channel}`);
-        jobs.getChannelProperties(request).then(function (result) {
+        jobs.getChannelProperties(request.channel).then(function (result) {
             if (result.success === 1) {
                 resolve({});
             } else {
@@ -72,7 +72,7 @@ function getChannelByChannelName(request) {
     return new Promise(function (resolve, reject) {
         if (request.channel) {
             logger.info(`Get channel config for ${request.channel}`);
-            jobs.updateChannel(request).then(function (result) {
+            jobs.getChannelByChannelName(request.channel).then(function (result) {
                 if (result.success === 1) {
                     resolve({});
                 } else {

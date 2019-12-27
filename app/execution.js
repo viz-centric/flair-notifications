@@ -158,7 +158,7 @@ const chartMap = {
     }
 };
 
-exports.loadDataAndSendNotification = async function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
+exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, thresholdAlertEmail,channel) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
@@ -191,11 +191,10 @@ exports.loadDataAndSendNotification = async function loadDataAndSendNotification
                     var share_link = reports_data['report_obj']['share_link']
                     var dash_board = reports_data['report_obj']['dashboard_name']
                     var view_name = reports_data['report_obj']['view_name']
-                    var channel = reports_data.report_shedular_obj.channel;
                     var mailRetryCount = 0;
-                    async function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
+                    function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
-                        await imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
+                        imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
 
                             if (channel == "Email") {
                                 sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {

@@ -31,8 +31,6 @@ var job = {
                 thresholdAlert: params.report.thresholdAlert
             }, { transaction });
 
-
-
             let assign_report_obj = await models.AssignReport.create({
                 ReportId: report.id,
                 channel: params.assign_report.channel,
@@ -48,26 +46,23 @@ var job = {
                 query: JSON.parse(params.query),
             }, { transaction })
 
-            let shedualar_obj;
+            let shedualar_obj = await models.SchedulerTask.create({
+                ReportId: report.id,
+                // channel: "channel",
+                cron_exp: params.schedule.cron_exp,
+                active: true,
+                timezone: params.schedule.timezone,
+                start_date: moment(params.schedule.start_date),
+                end_date: moment(params.schedule.end_date)
+            }, { transaction })
+
+            logger.log({
+                level: 'info',
+                message: 'new report shedule for channel ',
+                report_name: report.report_name,
+            });
+
             for (let index = 0; index < params.assign_report.channel.length; index++) {
-                const channel = params.assign_report.channel[index];
-
-                shedualar_obj = await models.SchedulerTask.create({
-                    ReportId: report.id,
-                    channel: channel,
-                    cron_exp: params.schedule.cron_exp,
-                    active: true,
-                    timezone: params.schedule.timezone,
-                    start_date: moment(params.schedule.start_date),
-                    end_date: moment(params.schedule.end_date)
-                }, { transaction })
-
-                logger.log({
-                    level: 'info',
-                    message: 'new report shedule for channel ' + channel,
-                    report_name: report.report_name,
-                });
-
                 job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp, shedualar_obj.start_date, shedualar_obj.end_date)
                 if (job === null) {
                     job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp)
@@ -265,7 +260,7 @@ var job = {
         var offset = page * pageSize;
         var limit = pageSize;
         try {
-            var report = await models.Report.findAll({
+            var report = await models.Report.findOne({
                 include: [
                     {
                         model: models.SchedulerTask,
@@ -279,14 +274,9 @@ var job = {
             });
             if (report) {
                 try {
-
-                    schedulerTaskId = [];
-                    for (let index = 0; index < report.length; index++) {
-                        schedulerTaskId.push(report[index].SchedulerTask.id)
-                    }
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
                         where: {
-                            SchedulerJobId: schedulerTaskId
+                            SchedulerJobId: report.SchedulerTask.id
                         },
                         order: [
                             ['createdAt', 'DESC'],
@@ -444,7 +434,7 @@ var job = {
     },
     executeImmediate: async function (visualizationid) {
         logger.info(`Job execute report ${visualizationid}`);
-        var report = await models.Report.findAll({
+        var report = await models.Report.findOne({
             include: [
                 {
                     model: models.ReportLineItem,
@@ -461,19 +451,17 @@ var job = {
             ],
         });
         if (report) {
-            for (let index = 0; index < report.length; index++) {
+            var reports_data = {
+                report_obj: report,
+                report_line_obj: report.reportline,
+                report_assign_obj: report.AssignReport,
+                report_shedular_obj: report.SchedulerTask
+            };
 
-                var reports_data = {
-                    report_obj: report[index],
-                    report_line_obj: report[index].reportline,
-                    report_assign_obj: report[index].AssignReport,
-                    report_shedular_obj: report[index].SchedulerTask
-                };
-
-                var r = await execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
-
+            for (let index = 0; index < reports_data.report_assign_obj.channel.length; index++) {
+                execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert, reports_data.report_assign_obj.channel[index]);
             }
-            return { message: `report executetion done : ${visualizationid}` };
+            return {};
         } else {
             return { message: `report is not found for visulization Id : ${visualizationid}` };
         }

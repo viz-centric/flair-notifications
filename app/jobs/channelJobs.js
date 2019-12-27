@@ -5,9 +5,13 @@ var logger = require('../logger');
 var util = require('../util');
 
 var job = {
-    getChannelProperties: async function () {
+    getChannelProperties: async function (channel) {
         try {
-            var channel = await models.CommunicationChannels.findAll();
+            var channel = await models.CommunicationChannels.findOne({
+                where: {
+                    id: channel
+                }
+            });
             if (channel) {
                 return channel;
             }
@@ -266,6 +270,39 @@ var job = {
         }
     },
 
+    getSMTPConfig: async function () {
+        try {
+            var channel = await models.ChannelConfigs.findAll({
+                where: {
+                    id: ids
+                }
+            });
+            if (channel) {
+
+                for (let index = 0; index < channel.length; index++) {
+                    if (channel[index].communication_channel_id == "team") {
+                        var webhook = util.decrypt(channel[index].config.webhook);
+                        channel[index].config.webhook = webhook
+                    }
+                }
+                return {
+                    success: 1,
+                    records: channel
+                };
+            }
+            else {
+                return { success: 0, message: "channel not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching channel',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+    }
 }
 
 module.exports = job;

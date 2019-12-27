@@ -21,7 +21,7 @@ const payload = {
         visualization: "Clustered Vertical Bar Chart"
     },
     assign_report: {
-        channel: ["email"],
+        channel: ["Email"],
         slack_API_Token: null,
         channel_id: null,
         stride_API_Token: null,

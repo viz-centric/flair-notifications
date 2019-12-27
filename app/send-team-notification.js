@@ -4,12 +4,7 @@ var models = require('./database/models/index');
 var logger = require('./logger');
 const channelJob = require('./jobs/channelJobs');
 
-let config;
-
-let WebhookURL = 'https://outlook.office.com/webhook/f79eb495-6984-4ca3-bf67-5357e4f9edd5@2c081cf3-e47d-4c70-a618-68662c113c38/IncomingWebhook/b7fc7559a6b34d87b1a05d26d1a830b8/90ac3273-dc32-484d-ba49-b6ea1b4fcd4f';
-let base64 = '';
-
-config = {
+let config = {
     "@type": "MessageCard",
     "@context": "http://schema.org/extensions",
     "themeColor": "0076D7",
@@ -93,10 +88,10 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     config.potentialAction[2].targets[0].uri = teamConfig.share_link.replace('visual', 'visual-table');
 
     config.text = '![chart image](' + teamConfig.base64 + ')';
-
+    teamConfig.webhookURL = [1];
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
-    var notification_sent = false;
+    var notification_sent = false, error_message = "";
     for (let index = 0; index < webhookURL.records.length; index++) {
 
         await axios.post(webhookURL.records[index].config.webhook, config)
@@ -107,6 +102,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                     }
                     else {
                         notification_sent = false;
+                        error_message = d.data
                     }
                 } catch (error) {
                     logger.log({
@@ -115,7 +111,6 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                         errMsg: error,
                     });
                 }
-
             })
             .catch((error) => {
                 logger.log({
@@ -129,16 +124,31 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                     task_status: "team " + error,
                     threshold_met: reportData.report_obj.thresholdAlert,
                     notification_sent: false,
-                    channel: reportData.report_shedular_obj.channel
+                    channel: 'Teams'
                 });
             })
     }
-    let shedularlog = models.SchedulerTaskLog.create({
-        SchedulerJobId: reportData['report_shedular_obj']['id'],
-        task_executed: new Date(Date.now()).toISOString(),
-        task_status: notification_sent == true ? "success" : "team " + error,
-        threshold_met: reportData.report_obj.thresholdAlert,
-        notification_sent: notification_sent,
-        channel: reportData.report_shedular_obj.channel
-    });
+    try {
+        let shedularlog = models.SchedulerTaskLog.create({
+            SchedulerJobId: reportData['report_shedular_obj']['id'],
+            task_executed: new Date(Date.now()).toISOString(),
+            task_status: notification_sent == true ? "success" : "team " + error_message,
+            threshold_met: reportData.report_obj.thresholdAlert,
+            notification_sent: notification_sent,
+            channel: 'Teams'
+        });
+        logger.log({
+            level: 'info',
+            message: 'team message send ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : ''
+        });
+
+    } catch (error) {
+        logger.log({
+            level: 'error',
+            message: 'error while inserting team message in data base ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+            errMsg: error,
+        });
+    }
+
+
 }

@@ -134,7 +134,8 @@ app.get('/api/getChannel/', (req, res) => {
 });
 
 app.get('/api/getChannelProperties/', (req, res) => {
-    channelJobs.getChannelProperties().then(function (result) {
+    var channel = req.query.channel;
+    channelJobs.getChannelProperties(channel).then(function (result) {
         res.send(result);
     }, function (err) {
         res.send(err);
@@ -149,7 +150,6 @@ app.get('/api/deleteChannelConfig/', (req, res) => {
         res.send(err);
     })
 });
-
 
 module.exports = app;    //for testing
 
