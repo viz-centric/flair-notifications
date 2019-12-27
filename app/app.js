@@ -141,7 +141,7 @@ app.get('/api/getChannelProperties/', (req, res) => {
     })
 });
 
-app.get('/api/deleteChannel/', (req, res) => {
+app.get('/api/deleteChannelConfig/', (req, res) => {
     var id = req.query.id;
     channelJobs.deleteChannelConfig(id).then(function (result) {
         res.send(result);
