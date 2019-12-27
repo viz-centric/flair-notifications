@@ -10,10 +10,10 @@ ssl:
   serverCert: certs/certChainFile.crt
   serverKey: certs/privateKeyFile.key
 mailService:
-    host: smtp.ethereal.email
+    host: smtp.sendgrid.net
     port: 587
-    sender: admin-vizcentric@gmail.com
+    sender: chandni.wa@gmail.com
     testUser: admin@vizcentric.com
     auth :
-      user: rudolph.schoen@ethereal.email
-      pass: 
+      user: apikey
+      pass: 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

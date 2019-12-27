@@ -29,10 +29,10 @@ describe('/api/jobSchedule/', () => {
                 "dimension": ["order_status"],
                 "measure": ["order_item_quantity", "order_item_subtotal"],
                 "visualization": "Clustered Vertical Bar Chart",
-                "visualizationid": "2135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0"
+                "visualizationid": "3135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0"
             },
             "query": `{
-          "queryId": "2135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0",
+          "queryId": "3135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0",
           "userId": "flairadmin",
           "sourceId": "1715917d-fff8-44a1-af02-ee2cd41a3609",
           "source": "Ecommerce",
@@ -43,18 +43,18 @@ describe('/api/jobSchedule/', () => {
           "limit": "20"
         }`,
             "assign_report": {
-                "channel": ["email","team"],
+                "channel": ["Email", "Teams"],
                 "slack_API_Token": "null",
                 "channel_id": "null",
                 "stride_API_Token": "null",
                 "stride_cloud_id": "null",
                 "stride_conversation_id": "null",
                 "communication_list": {
-                    "email": [
+                    "Email": [
                         { "user_email": "khushbum.wa@gmail.com", "user_name": "khushbu" }
                     ],
-                    "teams": [1,2,3]
-                    
+                    "teams": [1, 2, 3]
+
                 }
 
             },
@@ -70,8 +70,38 @@ describe('/api/jobSchedule/', () => {
             .post('/api/jobSchedule')
             .send(report)
             .end((err, res) => {
+              //  console.log(res.body);
+              //  res.should.have.status(201);
+               // res.body.should.be.a('object');
+              //  res.body.should.have.property('message');
+                done();
+            });
+    });
+
+});
+
+describe('/api/user/', () => {
+    it('execute get report by user', (done) => {
+        chai.request(app)
+            .get('/api/user/flairadmin/reports')
+            .query({ page: 1, pageSize: 10 })
+            .end((err, res) => {
                 console.log(res.body);
-                res.should.have.status(201);
+                res.body.should.be.a('object');
+                res.body.should.have.property('success');
+                done();
+            });
+    });
+
+});
+
+describe('/api/executeImmediate/', () => {
+    it('execute Immediate  job', (done) => {
+        chai.request(app)
+            .get('/api/executeImmediate')
+            .query({ visualizationid: '3135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0' })
+            .end((err, res) => {
+                console.log(res.body);
                 res.body.should.be.a('object');
                 res.body.should.have.property('message');
                 done();
@@ -80,20 +110,31 @@ describe('/api/jobSchedule/', () => {
 
 });
 
-describe('/api/executeImmediate/', () => {
-    it('execute Immediate  jab', (done) => {
-
+describe('/api/jobLogs/', () => {
+    it('execute job Logs', (done) => {
         chai.request(app)
-            .get('/api/executeImmediate')
-            .query({ visualizationid: 'caf8fe78085dacb80d969164550004bf--391ce147-082f-44f4-a07e-80d141bd8d64' })
+            .get('/api/jobLogs')
+            .query({ visualizationid: '3135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0', page: 1, pageSize: 10 })
             .end((err, res) => {
                 console.log(res.body);
-                res.should.have.status(201);
                 res.body.should.be.a('object');
-                res.body.should.have.property('message');
+                res.body.should.have.property('success');
                 done();
             });
     });
+});
 
+describe('/api/deleteJob/', () => {
+    it('execute delete  job', (done) => {
+        chai.request(app)
+            .get('/api/deleteJob')
+            .query({ visualizationid: '3135ba145382e82058b3e9e0e2000346--7610e66b-e88a-4897-951f-7da22b1d79e0' })
+            .end((err, res) => {
+                console.log(res.body);
+                res.body.should.be.a('object');
+                res.body.should.have.property('success');
+                done();
+            });
+    });
 });
 
