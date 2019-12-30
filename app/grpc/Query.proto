@@ -10,8 +10,8 @@ message Query {
     string userId = 2;
     string sourceId = 3;
     string source = 4;
-    repeated string fields = 5;
-    repeated string groupBy = 6;
+    repeated Field fields = 5;
+    repeated Field groupBy = 6;
     int64 limit = 7;
     message ConditionExpressionHolder {
         enum SourceType {
@@ -40,7 +40,7 @@ message Query {
     repeated ConditionExpressionHolder conditionExpressions = 8;
     bool distinct = 9;
     message SortHolder {
-        string featureName = 1;
+        Field feature = 1;
         enum Direction {
             ASC = 0;
             DESC = 1;
@@ -53,7 +53,7 @@ message Query {
         BIDITOGGLE = 1;
     }
     message HavingHolder {
-        string featureName = 1;
+        Field feature = 1;
         string value = 2;
         enum ComparatorType {
             UNKNOWN = 0;
@@ -70,4 +70,10 @@ message Query {
     bool enableCaching = 12;
     repeated HavingHolder having = 13;
     int64 offset = 14;
+
+    message Field {
+        string name = 1;
+        string aggregation = 2;
+        string alias = 3;
+    }
 }

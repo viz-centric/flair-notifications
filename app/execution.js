@@ -334,4 +334,3 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
     loadDataFromGrpc(query);
 
 }
-
