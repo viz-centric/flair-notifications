@@ -4,11 +4,13 @@ const logger = require('./../logger');
 
 module.exports = {
     getChannelProperties, getChannelProperties,
-    getChannel: getChannel,
-    getChannelByChannelName: getChannelByChannelName,
-    updateChannel: updateChannel,
-    addChannelConfigs: addChannelConfigs,
-    deleteChannelConfig: deleteChannelConfig
+    getTeamConfig: getTeamConfig,
+    getEmailConfig: getEmailConfig,
+    updateTeamWebhookURL: updateTeamWebhookURL,
+    updateEmailSMTP: updateEmailSMTP,
+    addTeamConfigs: addTeamConfigs,
+    addEmailConfigs: addEmailConfigs,
+    deleteWebhookURL: deleteWebhookURL
 };
 
 /**
@@ -30,7 +32,7 @@ function getChannelProperties(request) {
         logger.info(`Get channel config for ${request.channel}`);
         jobs.getChannelProperties().then(function (result) {
             if (result.success === 1) {
-                resolve({});
+                resolve(result);
             } else {
                 reject({ message: result.message });
             }
@@ -45,11 +47,11 @@ function getChannelProperties(request) {
  * @param channel
  * @return {Promise<any>}
  */
-function updateChannel(request) {
+function updateTeamWebhookURL(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
-        jobs.updateChannel(request).then(function (result) {
+        jobs.updateTeamWebhookURL(request).then(function (result) {
             if (result.success === 1) {
                 resolve({});
             } else {
@@ -64,39 +66,17 @@ function updateChannel(request) {
 
 
 /**
- * get Channel By Channel Name
- * @param channel
+ * update channel details by channel name
+ * @param update email smtp
  * @return {Promise<any>}
  */
-function getChannelByChannelName(request) {
+function updateEmailSMTP(request) {
     return new Promise(function (resolve, reject) {
-        if (request.channel) {
-            logger.info(`Get channel config for ${request.channel}`);
-            jobs.getChannelByChannelName(request.channel).then(function (result) {
-                if (result.success === 1) {
-                    resolve({});
-                } else {
-                    reject({ message: result.message });
-                }
-            }, function (err) {
-                reject({ message: err });
-            })
+        logger.info(`Update channel with param`, request.report);
 
-        }
-    });
-}
-
-/**
- * get Channel list
- * @param
- * @return {Promise<any>}
- */
-function getChannel(request) {
-    return new Promise(function (resolve, reject) {
-        logger.info(`Get channel list`);
-        jobs.getChannel().then(function (result) {
+        jobs.updateEmailSMTP(request).then(function (result) {
             if (result.success === 1) {
-                resolve({});
+                resolve(result);
             } else {
                 reject({ message: result.message });
             }
@@ -108,17 +88,59 @@ function getChannel(request) {
 }
 
 /**
- * add new channel
+ * get team webhook URL list
  * @param
  * @return {Promise<any>}
  */
-function addChannelConfigs(request) {
+function getTeamConfig(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get team webhook URL list`);
+        jobs.getTeamConfig().then(function (result) {
+            if (result.success === 1) {
+                resolve(result);
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * get SMTP config
+ * @param
+ * @return {Promise<any>}
+ */
+function getEmailConfig(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get SMTP config`);
+        jobs.getEmailConfig().then(function (result) {
+            if (result.success === 1) {
+                resolve(result);
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * add new team channel
+ * @param
+ * @return {Promise<any>}
+ */
+function addTeamConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
         if (request) {
-            jobs.addChannelConfigs(request).then(function (result) {
+            jobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve({ message: result.message });
                 } else {
                     reject({ message: result.message });
                 }
@@ -130,17 +152,40 @@ function addChannelConfigs(request) {
 }
 
 /**
+ * add new team channel
+ * @param
+ * @return {Promise<any>}
+ */
+function addEmailConfigs(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`add channel email with param`, request);
+        if (request) {
+            jobs.addEmailConfigs(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve({ message: result.message });
+                } else {
+                    reject({ message: result.message });
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+
+/**
  * add new channel
  * @param
  * @return {Promise<any>}
  */
-function deleteChannelConfig(request) {
+function deleteWebhookURL(request) {
     return new Promise(function (resolve, reject) {
-        logger.info(`add channel with param`, request);
+        logger.info(`deleteing webhook URL`, request);
         if (request) {
-            jobs.deleteChannelConfig(request.id).then(function (result) {
+            jobs.deleteWebhookURL(request.id).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve({message: result.message});
                 } else {
                     reject({ message: result.message });
                 }

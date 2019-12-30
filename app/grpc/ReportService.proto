@@ -81,9 +81,64 @@ message GetChannelPropertiesRequest {
 }
 
 message GetChannelPropertiesResponse {
-   repeated ChannelConnection ChannelConnection = 1; 
+   repeated ChannelConnection request = 1; 
 }
 
+message AddTeamConfigsRequest {
+    TeamConfig team_config = 1;
+}
+
+message AddTeamConfigsResponse {
+    string message = 1;
+}
+
+message AddEmailConfigsRequest {
+    EmailConfig email_config = 1;
+}
+
+message AddEmailConfigsResponse {
+    string message = 1;
+}
+
+message GetEmailConfigRequest {
+   
+}
+
+message GetEmailConfigResponse {
+    EmailConfigList records = 1;
+}
+
+message GetTeamConfigRequest {
+   
+}
+
+message GetTeamConfigResponse {
+    TeamConfigList records = 1;
+}
+
+message UpdateTeamWebhookURLRequest{
+    TeamConfig team_config = 1;
+}
+
+message UpdateTeamWebhookURLResponse{
+    string message = 1;
+}
+
+message UpdateEmailSMTPRequest{
+    EmailConfig email_config = 1;
+}
+
+message UpdateEmailSMTPResponse{
+    string message = 1;
+}
+
+message DeleteChannelConfigRequest{
+    string id = 1;
+}
+
+message DeleteChannelConfigResponse{
+    string message = 1;
+}
 
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
@@ -96,4 +151,11 @@ service ReportService {
     rpc GetScheduleReportLogs(GetScheduleReportLogsRequest) returns (GetScheduleReportLogsResponse) {};
     rpc SearchReports(SearchReportsRequest) returns (SearchReportsResponse) {};
     rpc GetChannelProperties(GetChannelPropertiesRequest) returns (GetChannelPropertiesResponse) {};
+    rpc AddTeamConfigs(AddTeamConfigsRequest) returns (AddTeamConfigsResponse) {};
+    rpc AddEmailConfigs(AddEmailConfigsRequest) returns (AddEmailConfigsResponse) {};
+    rpc GetEmailConfig(GetEmailConfigRequest) returns (GetEmailConfigResponse) {};
+    rpc GetTeamConfig(GetTeamConfigRequest) returns (GetTeamConfigResponse) {};
+    rpc UpdateTeamWebhookURL(UpdateTeamWebhookURLRequest) returns (UpdateTeamWebhookURLResponse) {};
+    rpc UpdateEmailSMTP(UpdateEmailSMTPRequest) returns (UpdateEmailSMTPResponse) {};
+    rpc DeleteChannelConfig(DeleteChannelConfigRequest) returns (DeleteChannelConfigResponse) {};
 }

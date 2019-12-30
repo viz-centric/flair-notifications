@@ -16,37 +16,47 @@ function handleCall(promise, callback) {
 
 function constructChannelService(server) {
     server.addService({
-        getChannel,
-        addChannelConfigs,
-        updateChannel,
-        getChannelByChannelName,
+        addTeamConfigs,
+        addEmailConfigs,
+        updateEmailSMTP,
+        updateTeamWebhookURL,
         getChannelProperties,
-        deleteChannelConfig
-
+        deleteWebhookURL,
+        getTeamConfig,
+        getEmailConfig
     })
 }
 
-function addChannelConfigs(call, callback) {
-    handleCall(channelService.addChannelConfigs(call.request), callback);
+function addTeamConfigs(call, callback) {
+    handleCall(channelService.addTeamConfigs(call.request), callback);
 }
+
+function addEmailConfigs(call, callback) {
+    handleCall(channelService.addEmailConfigs(call.request), callback);
+}
+
 
 function getChannelProperties(call, callback) {
     handleCall(channelService.getChannelProperties(call.request), callback);
 }
 
-function deleteChannelConfig(call, callback) {
-    handleCall(channelService.deleteChannelConfig(call.request), callback);
+function deleteWebhookURL(call, callback) {
+    handleCall(channelService.deleteWebhookURL(call.request), callback);
 }
 
-function getChannel(call, callback) {
-    handleCall(channelService.getChannel(call.request), callback);
+
+function updateEmailSMTP(call, callback) {
+    handleCall(channelService.updateEmailSMTP(call.request), callback);
 }
 
-function updateChannel(call, callback) {
-    handleCall(channelService.updateChannel(call.request), callback);
+function updateTeamWebhookURL(call, callback) {
+    handleCall(channelService.updateTeamWebhookURL(call.request), callback);
 }
 
-function getChannelByChannelName(call, callback) {
-    handleCall(channelService.getChannelByChannelName(call.request), callback);
+function getEmailConfig(call, callback) {
+    handleCall(channelService.getEmailConfig(call.request), callback);
 }
 
+function getTeamConfig(call, callback) {
+    handleCall(channelService.getTeamConfig(call.request), callback);
+}

@@ -23,7 +23,6 @@ module.exports = {
       return queryInterface.bulkInsert('CommunicationChannels', [{
         id: 'Email',
         channel_parameters: JSON.stringify({
-          "id": "Email",
           "connectionProperties": [
             {
               "displayName": "Host Name",
@@ -40,16 +39,23 @@ module.exports = {
               "required": true
             },
             {
+              "displayName": "Port",
+              "fieldName": "port",
+              "order": 2,
+              "fieldType": "Integer",
+              "required": true
+            },
+            {
               "displayName": "User Name",
               "fieldName": "user",
-              "order": 2,
+              "order": 3,
               "fieldType": "String",
               "required": true
             },
             {
               "displayName": "Password",
               "fieldName": "password",
-              "order": 3,
+              "order": 4,
               "fieldType": "String",
               "required": true
             }]
@@ -59,12 +65,18 @@ module.exports = {
       }, {
         id: 'Teams',
         channel_parameters: JSON.stringify({
-          "id": "Teams",
           "connectionProperties": [
             {
-              "displayName": "Webhook URL",
-              "fieldName": "webhook",
+              "displayName": "Webhook Name",
+              "fieldName": "webhookName",
               "order": 0,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "Webhook URL",
+              "fieldName": "webhookURL",
+              "order": 1,
               "fieldType": "String",
               "required": true
             }]

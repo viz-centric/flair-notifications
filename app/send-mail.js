@@ -5,16 +5,17 @@ const jobs = require('./jobs/channelJobs');
 const appLogo = 'flairbi-logo.png';
 let transporter;
 let config;
+let SMTPConfig;
 
-function createTransporter(config) {
+function createTransporter(SMTPConfig) {
     return nodemailer.createTransport({
-        host: config.records.config.host,
-        port: config.records.config.port,
+        host: SMTPConfig.records.config.host,
+        port: SMTPConfig.records.config.port,
         pool: true,
         secure: false,
         auth: {
             user: config.mailService.auth.user,
-            pass: config.records.config.password
+            pass: SMTPConfig.records.config.password
         },
         tls: {
             rejectUnauthorized: false
@@ -24,14 +25,13 @@ function createTransporter(config) {
 
 async function init() {
     config = await AppConfig.getConfig();
-
-    var SMTPConfig = await jobs.getSMTPConfig();
+    SMTPConfig = await jobs.getSMTPConfig();
     transporter = createTransporter(SMTPConfig);
 }
 
-init();
-
 exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
+    init();
+
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
