@@ -76,6 +76,15 @@ message SearchReportsResponse {
     repeated ScheduleReport records = 2;
 }
 
+message GetChannelPropertiesRequest {
+    
+}
+
+message GetChannelPropertiesResponse {
+   repeated ChannelProperties ChannelProperties = 1; 
+}
+
+
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
@@ -86,4 +95,5 @@ service ReportService {
     rpc ExecuteReport(ExecuteReportRequest) returns (ExecuteReportResponse) {};
     rpc GetScheduleReportLogs(GetScheduleReportLogsRequest) returns (GetScheduleReportLogsResponse) {};
     rpc SearchReports(SearchReportsRequest) returns (SearchReportsResponse) {};
+    rpc GetChannelProperties(GetChannelPropertiesRequest) returns (GetChannelPropertiesResponse) {};
 }

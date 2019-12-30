@@ -28,7 +28,7 @@ function Message(message) {
 function getChannelProperties(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Get channel config for ${request.channel}`);
-        jobs.getChannelProperties(request.channel).then(function (result) {
+        jobs.getChannelProperties().then(function (result) {
             if (result.success === 1) {
                 resolve({});
             } else {

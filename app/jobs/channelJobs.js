@@ -5,15 +5,11 @@ var logger = require('../logger');
 var util = require('../util');
 
 var job = {
-    getChannelProperties: async function (channel) {
+    getChannelProperties: async function () {
         try {
-            var channel = await models.CommunicationChannels.findOne({
-                where: {
-                    id: channel
-                }
-            });
+            var channel = await models.CommunicationChannels.findAll();
             if (channel) {
-                return channel;
+                return { ChannelProperties: channel };
             }
             else {
                 return { success: 0, message: "channel not found" };
