@@ -457,10 +457,7 @@ var job = {
                 report_assign_obj: report.AssignReport,
                 report_shedular_obj: report.SchedulerTask
             };
-
-            for (let index = 0; index < reports_data.report_assign_obj.channel.length; index++) {
-                execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert, reports_data.report_assign_obj.channel[index]);
-            }
+            execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
             return {};
         } else {
             return { message: `report is not found for visulization Id : ${visualizationid}` };

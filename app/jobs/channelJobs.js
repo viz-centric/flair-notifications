@@ -268,19 +268,13 @@ var job = {
 
     getSMTPConfig: async function () {
         try {
-            var channel = await models.ChannelConfigs.findAll({
+            var channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: ids
+                    communication_channel_id: 'Email'
                 }
             });
             if (channel) {
-
-                for (let index = 0; index < channel.length; index++) {
-                    if (channel[index].communication_channel_id == "team") {
-                        var webhook = util.decrypt(channel[index].config.webhook);
-                        channel[index].config.webhook = webhook
-                    }
-                }
+                channel.config.password = util.decrypt(channel.config.password)
                 return {
                     success: 1,
                     records: channel

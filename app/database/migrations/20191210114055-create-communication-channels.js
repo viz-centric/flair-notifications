@@ -21,7 +21,7 @@ module.exports = {
       }
     }).then(() => {
       return queryInterface.bulkInsert('CommunicationChannels', [{
-        id: 'email',
+        id: 'Email',
         channel_parameters: JSON.stringify({
           "id": "Email",
           "connectionProperties": [
@@ -57,7 +57,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
-        id: 'team',
+        id: 'Teams',
         channel_parameters: JSON.stringify({
           "id": "Teams",
           "connectionProperties": [

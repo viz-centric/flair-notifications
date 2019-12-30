@@ -24,18 +24,20 @@ async function init() {
 
 init();
 
-async function generateImage(svgHtml, image_dir, imageName, channel) {
+async function generateImage(svgHtml, image_dir, imageName, isTeamMessage) {
   return new Promise((resolve, reject) => {
     try {
-      wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, function (code, signal) {
-        base64Img.base64(image_dir + imageName, function (err, base64Bytes) {
+      wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, async function (code, signal) {
+        await base64Img.base64(image_dir + imageName, function (err, base64Bytes) {
           var encodedUrl = "data:image/png;base64," + base64Bytes;
-
+          var base64 = [];
           if (fs.existsSync(image_dir + imageName)) {
 
-            if (channel == "Teams") {
+            base64.push({ key: "Email", "encodedUrl": encodedUrl })
+
+            if (isTeamMessage) {
               (async () => {
-                compress_images(image_dir + imageName, './compress-images/', { compress_force: false, statistic: true, autoupdate: true }, false,
+                await compress_images(image_dir + imageName, './compress-images/', { compress_force: false, statistic: true, autoupdate: true }, false,
                   { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
                   { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
                   { svg: { engine: 'svgo', command: '--multipass' } },
@@ -46,7 +48,8 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
                         encodedUrl = base64Bytes;
                         if (fs.existsSync('./compress-images/' + imageName)) {
                           fs.unlinkSync('./compress-images/' + imageName);
-                          resolve(encodedUrl);
+                          base64.push({ key: "Teams", "encodedUrl": encodedUrl })
+                          resolve(base64);
                         }
                       });
                     }
@@ -55,9 +58,11 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
               })();
             }
             else {
-              // fs.unlinkSync(image_dir + imageName);
-              resolve(encodedUrl);
+              resolve(base64);
             }
+
+            // fs.unlinkSync(image_dir + imageName);
+
           }
 
         }, function (error) {
@@ -103,10 +108,10 @@ async function generateImage(svgHtml, image_dir, imageName, channel) {
 }
 
 const imageProcessor = {
-  saveImageConvertToBase64: async function (imageName, svgHtml, channel) {
+  saveImageConvertToBase64: async function (imageName, svgHtml, isTeamMessage) {
     const config = await AppConfig.getConfig();
     const image_dir = config.imageFolder;
-    return await generateImage(svgHtml, image_dir, imageName, channel);
+    return await generateImage(svgHtml, image_dir, imageName, isTeamMessage);
   }
 };
 

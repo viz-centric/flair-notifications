@@ -158,7 +158,7 @@ const chartMap = {
     }
 };
 
-exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, thresholdAlertEmail,channel) {
+exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
@@ -194,10 +194,14 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var mailRetryCount = 0;
                     function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
-                        imageProcessor.saveImageConvertToBase64(imagefilename, response, channel).then(function (bytes) {
+                        var channels = reports_data['report_assign_obj']['channel'];
 
-                            if (channel == "Email") {
-                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, bytes, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
+                        var isTeamMessage = channels.indexOf("Teams") != -1 ? true : false;
+                        imageProcessor.saveImageConvertToBase64(imagefilename, response, isTeamMessage).then(function (bytes) {
+
+                            if (channels.indexOf('Email') >= 0) {
+                                var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
+                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(function (success) {
                                     try {
                                         let shedularlog = models.SchedulerTaskLog.create({
                                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
@@ -205,7 +209,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             task_status: "success",
                                             threshold_met: thresholdAlertEmail,
                                             notification_sent: true,
-                                            channel: channel
+                                            channel: "Email"
                                         });
                                     } catch (error) {
                                         logger.log({
@@ -231,13 +235,15 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                                 task_status: "mail " + error,
                                                 threshold_met: thresholdAlertEmail,
                                                 notification_sent: false,
-                                                channel: channel
+                                                channel: "Email"
                                             });
                                         }
 
                                     });
                             }
-                            else if (channel == "Teams") {
+                            if (channels.indexOf('Teams') >= 0) {
+                                var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Teams" })
+
                                 var teamData = {
                                     dashboard: dash_board,
                                     view: view_name,
@@ -245,7 +251,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     reportTitle: report_title,
                                     build_url: build_url,
                                     share_link: share_link,
-                                    base64: bytes,
+                                    base64: ImageBase64[0].encodedUrl,
                                     tableData: json_res.data,
                                     webhookURL: webhookURL
                                 }
@@ -264,7 +270,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 task_status: "mail " + error,
                                 threshold_met: thresholdAlertEmail,
                                 notification_sent: false,
-                                channel: channel
+                                channel: ''
                             });
                         });
                     }
@@ -283,7 +289,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         task_status: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
                         threshold_met: thresholdAlertEmail,
                         notification_sent: false,
-                        channel: reports_data.report_shedular_obj.channel
+                        channel: ''
                     });
                 });
             } else {
@@ -298,7 +304,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     task_status: "no data found",
                     threshold_met: thresholdAlertEmail,
                     notification_sent: false,
-                    channel: reports_data.report_shedular_obj.channel
+                    channel: ''
                 });
             }
         }, function (err) {
@@ -317,8 +323,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     task_status: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                     threshold_met: thresholdAlertEmail,
                     notification_sent: false,
-                    channel: reports_data.report_shedular_obj.channel,
-                    base64: encodeURI
+                    channel: '',
                 });
             }
 

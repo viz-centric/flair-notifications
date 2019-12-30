@@ -81,7 +81,7 @@ message GetChannelPropertiesRequest {
 }
 
 message GetChannelPropertiesResponse {
-   repeated ChannelProperties ChannelProperties = 1; 
+   repeated ChannelConnection ChannelConnection = 1; 
 }
 
 
