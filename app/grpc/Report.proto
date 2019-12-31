@@ -11,14 +11,12 @@ message ScheduleReport {
     AssignReport assign_report = 3;
     Schedule schedule = 4;
     string query = 5;
-    string constraints = 6;
 }
 
 message Report {
     string userid = 1;
     string dashboard_name = 2;
     string view_name = 3;
-    string view_id = 11;
     string share_link = 4;
     string build_url = 5;
     string mail_body = 6;
@@ -36,13 +34,18 @@ message ReportLineItem {
 }
 
 message AssignReport {
-    string channel = 1;
+    repeated string channel = 1;
     string slack_API_Token = 2;
     string channel_id = 3;
     string stride_API_Token = 4;
     string stride_cloud_id = 5;
     string stride_conversation_id = 6;
-    repeated Email email_list = 7;
+    CommunicationList communication_list = 7;
+}
+
+message CommunicationList{
+	repeated Email email = 1;
+	repeated int32 teams = 2;
 }
 
 message Email {
@@ -60,4 +63,62 @@ message Schedule {
 message ReportLog {
     string task_status = 1;
     string task_executed = 2;
+    string threshold_met = 3;
+    bool notification_sent = 4;
+    string channel = 5;
 }
+
+message ChannelConnection {
+    repeated ChannelProperties channelProperties = 1;
+}
+
+message ChannelProperties {
+    string id = 1;
+    repeated ChannelParameters channel_parameters = 2;
+}
+
+message ChannelParameters {
+    repeated ConnectionProperties connectionProperties = 1;
+}
+
+message ConnectionProperties {
+    string displayName = 1;
+    string fieldName = 2;
+    int64 order = 3;
+    string fieldType = 4;
+    bool required = 5;
+}
+
+message TeamConfig {
+    string id = 1;
+    TeamConfigParameters config = 2;
+}
+
+message TeamConfigParameters {
+    string webhookName = 1;
+    string webhookURL = 2;
+}
+
+message EmailConfig {
+    string id = 1;
+    EmailParameters config = 2;
+}
+
+message EmailParameters {
+    string host = 1;
+    string sender = 2;
+    int64 port = 3; 
+    string user = 4;
+    string password = 5;
+}
+
+message TeamConfigList {
+    int64 success = 1;
+    repeated TeamConfigParameters records = 2;
+}
+
+message EmailConfigList {
+    int64 success = 1;
+    repeated EmailParameters records = 2;
+}
+

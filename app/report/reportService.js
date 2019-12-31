@@ -1,4 +1,4 @@
-const jobs = require('./../jobs');
+const jobs = require('./../jobs/schedulerJobs');
 const validator = require('./../validator');
 const logger = require('./../logger');
 
@@ -12,7 +12,7 @@ module.exports = {
     updateScheduledReport: updateScheduledReport,
     deleteScheduledReport: deleteScheduledReport,
     executeReport: executeReport,
-    searchReports,
+    searchReports
 };
 
 /**
@@ -39,16 +39,16 @@ function scheduleReport(request) {
                 message: 'error in schedule api due to invalid request body',
                 errMsg: resultReport.error.details[0].message
             });
-            reject({message: resultReport.error.details[0].message.replace(/"/g, "")});
+            reject({ message: resultReport.error.details[0].message.replace(/"/g, "") });
         } else {
             jobs.createJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve(result);
                 } else {
-                    reject({message: result.message});
+                    reject({ message: result.message });
                 }
             }, function (err) {
-                reject({message: err});
+                reject({ message: err });
             });
         }
     });
@@ -64,16 +64,16 @@ function updateScheduledReport(request) {
         logger.info(`Update report with param`, request.report);
         const resultReport = validator.validateReportReqBody(request.report);
         if (resultReport.error) {
-            reject({message: resultReport.error.details[0].message.replace(/"/g, "")});
+            reject({ message: resultReport.error.details[0].message.replace(/"/g, "") });
         } else {
             jobs.modifyJob(resultReport.value).then(function (result) {
                 if (result.success === 1) {
-                    resolve({});
+                    resolve(result);
                 } else {
-                    reject({message: result.message});
+                    reject({ message: result.message });
                 }
             }, function (err) {
-                reject({message: err});
+                reject({ message: err });
             })
         }
     });
@@ -88,12 +88,12 @@ function deleteScheduledReport(request) {
     return new Promise(function (resolve, reject) {
         jobs.deleteJob(request.visualizationId).then(function (result) {
             if (result.success === 1) {
-                resolve({});
+                resolve(result);
             } else {
-                reject({message: result.message})
+                reject({ message: result.message })
             }
         }, function (err) {
-            reject({message: err})
+            reject({ message: err })
         })
     });
 }
@@ -110,9 +110,9 @@ function getScheduledReport(request) {
         jobs.getJob(visualizationId)
             .then(function (result) {
                 if (result.success === 1) {
-                    resolve({report: result.job, message: result.message});
+                    resolve({ report: result.job, message: result.message });
                 } else {
-                    reject({message: result.message});
+                    reject({ message: result.message });
                 }
             }, function (err) {
                 reject(err);
@@ -166,9 +166,9 @@ function getScheduleReportLogs(request) {
     return new Promise(function (resolve, reject) {
         jobs.jobLogs(request.visualizationId, request.page, request.pageSize).then(function (result) {
             if (result.success === 1) {
-                resolve({totalRecords: result.totalRecords, SchedulerLogs: result.SchedulerLogs});
+                resolve({ totalRecords: result.totalRecords, SchedulerLogs: result.SchedulerLogs });
             } else {
-                reject({message: result.message});
+                reject({ message: result.message });
             }
         }, function (err) {
             reject(err);
@@ -180,27 +180,27 @@ function searchReports(request) {
     logger.info(`Search reports for`, request);
     return new Promise(function (resolve, reject) {
         jobs.filterJobs(
-          request.username, request.reportName, request.startDate,
-          request.endDate, request.page, request.pageSize
+            request.username, request.reportName, request.startDate,
+            request.endDate, request.page, request.pageSize
         )
-          .then(function (result) {
-              if (result.success === 1) {
-                  resolve({
-                      totalRecords: result.totalRecords,
-                      records: result.records
-                  });
-              } else {
-                  resolve({message: result.message});
-              }
-          }, function (err) {
-              reject(err);
-          });
+            .then(function (result) {
+                if (result.success === 1) {
+                    resolve({
+                        totalRecords: result.totalRecords,
+                        records: result.records
+                    });
+                } else {
+                    resolve({ message: result.message });
+                }
+            }, function (err) {
+                reject(err);
+            });
     });
 }
 
 /**
  * Immediately execute a report.
- * @param visualizationId
+ * @param request
  * @return {Promise<any>}
  */
 function executeReport(request) {
@@ -213,6 +213,3 @@ function executeReport(request) {
         })
     })
 }
-
-
-

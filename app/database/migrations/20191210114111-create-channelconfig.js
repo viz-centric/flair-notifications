@@ -1,18 +1,26 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('AssignReports', {
+    return queryInterface.createTable('ChannelConfigs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      communication_list: {
+
+      config: {
+        allowNull: false,
         type: Sequelize.JSON
       },
-      channel: {
-        type: Sequelize.JSON
+      communication_channel_id: {
+        type: Sequelize.STRING,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'CommunicationChannels',
+          key: 'id',
+        },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -22,17 +30,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      ReportId: {
-        type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Reports',
-          key: 'id',
-        },
-      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('AssignReports');
+    return queryInterface.dropTable('ChannelConfigs');
   }
 };

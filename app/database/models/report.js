@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define('Report', {
     dashboard_name: DataTypes.STRING,
     view_name: DataTypes.STRING,
-    view_id: DataTypes.BIGINT,
     share_link: DataTypes.STRING,
     build_url: DataTypes.STRING,
     report_name: {type:DataTypes.STRING, allowNull: true},
@@ -15,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Report.associate = function(models) {
     Report.hasOne(models.ReportLineItem,{ as: 'reportline', foreignKey: 'ReportId' }, { onDelete: 'cascade' });
-    Report.hasOne(models.ReportConstraint,{ foreignKey: 'ReportId' }, { onDelete: 'cascade' });
     Report.hasOne(models.AssignReport, { onDelete: 'cascade' });
     Report.hasOne(models.SchedulerTask, { onDelete: 'cascade' });
   };

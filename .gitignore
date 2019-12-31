@@ -40,3 +40,6 @@ node_modules
 TEST-RESULTS.xml
 
 /app/screenshots
+
+#log files created by compress-images package 
+log

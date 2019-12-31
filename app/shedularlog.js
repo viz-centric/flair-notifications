@@ -31,7 +31,7 @@ var shedularlog= {
         let assign_report_obj= await models.AssignReport.create({
             reportId: report.id,
             channel:params.assign_report.channel,
-            email_list: params.assign_report.email_list,
+            communication_list: params.assign_report.communication_list,
             condition: params.assign_report.condition,
             },{transaction}) 
             
@@ -40,12 +40,7 @@ var shedularlog= {
             cron_exp: params.cron_exp,
             active: true,
             timezone: params.schedule.timezone
-        },{transaction})
-
-        let constraints_obj = await models.ReportConstraint.create({
-              reportId: report.id,
-              constraints: params.constraints,
-          }, {transaction});
+        },{transaction})    
 
         await transaction.commit();
  

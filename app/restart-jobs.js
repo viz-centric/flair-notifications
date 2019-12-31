@@ -21,9 +21,7 @@ exports.restartJobs = function restartOldJobs(){
                     active:true
                 },
             },
-            {
-                model: models.ReportConstraint
-            }
+
         ], 
     }).then(function(reports){
         for (var i=0 ; i< reports.length; i++){
@@ -43,7 +41,7 @@ exports.restartJobs = function restartOldJobs(){
         }).catch(function(err){
             logger.log({
                 level: 'error',
-                message: 'database error while rescheduling reports '  + err,
+                message: 'database error while rescheduling reports',
                 retryCount: retryCount,
               });
             retryCount+=1;

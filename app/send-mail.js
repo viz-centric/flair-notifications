@@ -1,20 +1,21 @@
 const nodemailer = require('nodemailer');
 const ejs = require("ejs");
 const AppConfig = require('./load_config');
-
+const jobs = require('./jobs/channelJobs');
 const appLogo = 'flairbi-logo.png';
 let transporter;
 let config;
+let SMTPConfig;
 
-function createTransporter(config) {
+function createTransporter(SMTPConfig) {
     return nodemailer.createTransport({
-        host: config.mailService.host,
-        port: config.mailService.port,
+        host: SMTPConfig.records.config.host,
+        port: SMTPConfig.records.config.port,
         pool: true,
         secure: false,
         auth: {
             user: config.mailService.auth.user,
-            pass: config.mailService.auth.pass
+            pass: SMTPConfig.records.config.password
         },
         tls: {
             rejectUnauthorized: false
@@ -24,12 +25,13 @@ function createTransporter(config) {
 
 async function init() {
     config = await AppConfig.getConfig();
-    transporter = createTransporter(config);
+    SMTPConfig = await jobs.getSMTPConfig();
+    transporter = createTransporter(SMTPConfig);
 }
 
-init();
-
 exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
+    init();
+
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
@@ -50,7 +52,7 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
                 reject(err)
             } else {
                 var mailOptions = {
-                    from: config.mailService.sender, // sender address
+                    from: SMTPConfig.records.config.sender, // sender address
                     to: to_mail_list, // list of receivers
                     subject: subject, // Subject line
                     html: html_data,// plain html body
