@@ -205,8 +205,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                             if (channels.indexOf('Email') >= 0) {
                                 var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
                                 sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
+                                    const transaction = await db.sequelize.transaction();
                                     try {
-                                        const transaction = await db.sequelize.transaction();
                                         const shedularlog = await models.SchedulerTaskLog.create({
                                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                             task_executed: new Date(Date.now()).toISOString(),
