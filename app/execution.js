@@ -216,7 +216,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             channel: "Email"
                                         }, {transaction});
 
-                                        const schedulerLogMeta = await models.SchedulerTaskMeta.create({
+                                        await models.SchedulerTaskMeta.create({
                                             SchedulerTaskLogId: shedularlog.id,
                                             rawQuery: rawQuery,
                                         }, {transaction});
@@ -265,7 +265,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     share_link: share_link,
                                     base64: ImageBase64[0].encodedUrl,
                                     tableData: json_res.data,
-                                    webhookURL: webhookURL
+                                    webhookURL: webhookURL,
+                                    rawQuery
                                 }
                                 sendNotification.sendTeamNotification(teamData, reports_data);
                             }
