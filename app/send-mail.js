@@ -14,7 +14,7 @@ function createTransporter(SMTPConfig) {
         pool: true,
         secure: false,
         auth: {
-            user: config.mailService.auth.user,
+            user: SMTPConfig.records.config.user,
             pass: SMTPConfig.records.config.password
         },
         tls: {
@@ -34,7 +34,7 @@ async function init() {
     }
 }
 
-exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
+exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, viewData, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
     var isSMTPConfig = await init();
 
 
@@ -57,7 +57,7 @@ exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_bo
             if (err) {
                 reject(err)
             } else {
-                if (isSMTPConfig.success == 0) {
+                if (isSMTPConfig && isSMTPConfig.success == 0) {
                     reject(isSMTPConfig);
                 }
                 else {

@@ -13,7 +13,7 @@ var job = {
                 for (let index = 0; index < channel.length; index++) {
                     var channelObject = {};
                     channelObject.id = channel[index].id
-                    channelObject.connectionProperties = channel[index].channel_parameters.connectionProperties
+                    channelObject.channelParameters = channel[index].channel_parameters.connectionProperties
                     channelList.push(channelObject);
                 }
 

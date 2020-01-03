@@ -167,7 +167,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
         grpcRetryCount += 1;
         const rawQuery = queryService.preProcessQuery(query);
         var data_call = grpc_client.getRecords(rawQuery);
-        data_call.then(function (response) {
+        data_call.then(async function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
@@ -195,42 +195,49 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var dash_board = reports_data['report_obj']['dashboard_name']
                     var view_name = reports_data['report_obj']['view_name']
                     var mailRetryCount = 0;
+                    var viewData = "";
                     function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
                         mailRetryCount += 1;
                         var channels = reports_data['report_assign_obj']['channel'];
 
                         var isTeamMessage = channels.indexOf("Teams") != -1 ? true : false;
-                        imageProcessor.saveImageConvertToBase64(imagefilename, response, isTeamMessage).then(function (bytes) {
+                        imageProcessor.saveImageConvertToBase64(imagefilename, response, isTeamMessage).then(async function (bytes) {
 
                             if (channels.indexOf('Email') >= 0) {
                                 var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
-                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
-                                    const transaction = await db.sequelize.transaction();
-                                    try {
-                                        const shedularlog = await models.SchedulerTaskLog.create({
-                                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                            task_executed: new Date(Date.now()).toISOString(),
-                                            task_status: "success",
-                                            thresholdMet: thresholdAlertEmail,
-                                            notificationSent: true,
-                                            channel: "Email"
-                                        }, {transaction});
 
-                                        await models.SchedulerTaskMeta.create({
-                                            SchedulerTaskLogId: shedularlog.id,
-                                            rawQuery: rawQuery,
-                                        }, {transaction});
-                                        await transaction.commit();
-                                    } catch (error) {
-                                        await transaction.rollback();
-                                        logger.log({
-                                            level: 'error',
-                                            message: 'error while saving scheduler log',
-                                            errMsg: error,
-                                        });
-                                    }
+                                const transaction = await db.sequelize.transaction();
+                                try {
+                                    const shedularlog = await models.SchedulerTaskLog.create({
+                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                                        task_executed: new Date(Date.now()).toISOString(),
+                                        task_status: "success",
+                                        thresholdMet: thresholdAlertEmail,
+                                        notificationSent: true,
+                                        channel: "Email"
+                                    }, { transaction });
+
+                                    const schedulerTaskMeta = await models.SchedulerTaskMeta.create({
+                                        SchedulerTaskLogId: shedularlog.id,
+                                        rawQuery: rawQuery,
+                                    }, { transaction });
+                                    await transaction.commit();
+                                    viewData = share_link.substring(0, share_link.indexOf('visual')) + "visual-table/" + schedulerTaskMeta.id;
+
+                                } catch (error) {
+                                    await transaction.rollback();
+                                    logger.log({
+                                        level: 'error',
+                                        message: 'error while saving scheduler log',
+                                        errMsg: error,
+                                    });
+                                }
+
+                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, viewData, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
+
                                 },
                                     function (error) {
+                                        transaction.rollback();
                                         logger.log({
                                             level: 'error',
                                             message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',

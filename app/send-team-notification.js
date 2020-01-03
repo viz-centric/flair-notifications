@@ -3,6 +3,10 @@ const axios = require('axios');
 var models = require('./database/models/index');
 var logger = require('./logger');
 const channelJob = require('./jobs/channelJobs');
+const db = require('./database/models/index');
+var moment = require('moment');
+const util = require('./util');
+
 
 let config = {
     "@type": "MessageCard",
@@ -76,54 +80,16 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     }
 
     config.sections[0].text = tbody;
+    config.sections[0].summary = tbody;
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
     config.potentialAction[0].targets[0].uri = teamConfig.share_link;
     config.potentialAction[1].targets[0].uri = teamConfig.build_url;
-    config.potentialAction[2].targets[0].uri = teamConfig.share_link.replace('visual', 'visual-table');
-
-    config.text = '![chart image](' + teamConfig.base64 + ')';
     teamConfig.webhookURL = [1];
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
     var notificationSent = false, error_message = "";
-    for (let index = 0; index < webhookURL.records.length; index++) {
-
-        await axios.post(webhookURL.records[index].config.webhookURL, config)
-            .then((res) => {
-                try {
-                    if (res.data == "1") {
-                        notificationSent = true;
-                    }
-                    else {
-                        notificationSent = false;
-                        error_message = d.data
-                    }
-                } catch (error) {
-                    logger.log({
-                        level: 'error',
-                        message: 'error while sending team' + thresholdAlertEmail ? ' for threshold alert' : '',
-                        errMsg: error,
-                    });
-                }
-            })
-            .catch((error) => {
-                logger.log({
-                    level: 'error',
-                    message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
-                    errMsg: error,
-                });
-                let shedularlog = models.SchedulerTaskLog.create({
-                    SchedulerJobId: reportData['report_shedular_obj']['id'],
-                    task_executed: new Date(Date.now()).toISOString(),
-                    task_status: "team " + error,
-                    thresholdMet: reportData.report_obj.thresholdAlert,
-                    notificationSent: false,
-                    channel: 'Teams'
-                });
-            })
-    }
 
     const transaction = await db.sequelize.transaction();
     try {
@@ -134,14 +100,60 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
             thresholdMet: reportData.report_obj.thresholdAlert,
             notificationSent: notificationSent,
             channel: 'Teams'
-        }, {transaction});
-        if (notificationSent) {
-            await models.SchedulerTaskMeta.create({
-                SchedulerTaskLogId: shedularlog.id,
-                rawQuery: teamConfig.rawQuery,
-            }, {transaction});
-        }
+        }, { transaction });
+
+        var schedulerTaskMeta;
+
+        schedulerTaskMeta = await models.SchedulerTaskMeta.create({
+            SchedulerTaskLogId: shedularlog.id,
+            rawQuery: teamConfig.rawQuery,
+        }, { transaction });
+
         await transaction.commit();
+        var thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
+
+        config.potentialAction[2].targets[0].uri = teamConfig.share_link.substring(0, teamConfig.share_link.indexOf('visual')) + "visual-table/" + schedulerTaskMeta.id;
+        config.potentialAction[3].targets[0].uri = teamConfig.share_link.substring(0, teamConfig.share_link.indexOf('visual'));
+        config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
+
+        for (let index = 0; index < webhookURL.records.length; index++) {
+            await axios.post(webhookURL.records[index].config.webhookURL, config)
+                .then((res) => {
+                    try {
+                        if (res.data == "1") {
+                            notificationSent = true;
+                        }
+                        else {
+                            notificationSent = false;
+                            error_message = d.data;
+                            transaction.rollback();
+                        }
+                    } catch (error) {
+                        transaction.rollback();
+                        logger.log({
+                            level: 'error',
+                            message: 'error while sending team' + thresholdAlertEmail ? ' for threshold alert' : '',
+                            errMsg: error,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    logger.log({
+                        level: 'error',
+                        message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                        errMsg: error,
+                    });
+                    let shedularlog = models.SchedulerTaskLog.create({
+                        SchedulerJobId: reportData['report_shedular_obj']['id'],
+                        task_executed: new Date(Date.now()).toISOString(),
+                        task_status: "team " + error,
+                        thresholdMet: reportData.report_obj.thresholdAlert,
+                        notificationSent: false,
+                        channel: 'Teams'
+                    });
+                })
+        }
+
         logger.log({
             level: 'info',
             message: 'team message send ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : ''
