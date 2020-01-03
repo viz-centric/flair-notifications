@@ -211,8 +211,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                             task_executed: new Date(Date.now()).toISOString(),
                                             task_status: "success",
-                                            threshold_met: thresholdAlertEmail,
-                                            notification_sent: true,
+                                            thresholdMet: thresholdAlertEmail,
+                                            notificationSent: true,
                                             channel: "Email"
                                         }, {transaction});
 
@@ -245,8 +245,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                                 SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                                 task_executed: new Date(Date.now()).toISOString(),
                                                 task_status: "mail " + error,
-                                                threshold_met: thresholdAlertEmail,
-                                                notification_sent: false,
+                                                thresholdMet: thresholdAlertEmail,
+                                                notificationSent: false,
                                                 channel: "Email"
                                             });
                                         }
@@ -280,8 +280,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 SchedulerJobId: reports_data['report_shedular_obj']['id'],
                                 task_executed: new Date(Date.now()).toISOString(),
                                 task_status: "mail " + error,
-                                threshold_met: thresholdAlertEmail,
-                                notification_sent: false,
+                                thresholdMet: thresholdAlertEmail,
+                                notificationSent: false,
                                 channel: ''
                             });
                         });
@@ -299,8 +299,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
                         task_status: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
-                        threshold_met: thresholdAlertEmail,
-                        notification_sent: false,
+                        thresholdMet: thresholdAlertEmail,
+                        notificationSent: false,
                         channel: ''
                     });
                 });
@@ -314,8 +314,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "no data found",
-                    threshold_met: thresholdAlertEmail,
-                    notification_sent: false,
+                    thresholdMet: thresholdAlertEmail,
+                    notificationSent: false,
                     channel: ''
                 });
             }
@@ -333,8 +333,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
-                    threshold_met: thresholdAlertEmail,
-                    notification_sent: false,
+                    thresholdMet: thresholdAlertEmail,
+                    notificationSent: false,
                     channel: '',
                 });
             }

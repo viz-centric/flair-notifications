@@ -96,9 +96,19 @@ app.get('/api/jobLogs/', (req, res) => {
 });
 
 //Channel testing 
-app.post('/api/addChannelConfigs/', function (req, res) {
+app.post('/api/addEmailConfigs/', function (req, res) {
     if (req.body) {
-        channelJobs.addChannelConfigs(req.body).then(function (result) {
+        channelJobs.addEmailConfigs(req.body).then(function (result) {
+            res.status(result.success === 1 ? 201 : 302).json({ message: result.message })
+        }, function (err) {
+            res.send(err);
+        })
+    }
+});
+
+app.post('/api/addTeamConfigs/', function (req, res) {
+    if (req.body) {
+        channelJobs.addTeamConfigs(req.body.teamConfig).then(function (result) {
             res.status(result.success === 1 ? 201 : 302).json({ message: result.message })
         }, function (err) {
             res.send(err);

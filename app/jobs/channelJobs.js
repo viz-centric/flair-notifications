@@ -13,13 +13,13 @@ var job = {
                 for (let index = 0; index < channel.length; index++) {
                     var channelObject = {};
                     channelObject.id = channel[index].id
-                    channelObject.channelParameters = channel[index].channel_parameters.connectionProperties
+                    channelObject.connectionProperties = channel[index].channel_parameters.connectionProperties
                     channelList.push(channelObject);
                 }
-                
+
             }
             else {
-                return { success: 0, message: "channel not found" };
+                return { message: "channel not found" };
             }
             return { channelProperties: channelList };
         }

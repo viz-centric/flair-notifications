@@ -26,11 +26,17 @@ function createTransporter(SMTPConfig) {
 async function init() {
     config = await AppConfig.getConfig();
     SMTPConfig = await jobs.getSMTPConfig();
-    transporter = createTransporter(SMTPConfig);
+    if (SMTPConfig.success == 1) {
+        transporter = createTransporter(SMTPConfig);
+    }
+    else {
+        return SMTPConfig;
+    }
 }
 
-exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
-    init();
+exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
+    var isSMTPConfig = await init();
+
 
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
@@ -51,33 +57,39 @@ exports.sendMail = function sendMailToGmail(subject, to_mail_list, mail_body, re
             if (err) {
                 reject(err)
             } else {
-                var mailOptions = {
-                    from: SMTPConfig.records.config.sender, // sender address
-                    to: to_mail_list, // list of receivers
-                    subject: subject, // Subject line
-                    html: html_data,// plain html body
-                    attachments: [
-                        {
-                            filename: imagefilename,
-                            content: encodedUrl,
-                            path: encodedUrl,
-                            cid: image_cid
-                        },
-                        {
-                            filename: appLogo,
-                            path: __dirname + "/template/" + appLogo,
-                            cid: appLogo //same cid value as in the html img src
+                if (isSMTPConfig.success == 0) {
+                    reject(isSMTPConfig);
+                }
+                else {
+                    var mailOptions = {
+                        from: SMTPConfig.records.config.sender, // sender address
+                        to: to_mail_list, // list of receivers
+                        subject: subject, // Subject line
+                        html: html_data,// plain html body
+                        attachments: [
+                            {
+                                filename: imagefilename,
+                                content: encodedUrl,
+                                path: encodedUrl,
+                                cid: image_cid
+                            },
+                            {
+                                filename: appLogo,
+                                path: __dirname + "/template/" + appLogo,
+                                cid: appLogo //same cid value as in the html img src
+                            }
+                        ]
+                    };
+                    transporter.sendMail(mailOptions, function (err, info) {
+                        if (err) {
+                            console.log(err); //to see error in case of container, will remove latter 
+                            reject(err)
+                        } else {
+                            resolve(info.response);
                         }
-                    ]
-                };
-                transporter.sendMail(mailOptions, function (err, info) {
-                    if (err) {
-                        console.log(err); //to see error in case of container, will remove latter 
-                        reject(err)
-                    } else {
-                        resolve(info.response);
-                    }
-                });
+                    });
+                }
+
             }
 
         });

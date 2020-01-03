@@ -46,7 +46,7 @@ let config = {
         },
         {
             "@type": "OpenUri",
-            "name": "Task Logger",
+            "name": "Flair Insights",
             "targets": [
                 { "os": "default", "uri": "https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjdh9Lb_cvmAhXhheYKHVpDCZMQPAgH" }
             ]
@@ -56,7 +56,6 @@ let config = {
 
 
 exports.sendTeamNotification = async function sendNotification(teamConfig, reportData) {
-
     config.title = teamConfig.reportTitle;
 
     var tbody = "- |";
@@ -64,16 +63,13 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     var tablekey = Object.keys(teamConfig.tableData[0]);
 
     for (var j = 0; j < tablekey.length; j++) {
-
         tbody += tablekey[j] + " | ";
     }
     tbody += "\r";
     for (let index = 0; index < teamConfig.tableData.length; index++) {
         const element = teamConfig.tableData[index];
-
         tbody += "- | "
         for (var j = 0; j < tablekey.length; j++) {
-
             tbody += element[tablekey[j]] + " | ";
         }
         tbody += "\r"
@@ -91,17 +87,17 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     teamConfig.webhookURL = [1];
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
-    var notification_sent = false, error_message = "";
+    var notificationSent = false, error_message = "";
     for (let index = 0; index < webhookURL.records.length; index++) {
 
-        await axios.post(webhookURL.records[index].config.webhook, config)
+        await axios.post(webhookURL.records[index].config.webhookURL, config)
             .then((res) => {
                 try {
                     if (res.data == "1") {
-                        notification_sent = true;
+                        notificationSent = true;
                     }
                     else {
-                        notification_sent = false;
+                        notificationSent = false;
                         error_message = d.data
                     }
                 } catch (error) {
@@ -122,8 +118,8 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                     SchedulerJobId: reportData['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "team " + error,
-                    threshold_met: reportData.report_obj.thresholdAlert,
-                    notification_sent: false,
+                    thresholdMet: reportData.report_obj.thresholdAlert,
+                    notificationSent: false,
                     channel: 'Teams'
                 });
             })
@@ -132,16 +128,15 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         let shedularlog = models.SchedulerTaskLog.create({
             SchedulerJobId: reportData['report_shedular_obj']['id'],
             task_executed: new Date(Date.now()).toISOString(),
-            task_status: notification_sent == true ? "success" : "team " + error_message,
-            threshold_met: reportData.report_obj.thresholdAlert,
-            notification_sent: notification_sent,
+            task_status: notificationSent == true ? "success" : "team " + error_message,
+            thresholdMet: reportData.report_obj.thresholdAlert,
+            notificationSent: notificationSent,
             channel: 'Teams'
         });
         logger.log({
             level: 'info',
             message: 'team message send ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : ''
         });
-
     } catch (error) {
         logger.log({
             level: 'error',
@@ -149,6 +144,4 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
             errMsg: error,
         });
     }
-
-
 }
