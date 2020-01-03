@@ -128,21 +128,30 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                 });
             })
     }
+
+    const transaction = await db.sequelize.transaction();
     try {
-        let shedularlog = models.SchedulerTaskLog.create({
+        let shedularlog = await models.SchedulerTaskLog.create({
             SchedulerJobId: reportData['report_shedular_obj']['id'],
             task_executed: new Date(Date.now()).toISOString(),
             task_status: notification_sent == true ? "success" : "team " + error_message,
             threshold_met: reportData.report_obj.thresholdAlert,
             notification_sent: notification_sent,
             channel: 'Teams'
-        });
+        }, {transaction});
+        if (notification_sent) {
+            await models.SchedulerTaskMeta.create({
+                SchedulerTaskLogId: shedularlog.id,
+                rawQuery: teamConfig.rawQuery,
+            }, {transaction});
+        }
+        await transaction.commit();
         logger.log({
             level: 'info',
             message: 'team message send ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : ''
         });
-
     } catch (error) {
+        await transaction.rollback();
         logger.log({
             level: 'error',
             message: 'error while inserting team message in data base ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
