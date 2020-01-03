@@ -85,7 +85,7 @@ message GetChannelPropertiesResponse {
 }
 
 message AddTeamConfigsRequest {
-    TeamConfig team_config = 1;
+    TeamConfig teamConfig = 1;
 }
 
 message AddTeamConfigsResponse {
@@ -93,7 +93,7 @@ message AddTeamConfigsResponse {
 }
 
 message AddEmailConfigsRequest {
-    EmailConfig email_config = 1;
+    EmailConfig emailConfig = 1;
 }
 
 message AddEmailConfigsResponse {
@@ -117,7 +117,7 @@ message GetTeamConfigResponse {
 }
 
 message UpdateTeamWebhookURLRequest{
-    TeamConfig team_config = 1;
+    TeamConfig teamConfig = 1;
 }
 
 message UpdateTeamWebhookURLResponse{
@@ -125,7 +125,7 @@ message UpdateTeamWebhookURLResponse{
 }
 
 message UpdateEmailSMTPRequest{
-    EmailConfig email_config = 1;
+    EmailConfig emailConfig = 1;
 }
 
 message UpdateEmailSMTPResponse{

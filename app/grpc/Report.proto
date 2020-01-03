@@ -71,22 +71,18 @@ message ReportLog {
 }
 
 message ChannelConnection {
-    repeated ChannelProperties channelProperties = 1;
+    repeated Channelparameters channelProperties = 1;
 }
 
-message ChannelProperties {
-    string id = 1;
-    repeated ChannelParameters channel_parameters = 2;
-}
-
-message ChannelParameters {
-    repeated ConnectionProperties connectionProperties = 1;
+message Channelparameters {
+  string id = 1;
+  repeated ConnectionProperties channelParameters = 2;
 }
 
 message ConnectionProperties {
     string displayName = 1;
     string fieldName = 2;
-    int64 order = 3;
+    int32 order = 3;
     string fieldType = 4;
     bool required = 5;
 }
