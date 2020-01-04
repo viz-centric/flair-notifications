@@ -591,8 +591,7 @@ var job = {
                 reject({ message: 'error while generating image' + ex });
             }
         });
-    },
-
-}
+    }
+};
 
 module.exports = job;
