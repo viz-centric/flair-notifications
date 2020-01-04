@@ -1,4 +1,5 @@
 const jobs = require('./../jobs/schedulerJobs');
+const schedulerTaskService = require('./../report/scheduler-task-service');
 const validator = require('./../validator');
 const logger = require('./../logger');
 
@@ -12,7 +13,8 @@ module.exports = {
     updateScheduledReport: updateScheduledReport,
     deleteScheduledReport: deleteScheduledReport,
     executeReport: executeReport,
-    searchReports
+    searchReports,
+    getScheduleReportLog
 };
 
 /**
@@ -174,6 +176,20 @@ function getScheduleReportLogs(request) {
             reject(err);
         })
     })
+}
+
+async function getScheduleReportLog(request) {
+    const taskLogMetaId = request.task_log_meta_id;
+    logger.info(`Get scheduled report log via grpc for ${taskLogMetaId}`);
+    let taskMeta;
+    try {
+        taskMeta = await schedulerTaskService.getSchedulerTaskMeta(taskLogMetaId);
+    } catch (e) {
+        logger.error(`Get scheduled report log error via grpc for ${taskLogMetaId}`, e);
+        throw {error: {message: `Error loading schedule report log ${e.message}`}};
+    }
+    logger.info(`Get scheduled report log via grpc for ${taskLogMetaId} result`, taskMeta);
+    return { report_log: { query: taskMeta.rawQuery } };
 }
 
 function searchReports(request) {

@@ -36,6 +36,7 @@ function constructReportService(server) {
         updateScheduledReport,
         deleteScheduledReport,
         getScheduleReportLogs,
+        getScheduleReportLog,
         executeReport,
         searchReports
     })
@@ -51,6 +52,10 @@ function executeReport(call, callback) {
 
 function getScheduleReportLogs(call, callback) {
     handleCall(reportService.getScheduleReportLogs(call.request), callback);
+}
+
+function getScheduleReportLog(call, callback) {
+    handleCall(reportService.getScheduleReportLog(call.request), callback);
 }
 
 function getScheduledReport(call, callback) {
