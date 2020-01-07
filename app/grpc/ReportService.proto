@@ -77,11 +77,11 @@ message SearchReportsResponse {
 }
 
 message GetChannelPropertiesRequest {
-    
+    string channel = 1;
 }
 
 message GetChannelPropertiesResponse {
-   repeated ChannelConnection request = 1; 
+    ChannelConnection request = 1;
 }
 
 message AddTeamConfigsRequest {
