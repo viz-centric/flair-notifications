@@ -77,7 +77,7 @@ message SearchReportsResponse {
 }
 
 message GetChannelPropertiesRequest {
-    
+    string channel = 1;
 }
 
 message GetChannelPropertiesResponse {
