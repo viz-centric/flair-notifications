@@ -38,7 +38,15 @@ function constructReportService(server) {
         getScheduleReportLogs,
         getScheduleReportLog,
         executeReport,
-        searchReports
+        searchReports,
+        addTeamConfigs,
+        addEmailConfigs,
+        updateEmailSMTP,
+        updateTeamWebhookURL,
+        getChannelProperties,
+        deleteWebhookURL,
+        getTeamConfig,
+        getEmailConfig
     })
 }
 
@@ -80,4 +88,38 @@ function updateScheduledReport(call, callback) {
 
 function deleteScheduledReport(call, callback) {
     handleCall(reportService.deleteScheduledReport(call.request), callback);
+}
+
+function addTeamConfigs(call, callback) {
+    handleCall(reportService.addTeamConfigs(call.request), callback);
+}
+
+function addEmailConfigs(call, callback) {
+    handleCall(reportService.addEmailConfigs(call.request), callback);
+}
+
+
+function getChannelProperties(call, callback) {
+    handleCall(reportService.getChannelProperties(call.request), callback);
+}
+
+function deleteWebhookURL(call, callback) {
+    handleCall(reportService.deleteWebhookURL(call.request), callback);
+}
+
+
+function updateEmailSMTP(call, callback) {
+    handleCall(reportService.updateEmailSMTP(call.request), callback);
+}
+
+function updateTeamWebhookURL(call, callback) {
+    handleCall(reportService.updateTeamWebhookURL(call.request), callback);
+}
+
+function getEmailConfig(call, callback) {
+    handleCall(reportService.getEmailConfig(call.request), callback);
+}
+
+function getTeamConfig(call, callback) {
+    handleCall(reportService.getTeamConfig(call.request), callback);
 }

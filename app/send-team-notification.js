@@ -86,7 +86,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     config.sections[0].activitySubtitle = teamConfig.description;
     config.potentialAction[0].targets[0].uri = teamConfig.share_link;
     config.potentialAction[1].targets[0].uri = teamConfig.build_url;
-    teamConfig.webhookURL = [1];
+    teamConfig.webhookURL = [2];
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
     var notificationSent = false, error_message = "";
@@ -96,7 +96,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         let shedularlog = await models.SchedulerTaskLog.create({
             SchedulerJobId: reportData['report_shedular_obj']['id'],
             task_executed: new Date(Date.now()).toISOString(),
-            task_status: notificationSent == true ? "success" : "team " + error_message,
+            task_status: "success",
             thresholdMet: reportData.report_obj.thresholdAlert,
             notificationSent: notificationSent,
             channel: 'Teams'
@@ -112,7 +112,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         await transaction.commit();
         var thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
 
-        config.potentialAction[2].targets[0].uri = teamConfig.share_link.substring(0, teamConfig.share_link.indexOf('visual')) + "visual-table/" + schedulerTaskMeta.id;
+        config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.share_link, schedulerTaskMeta.id);
         config.potentialAction[3].targets[0].uri = teamConfig.share_link.substring(0, teamConfig.share_link.indexOf('visual'));
         config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
 

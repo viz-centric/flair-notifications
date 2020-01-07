@@ -1,4 +1,6 @@
 const jobs = require('./../jobs/schedulerJobs');
+const channelJobs = require('./../jobs/channelJobs');
+
 const schedulerTaskService = require('./../report/scheduler-task-service');
 const validator = require('./../validator');
 const logger = require('./../logger');
@@ -14,7 +16,15 @@ module.exports = {
     deleteScheduledReport: deleteScheduledReport,
     executeReport: executeReport,
     searchReports,
-    getScheduleReportLog
+    getScheduleReportLog,
+    getChannelProperties,
+    getTeamConfig,
+    getEmailConfig,
+    updateTeamWebhookURL,
+    updateEmailSMTP,
+    addTeamConfigs,
+    addEmailConfigs,
+    deleteWebhookURL
 };
 
 /**
@@ -186,7 +196,7 @@ async function getScheduleReportLog(request) {
         taskMeta = await schedulerTaskService.getSchedulerTaskMeta(taskLogMetaId);
     } catch (e) {
         logger.error(`Get scheduled report log error via grpc for ${taskLogMetaId}`, e);
-        throw {error: {message: `Error loading schedule report log ${e.message}`}};
+        throw { error: { message: `Error loading schedule report log ${e.message}` } };
     }
     logger.info(`Get scheduled report log via grpc for ${taskLogMetaId} result`, taskMeta);
     return { report_log: { query: taskMeta.rawQuery } };
@@ -228,4 +238,182 @@ function executeReport(request) {
             reject(err);
         })
     })
+}
+
+
+
+
+
+/**
+ * get Channel Properties
+ * @param channel
+ * @return {Promise<any>}
+ */
+function getChannelProperties(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`Get channel config for ${request.channel}`);
+        channelJobs.getChannelProperties().then(function (result) {
+            if (result.success === 1) {
+                resolve({ channelParameters: result.channelProperties });
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+    });
+}
+
+/**
+ * update channel details by channel name
+ * @param channel
+ * @return {Promise<any>}
+ */
+function updateTeamWebhookURL(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`Update channel with param`, request.report);
+
+        channelJobs.updateTeamWebhookURL(request).then(function (result) {
+            if (result.success === 1) {
+                resolve({});
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+
+/**
+ * update channel details by channel name
+ * @param update email smtp
+ * @return {Promise<any>}
+ */
+function updateEmailSMTP(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`Update channel with param`, request.report);
+
+        channelJobs.updateEmailSMTP(request).then(function (result) {
+            if (result.success === 1) {
+                resolve(result);
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * get team webhook URL list
+ * @param
+ * @return {Promise<any>}
+ */
+function getTeamConfig(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get team webhook URL list`);
+        channelJobs.getTeamConfig().then(function (result) {
+            if (result.success === 1) {
+                resolve(result);
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * get SMTP config
+ * @param
+ * @return {Promise<any>}
+ */
+function getEmailConfig(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get SMTP config`);
+        channelJobs.getEmailConfig().then(function (result) {
+            if (result.success === 1) {
+                resolve(result);
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * add new team channel
+ * @param
+ * @return {Promise<any>}
+ */
+function addTeamConfigs(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`add channel with param`, request);
+        if (request) {
+            channelJobs.addTeamConfigs(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve({ message: result.message });
+                } else {
+                    reject({ message: result.message });
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+/**
+ * add new team channel
+ * @param
+ * @return {Promise<any>}
+ */
+function addEmailConfigs(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`add channel email with param`, request);
+        if (request) {
+            channelJobs.addEmailConfigs(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve({ message: result.message });
+                } else {
+                    reject({ message: result.message });
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+
+/**
+ * add new channel
+ * @param
+ * @return {Promise<any>}
+ */
+function deleteWebhookURL(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`deleteing webhook URL`, request);
+        if (request) {
+            channelJobs.deleteWebhookURL(request.id).then(function (result) {
+                if (result.success === 1) {
+                    resolve({ message: result.message });
+                } else {
+                    reject({ message: result.message });
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
 }

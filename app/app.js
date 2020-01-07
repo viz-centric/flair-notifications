@@ -145,7 +145,7 @@ app.get('/api/getChannel/', (req, res) => {
 
 app.get('/api/getChannelProperties/', (req, res) => {
     channelJobs.getChannelProperties().then(function (result) {
-        res.send(result);
+        res.send({ channelParameters: result.channelProperties });
     }, function (err) {
         res.send(err);
     })

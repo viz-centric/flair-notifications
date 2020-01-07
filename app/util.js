@@ -24,5 +24,10 @@ var util = {
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted.toString();
     },
+
+    getViewDataURL: function (urlString, id) {
+        let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" +datasource;
+    }
 }
 module.exports = util;
