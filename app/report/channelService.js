@@ -10,7 +10,7 @@ module.exports = {
     updateEmailSMTP: updateEmailSMTP,
     addTeamConfigs: addTeamConfigs,
     addEmailConfigs: addEmailConfigs,
-    deleteWebhookURL: deleteWebhookURL
+    deleteChannelConfig: deleteChannelConfig
 };
 
 /**
@@ -179,11 +179,11 @@ function addEmailConfigs(request) {
  * @param
  * @return {Promise<any>}
  */
-function deleteWebhookURL(request) {
+function deleteChannelConfig(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`deleteing webhook URL`, request);
         if (request) {
-            jobs.deleteWebhookURL(request.id).then(function (result) {
+            jobs.deleteChannelConfig(request.id).then(function (result) {
                 if (result.success === 1) {
                     resolve({message: result.message});
                 } else {

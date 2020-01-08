@@ -86,36 +86,16 @@ message ConnectionProperties {
     bool required = 5;
 }
 
-message TeamConfig {
-    string id = 1;
-    TeamConfigParameters config = 2;
-}
-
 message TeamConfigParameters {
     string webhookName = 1;
     string webhookURL = 2;
 }
 
-message EmailConfig {
-    string id = 1;
-    EmailParameters config = 2;
-}
-
 message EmailParameters {
     string host = 1;
     string sender = 2;
-    int64 port = 3;
+    int32 port = 3; 
     string user = 4;
     string password = 5;
-}
-
-message TeamConfigList {
-    int64 success = 1;
-    repeated TeamConfigParameters records = 2;
-}
-
-message EmailConfigList {
-    int64 success = 1;
-    repeated EmailParameters records = 2;
 }
 

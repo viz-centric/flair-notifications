@@ -44,7 +44,7 @@ function constructReportService(server) {
         updateEmailSMTP,
         updateTeamWebhookURL,
         getChannelProperties,
-        deleteWebhookURL,
+        deleteChannelConfig,
         getTeamConfig,
         getEmailConfig
     })
@@ -103,8 +103,8 @@ function getChannelProperties(call, callback) {
     handleCall(reportService.getChannelProperties(call.request), callback);
 }
 
-function deleteWebhookURL(call, callback) {
-    handleCall(reportService.deleteWebhookURL(call.request), callback);
+function deleteChannelConfig(call, callback) {
+    handleCall(reportService.deleteChannelConfig(call.request), callback);
 }
 
 

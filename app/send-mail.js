@@ -37,7 +37,6 @@ async function init() {
 exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, viewData, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
     var isSMTPConfig = await init();
 
-
     var image_cid = new Date().getTime() + imagefilename;
     var template_data = {
         mail_body: mail_body,
@@ -89,11 +88,7 @@ exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_bo
                         }
                     });
                 }
-
             }
-
         });
-
     })
-
 }

@@ -24,7 +24,7 @@ module.exports = {
     updateEmailSMTP,
     addTeamConfigs,
     addEmailConfigs,
-    deleteWebhookURL
+    deleteChannelConfig
 };
 
 /**
@@ -240,10 +240,6 @@ function executeReport(request) {
     })
 }
 
-
-
-
-
 /**
  * get Channel Properties
  * @param channel
@@ -273,9 +269,9 @@ function updateTeamWebhookURL(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
-        channelJobs.updateTeamWebhookURL(request).then(function (result) {
+        channelJobs.updateTeamWebhookURL(request.teamConfigParameter).then(function (result) {
             if (result.success === 1) {
-                resolve({});
+                reject({ message: result.message });
             } else {
                 reject({ message: result.message });
             }
@@ -296,9 +292,9 @@ function updateEmailSMTP(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
-        channelJobs.updateEmailSMTP(request).then(function (result) {
+        channelJobs.updateEmailSMTP(request.emailParameter).then(function (result) {
             if (result.success === 1) {
-                resolve(result);
+                reject({ message: result.message });
             } else {
                 reject({ message: result.message });
             }
@@ -319,7 +315,7 @@ function getTeamConfig(request) {
         logger.info(`get team webhook URL list`);
         channelJobs.getTeamConfig().then(function (result) {
             if (result.success === 1) {
-                resolve(result);
+                resolve({ records: result.records });
             } else {
                 reject({ message: result.message });
             }
@@ -340,7 +336,7 @@ function getEmailConfig(request) {
         logger.info(`get SMTP config`);
         channelJobs.getEmailConfig().then(function (result) {
             if (result.success === 1) {
-                resolve(result);
+                resolve({ record: result.record });
             } else {
                 reject({ message: result.message });
             }
@@ -360,7 +356,7 @@ function addTeamConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
         if (request) {
-            channelJobs.addTeamConfigs(request).then(function (result) {
+            channelJobs.addTeamConfigs(request.teamConfigParameter).then(function (result) {
                 if (result.success === 1) {
                     resolve({ message: result.message });
                 } else {
@@ -382,7 +378,7 @@ function addEmailConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel email with param`, request);
         if (request) {
-            channelJobs.addEmailConfigs(request).then(function (result) {
+            channelJobs.addEmailConfigs(request.emailParameter).then(function (result) {
                 if (result.success === 1) {
                     resolve({ message: result.message });
                 } else {
@@ -401,11 +397,11 @@ function addEmailConfigs(request) {
  * @param
  * @return {Promise<any>}
  */
-function deleteWebhookURL(request) {
+function deleteChannelConfig(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`deleteing webhook URL`, request);
         if (request) {
-            channelJobs.deleteWebhookURL(request.id).then(function (result) {
+            channelJobs.deleteChannelConfig(request.id).then(function (result) {
                 if (result.success === 1) {
                     resolve({ message: result.message });
                 } else {

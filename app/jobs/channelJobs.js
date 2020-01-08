@@ -19,9 +19,9 @@ var job = {
 
             }
             else {
-                return {success: 1, message: "channel not found" };
+                return { success: 1, message: "channel not found" };
             }
-            return { success: 1,channelProperties: channelList };
+            return { success: 1, channelProperties: channelList };
         }
         catch (ex) {
             logger.log({
@@ -42,7 +42,7 @@ var job = {
 
                 let channel = await models.ChannelConfigs.create({
                     config: request.config,
-                    communication_channel_id: request.communication_channel_id
+                    communication_channel_id: "Teams"
                 }, { transaction });
 
                 await transaction.commit();
@@ -79,7 +79,7 @@ var job = {
 
                 let channel = await models.ChannelConfigs.create({
                     config: request.config,
-                    communication_channel_id: request.communication_channel_id
+                    communication_channel_id: "Email"
                 }, { transaction });
 
                 await transaction.commit();
@@ -143,19 +143,17 @@ var job = {
 
     getEmailConfig: async function () {
         try {
-            var channel = await models.ChannelConfigs.findAll({
+            var channel = await models.ChannelConfigs.findOne({
                 where: {
                     communication_channel_id: "Email"
                 }
             });
             if (channel) {
-                for (let index = 0; index < channel.length; index++) {
-                    var password = util.decrypt(channel[index].config.password);
-                    channel[index].config.password = password;
-                }
+                var password = util.decrypt(channel.config.password);
+                channel.config.password = password;
                 return {
                     success: 1,
-                    records: channel
+                    record: channel
                 };
             }
             else {
@@ -170,8 +168,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
 
     updateTeamWebhookURL: async function (request) {
@@ -226,7 +222,6 @@ var job = {
         if (request) {
             var exist_channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: request.id,
                     communication_channel_id: "Email"
                 }
             });
@@ -242,8 +237,7 @@ var job = {
                     },
                         {
                             where: {
-                                communication_channel_id: request.communication_channel_id,
-                                id: request.id,
+                                communication_channel_id: "Email"
                             }
                         }, { transaction });
 
@@ -270,7 +264,7 @@ var job = {
         }
     },
 
-    deleteWebhookURL: async function (id) {
+    deleteChannelConfig: async function (id) {
 
         var exist_channel = await models.ChannelConfigs.findOne({
             where: {
