@@ -73,10 +73,6 @@ message ReportLog {
     Query query = 6;
 }
 
-message ChannelConnection {
-    repeated ChannelParameters channelParameters = 1;
-}
-
 message ChannelParameters {
   string id = 1;
   repeated ConnectionProperties connectionProperties = 2;
