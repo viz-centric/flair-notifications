@@ -269,11 +269,11 @@ function updateTeamWebhookURL(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
-        channelJobs.updateTeamWebhookURL(request.teamConfigParameter).then(function (result) {
+        channelJobs.updateTeamWebhookURL(request).then(function (result) {
             if (result.success === 1) {
-                reject({ message: result.message });
+                reject(result.message);
             } else {
-                reject({ message: result.message });
+                reject(result.message);
             }
         }, function (err) {
             reject({ message: err });
@@ -356,11 +356,11 @@ function addTeamConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
         if (request) {
-            channelJobs.addTeamConfigs(request.teamConfigParameter).then(function (result) {
+            channelJobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ message: result.message });
+                    resolve(result.message);
                 } else {
-                    reject({ message: result.message });
+                    reject(result.message);
                 }
             }, function (err) {
                 reject({ message: err });
@@ -368,7 +368,6 @@ function addTeamConfigs(request) {
         }
     });
 }
-
 /**
  * add new team channel
  * @param
@@ -378,11 +377,11 @@ function addEmailConfigs(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`add channel email with param`, request);
         if (request) {
-            channelJobs.addEmailConfigs(request.emailParameter).then(function (result) {
+            channelJobs.addEmailConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ message: result.message });
+                    resolve(result.message);
                 } else {
-                    reject({ message: result.message });
+                    reject(result.message);
                 }
             }, function (err) {
                 reject({ message: err });

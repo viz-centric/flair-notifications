@@ -135,9 +135,9 @@ app.post('/api/updateChannel/', function (req, res) {
     }
 });
 
-app.get('/api/getChannel/', (req, res) => {
-    channelJobs.getChannel().then(function (result) {
-        res.send(result);
+app.get('/api/getTeamConfig/', (req, res) => {
+    channelJobs.getTeamConfig().then(function (result) {
+        res.send({records:result.records});
     }, function (err) {
         res.send(err);
     })

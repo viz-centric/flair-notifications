@@ -87,15 +87,17 @@ message ConnectionProperties {
 }
 
 message TeamConfigParameters {
-    string webhookName = 1;
-    string webhookURL = 2;
+    int32 id = 1;
+    string webhookName = 2;
+    string webhookURL = 3;
 }
 
 message EmailParameters {
-    string host = 1;
-    string sender = 2;
-    int32 port = 3; 
-    string user = 4;
-    string password = 5;
+    int32 id = 1;
+    string host = 2;
+    string sender = 3;
+    int32 port = 4;
+    string user = 5;
+    string password = 6;
 }
 
