@@ -140,7 +140,7 @@ var job = {
                     var webhookData = {};
                     var webhook = util.decrypt(channel[index].config.webhookURL);
                     channel[index].config.webhookURL = webhook;
-                    webhookData.id = channel[index].id;
+                    webhookData.id = parseInt(channel[index].id);
                     webhookData.webhookName = channel[index].config.webhookName;
                     webhookData.webhookURL = webhook;
                     webhookList.push(webhookData);
@@ -178,7 +178,7 @@ var job = {
                 channel.config.password = password;
                 return {
                     success: 1,
-                    record: channel
+                    record: channel.config
                 };
             }
             else {

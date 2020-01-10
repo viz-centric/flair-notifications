@@ -34,23 +34,13 @@ async function init() {
     }
 }
 
-exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_body, report_title, share_link, build_url, viewData, dash_board, view_name, encodedUrl, imagefilename, chartHtml, chartType) {
+exports.sendMail = async function sendMailToGmail(emailData) {
     var isSMTPConfig = await init();
 
-    var image_cid = new Date().getTime() + imagefilename;
-    var template_data = {
-        mail_body: mail_body,
-        title: report_title,
-        share_link: share_link,
-        build_url: build_url,
-        dash_board: dash_board,
-        view_name: view_name,
-        image_cid: "cid:" + image_cid,
-        imageFile: encodedUrl,
-        AppLogo: "cid:" + appLogo,
-        chartHtml: chartHtml,
-        chartType: chartType
-    }
+    var image_cid = new Date().getTime() + emailData.imagefilename;
+    var template_data = emailData;
+    template_data.image_cid = "cid:" + image_cid;
+    template_data.AppLogo = "cid:" + appLogo;
     return new Promise((resolve, reject) => {
         ejs.renderFile(__dirname + "/template/mail-template.ejs", template_data, function (err, html_data) {
             if (err) {
@@ -62,14 +52,14 @@ exports.sendMail = async function sendMailToGmail(subject, to_mail_list, mail_bo
                 else {
                     var mailOptions = {
                         from: SMTPConfig.records.config.sender, // sender address
-                        to: to_mail_list, // list of receivers
-                        subject: subject, // Subject line
+                        to: emailData.toMailList, // list of receivers
+                        subject: emailData.subject, // Subject line
                         html: html_data,// plain html body
                         attachments: [
                             {
-                                filename: imagefilename,
-                                content: encodedUrl,
-                                path: encodedUrl,
+                                filename: emailData.imagefilename,
+                                content: emailData.encodedUrl,
+                                path: emailData.base64,
                                 cid: image_cid
                             },
                             {

@@ -402,9 +402,9 @@ function deleteChannelConfig(request) {
         if (request) {
             channelJobs.deleteChannelConfig(request.id).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ message: result.message });
+                    resolve( result.message );
                 } else {
-                    reject({ message: result.message });
+                    reject(result.message);
                 }
             }, function (err) {
                 reject({ message: err });

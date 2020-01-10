@@ -84,9 +84,9 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
-    config.potentialAction[0].targets[0].uri = teamConfig.share_link;
-    config.potentialAction[1].targets[0].uri = teamConfig.build_url;
-    teamConfig.webhookURL = [2];
+    config.potentialAction[0].targets[0].uri = teamConfig.shareLink;
+    config.potentialAction[1].targets[0].uri = teamConfig.buildUrl;
+  
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
     var notificationSent = false, error_message = "";
@@ -112,8 +112,8 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         await transaction.commit();
         var thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
 
-        config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.share_link, schedulerTaskMeta.id);
-        config.potentialAction[3].targets[0].uri = teamConfig.share_link.substring(0, teamConfig.share_link.indexOf('visual'));
+        config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, schedulerTaskMeta.id);
+        config.potentialAction[3].targets[0].uri =   flairInsightsLink = util.getGlairInsightsLink(teamConfig.shareLink, teamConfig.visualizationId)
         config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
 
         for (let index = 0; index < webhookURL.records.length; index++) {

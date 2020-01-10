@@ -1,5 +1,6 @@
 var sendmailtool = require('./send-mail');
 var sendNotification = require('./send-team-notification');
+var util = require('./util');
 
 var models = require('./database/models/index');
 const db = require('./database/models/index');
@@ -176,27 +177,27 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                 generate_chart.then(function (response) {
                     var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
-                    var to_mail_list = [];
+                    var toMailList = [];
 
                     //get communication lists
-                    var communication_list = reports_data['report_assign_obj']['communication_list'];
+                    var communicationList = reports_data['report_assign_obj']['communication_list'];
 
                     //getting email communication lists
-                    var email_communication_list = communication_list.email;
-                    var webhookURL = communication_list.teams;
-                    for (user of email_communication_list) {
-                        to_mail_list.push(user['user_email'])
+                    var emailCommunicationList = communicationList.email;
+                    var webhookURL = communicationList.teams;
+                    for (user of emailCommunicationList) {
+                        toMailList.push(user['user_email'])
                     }
-                    var mail_body = reports_data['report_obj']['mail_body']
-                    var report_title = reports_data['report_obj']['title_name']
+                    var mailBody = reports_data['report_obj']['mail_body']
+                    var reportTitle = reports_data['report_obj']['title_name']
                     var subject = thresholdAlertEmail ? "Threshold Alert " + reports_data['report_obj']['subject'] : reports_data['report_obj']['subject'];
-                    var build_url = reports_data['report_obj']['build_url']
-                    var share_link = reports_data['report_obj']['share_link']
-                    var dash_board = reports_data['report_obj']['dashboard_name']
-                    var view_name = reports_data['report_obj']['view_name']
+                    var buildUrl = reports_data['report_obj']['build_url']
+                    var shareLink = reports_data['report_obj']['share_link']
+                    var dashboard = reports_data['report_obj']['dashboard_name']
+                    var viewName = reports_data['report_obj']['view_name']
                     var mailRetryCount = 0;
-                    var viewData = "";
-                    function sendReport(subject, to_mail_list, mail_body, report_title, imagefilename) {
+                    var viewDataLink = "", flairInsightsLink = "";
+                    function sendReport(subject, toMailList, mailBody, reportTitle, imagefilename) {
                         mailRetryCount += 1;
                         var channels = reports_data['report_assign_obj']['channel'];
 
@@ -204,6 +205,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         imageProcessor.saveImageConvertToBase64(imagefilename, response, isTeamMessage).then(async function (bytes) {
 
                             if (channels.indexOf('Email') >= 0) {
+
                                 var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
 
                                 const transaction = await db.sequelize.transaction();
@@ -222,7 +224,26 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         rawQuery: rawQuery,
                                     }, { transaction });
                                     await transaction.commit();
-                                    viewData = share_link.substring(0, share_link.indexOf('visual')) + "visual-table/" + schedulerTaskMeta.id;
+                                    viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
+                                    flairInsightsLink = util.getGlairInsightsLink(shareLink, reports_data.report_line_obj.visualizationid)
+                                    var emailData = {
+                                        subject: subject,
+                                        description: mailBody,
+                                        reportTitle: reportTitle,
+                                        buildUrl: buildUrl,
+                                        shareLink: shareLink,
+                                        base64: ImageBase64[0].encodedUrl,
+                                        tableData: json_res.data,
+                                        toMailList: toMailList,
+                                        viewDataLink: viewDataLink,
+                                        flairInsightsLink: flairInsightsLink,
+                                        dashboard: dashboard,
+                                        viewName: viewName,
+                                        imagefilename: imagefilename,
+                                        chartResponse: response,
+                                        visualizationType: reports_data.report_line_obj.viz_type
+                                    }
+
 
                                 } catch (error) {
                                     await transaction.rollback();
@@ -233,7 +254,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     });
                                 }
 
-                                sendmailtool.sendMail(subject, to_mail_list, mail_body, report_title, share_link, build_url, viewData, dash_board, view_name, ImageBase64[0].encodedUrl, imagefilename, response, reports_data.report_line_obj.viz_type).then(async function (success) {
+                                sendmailtool.sendMail(emailData).then(async function (success) {
 
                                 },
                                     function (error) {
@@ -244,7 +265,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             errMsg: error,
                                         });
                                         if (mailRetryCount < 2) {
-                                            setTimeout(() => sendReport(subject, to_mail_list, mail_body, report_title, imagefilename),
+                                            setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
                                         else {
@@ -264,15 +285,16 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Teams" })
 
                                 var teamData = {
-                                    dashboard: dash_board,
-                                    view: view_name,
-                                    description: mail_body,
-                                    reportTitle: report_title,
-                                    build_url: build_url,
-                                    share_link: share_link,
+                                    dashboard: dashboard,
+                                    view: viewName,
+                                    description: mailBody,
+                                    reportTitle: reportTitle,
+                                    buildUrl: buildUrl,
+                                    shareLink: shareLink,
                                     base64: ImageBase64[0].encodedUrl,
                                     tableData: json_res.data,
                                     webhookURL: webhookURL,
+                                    visualizationId: reports_data.report_line_obj.visualizationid,
                                     rawQuery
                                 }
                                 sendNotification.sendTeamNotification(teamData, reports_data);
@@ -295,7 +317,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         });
                     }
 
-                    sendReport(subject, to_mail_list, mail_body, report_title, imagefilename);
+                    sendReport(subject, toMailList, mailBody, reportTitle, imagefilename);
 
                 }, function (err) {
                     logger.log({

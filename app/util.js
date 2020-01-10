@@ -27,7 +27,11 @@ var util = {
 
     getViewDataURL: function (urlString, id) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" +datasource;
-    }
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource;
+    },
+
+    getGlairInsightsLink: function (urlString, id) {
+        return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management/report/" + id;
+    },
 }
 module.exports = util;
