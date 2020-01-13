@@ -101,3 +101,11 @@ message EmailParameters {
     string password = 6;
 }
 
+message JiraParameters {
+    int32 id = 1;
+    string organization = 2;
+    string key = 3;
+    string userName = 4;
+    string apiToken = 5;
+}
+
