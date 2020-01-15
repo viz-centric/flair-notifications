@@ -106,24 +106,24 @@
 
     <div class="chart-detail">
       <div>
-        <b class="chart-title"> Dashboard</b> : <label class="chart-value"><%= dash_board %></label>
+        <b class="chart-title"> Dashboard</b> : <label class="chart-value"><%= dashboard %></label>
       </div>
       <div>
-        <b class="chart-title">View</b> : <label class="chart-value"><%= view_name %></label>
+        <b class="chart-title">View</b> : <label class="chart-value"><%= viewName %></label>
       </div>
     </div>
 
     <div id="mail_body">
-      <%= mail_body %>
+      <%= description %>
     </div>
 
     <div id="container">
       <div id="title-container">
-        <p class="chart-title"><%= title %></p>
+        <p class="chart-title"><%= reportTitle %></p>
       </div>
 
-      <% if(chartType=="Table"){ %>
-      <%- chartHtml %>
+      <% if(visualizationType=="Table"){ %>
+      <%- chartResponse %>
 
       <% }else{ %>
       <div id="chart-container">
@@ -132,9 +132,13 @@
       <% } %>
     </div>
 
-    <a class="links" href="<%= share_link %>">Go to Widget</a>
+    <a class="links" href="<%= shareLink %>">Go to Widget</a>
 
-    <a class="links" href="<%= build_url %>">Go to Dashboard</a>
+    <a class="links" href="<%= buildUrl %>">Go to Dashboard</a>
+
+    <a class="links" href="<%= viewDataLink %>">View Data</a>
+
+    <a class="links" href="<%= flairInsightsLink %>">Flair Insights</a>
 
     <div id="logo-container">
       <img id="app-logo" src="<%= AppLogo %>" alt="Logo Image">

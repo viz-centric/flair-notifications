@@ -67,63 +67,37 @@ message Schedule {
 message ReportLog {
     string task_status = 1;
     string task_executed = 2;
-    string threshold_met = 3;
-    bool notification_sent = 4;
+    bool thresholdMet = 3;
+    bool notificationSent = 4;
     string channel = 5;
     Query query = 6;
 }
 
-message ChannelConnection {
-    repeated ChannelProperties channelProperties = 1;
-}
-
-message ChannelProperties {
-    string id = 1;
-    repeated ChannelParameters channel_parameters = 2;
-}
-
 message ChannelParameters {
-    repeated ConnectionProperties connectionProperties = 1;
+  string id = 1;
+  repeated ConnectionProperties connectionProperties = 2;
 }
 
 message ConnectionProperties {
     string displayName = 1;
     string fieldName = 2;
-    int64 order = 3;
+    int32 order = 3;
     string fieldType = 4;
     bool required = 5;
 }
 
-message TeamConfig {
-    string id = 1;
-    TeamConfigParameters config = 2;
-}
-
 message TeamConfigParameters {
-    string webhookName = 1;
-    string webhookURL = 2;
-}
-
-message EmailConfig {
-    string id = 1;
-    EmailParameters config = 2;
+    int32 id = 1;
+    string webhookName = 2;
+    string webhookURL = 3;
 }
 
 message EmailParameters {
-    string host = 1;
-    string sender = 2;
-    int64 port = 3;
-    string user = 4;
-    string password = 5;
-}
-
-message TeamConfigList {
-    int64 success = 1;
-    repeated TeamConfigParameters records = 2;
-}
-
-message EmailConfigList {
-    int64 success = 1;
-    repeated EmailParameters records = 2;
+    int32 id = 1;
+    string host = 2;
+    string sender = 3;
+    int32 port = 4;
+    string user = 5;
+    string password = 6;
 }
 

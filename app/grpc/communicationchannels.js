@@ -21,7 +21,7 @@ function constructChannelService(server) {
         updateEmailSMTP,
         updateTeamWebhookURL,
         getChannelProperties,
-        deleteWebhookURL,
+        deleteChannelConfig,
         getTeamConfig,
         getEmailConfig
     })
@@ -40,8 +40,8 @@ function getChannelProperties(call, callback) {
     handleCall(channelService.getChannelProperties(call.request), callback);
 }
 
-function deleteWebhookURL(call, callback) {
-    handleCall(channelService.deleteWebhookURL(call.request), callback);
+function deleteChannelConfig(call, callback) {
+    handleCall(channelService.deleteChannelConfig(call.request), callback);
 }
 
 

@@ -8,12 +8,20 @@ var job = {
     getChannelProperties: async function () {
         try {
             var channel = await models.CommunicationChannels.findAll();
+            var channelList = [];
             if (channel) {
-                return { channelProperties: channel };
+                for (let index = 0; index < channel.length; index++) {
+                    var channelObject = {};
+                    channelObject.id = channel[index].id
+                    channelObject.connectionProperties = channel[index].channel_parameters.connectionProperties
+                    channelList.push(channelObject);
+                }
+
             }
             else {
-                return { success: 0, message: "channel not found" };
+                return { success: 1, message: "channel not found" };
             }
+            return { success: 1, channelProperties: channelList };
         }
         catch (ex) {
             logger.log({
@@ -29,12 +37,12 @@ var job = {
         if (request) {
             const transaction = await db.sequelize.transaction();
             try {
-                var webhook = util.encrypt(request.config.webhookURL);
-                request.config.webhookURL = webhook
+                var webhook = util.encrypt(request.teamConfigParameter.webhookURL);
+                request.teamConfigParameter.webhookURL = webhook
 
                 let channel = await models.ChannelConfigs.create({
-                    config: request.config,
-                    communication_channel_id: request.communication_channel_id
+                    config: request.teamConfigParameter,
+                    communication_channel_id: "Teams"
                 }, { transaction });
 
                 await transaction.commit();
@@ -65,14 +73,34 @@ var job = {
     addEmailConfigs: async function (request) {
         if (request) {
             const transaction = await db.sequelize.transaction();
+            let channel;
             try {
-                var password = util.encrypt(request.config.password);
-                request.config.password = password
+                var emailSMTP = await models.ChannelConfigs.findOne({
+                    where: {
+                        communication_channel_id: "Email"
+                    }
+                });
 
-                let channel = await models.ChannelConfigs.create({
-                    config: request.config,
-                    communication_channel_id: request.communication_channel_id
-                }, { transaction });
+                var password = util.encrypt(request.emailParameter.password);
+                request.emailParameter.password = password;
+
+                if (emailSMTP) {
+                    channel = await models.ChannelConfigs.update({
+                        config: request.emailParameter,
+                        communication_channel_id: request.communication_channel_id
+                    },
+                        {
+                            where: {
+                                communication_channel_id: "Email"
+                            }
+                        }, { transaction });
+                }
+                else {
+                    channel = await models.ChannelConfigs.create({
+                        config: request.emailParameter,
+                        communication_channel_id: "Email"
+                    }, { transaction });
+                }
 
                 await transaction.commit();
 
@@ -101,20 +129,25 @@ var job = {
 
     getTeamConfig: async function () {
         try {
+            var webhookList = [];
             var channel = await models.ChannelConfigs.findAll({
                 where: {
                     communication_channel_id: "Teams"
                 }
             });
             if (channel) {
-
                 for (let index = 0; index < channel.length; index++) {
+                    var webhookData = {};
                     var webhook = util.decrypt(channel[index].config.webhookURL);
                     channel[index].config.webhookURL = webhook;
+                    webhookData.id = parseInt(channel[index].id);
+                    webhookData.webhookName = channel[index].config.webhookName;
+                    webhookData.webhookURL = webhook;
+                    webhookList.push(webhookData);
                 }
                 return {
                     success: 1,
-                    records: channel
+                    records: webhookList
                 };
             }
             else {
@@ -135,19 +168,17 @@ var job = {
 
     getEmailConfig: async function () {
         try {
-            var channel = await models.ChannelConfigs.findAll({
+            var channel = await models.ChannelConfigs.findOne({
                 where: {
                     communication_channel_id: "Email"
                 }
             });
             if (channel) {
-                for (let index = 0; index < channel.length; index++) {
-                    var password = util.decrypt(channel[index].config.password);
-                    channel[index].config.password = password;
-                }
+                var password = util.decrypt(channel.config.password);
+                channel.config.password = password;
                 return {
                     success: 1,
-                    records: channel
+                    record: channel.config
                 };
             }
             else {
@@ -162,8 +193,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
 
     updateTeamWebhookURL: async function (request) {
@@ -178,11 +207,11 @@ var job = {
             if (exist_channel) {
                 const transaction = await db.sequelize.transaction();
                 try {
-                    var webhook = util.encrypt(request.config.webhookURL);
-                    request.config.webhookURL = webhook
+                    var webhook = util.encrypt(request.teamConfigParameter.webhookURL);
+                    request.teamConfigParameter.webhookURL = webhook
 
                     let channel = await models.ChannelConfigs.update({
-                        config: request.config,
+                        teamConfigParameter: request.teamConfigParameter,
                     },
                         {
                             where: {
@@ -218,7 +247,6 @@ var job = {
         if (request) {
             var exist_channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: request.id,
                     communication_channel_id: "Email"
                 }
             });
@@ -234,8 +262,7 @@ var job = {
                     },
                         {
                             where: {
-                                communication_channel_id: request.communication_channel_id,
-                                id: request.id,
+                                communication_channel_id: "Email"
                             }
                         }, { transaction });
 
@@ -262,7 +289,7 @@ var job = {
         }
     },
 
-    deleteWebhookURL: async function (id) {
+    deleteChannelConfig: async function (id) {
 
         var exist_channel = await models.ChannelConfigs.findOne({
             where: {
