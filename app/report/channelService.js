@@ -104,7 +104,6 @@ function getTeamConfig(request) {
         }, function (err) {
             reject({ message: err });
         })
-
     });
 }
 

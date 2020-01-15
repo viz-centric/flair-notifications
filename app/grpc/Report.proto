@@ -109,3 +109,11 @@ message JiraParameters {
     string apiToken = 5;
 }
 
+message JiraTickets {
+    int32 issueID = 1;
+    string projectKey = 2;
+    string status = 3;
+    string createDate = 4;
+    string assignPerson = 5;
+    string priority = 6;
+}

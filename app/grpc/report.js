@@ -46,7 +46,12 @@ function constructReportService(server) {
         getChannelProperties,
         deleteChannelConfig,
         getTeamConfig,
-        getEmailConfig
+        getEmailConfig,
+        AddJiraConfigs,
+        updateJiraConfiguration,
+        getJiraConfig,
+        createJiraIssue,
+        getAllJira
     })
 }
 
@@ -122,4 +127,24 @@ function getEmailConfig(call, callback) {
 
 function getTeamConfig(call, callback) {
     handleCall(reportService.getTeamConfig(call.request), callback);
+}
+
+function AddJiraConfigs(call, callback) {
+    handleCall(reportService.AddJiraConfigs(call.request), callback);
+}
+
+function updateJiraConfiguration(call, callback) {
+    handleCall(reportService.updateJiraConfiguration(call.request), callback);
+}
+
+function getJiraConfig(call, callback) {
+    handleCall(reportService.getJiraConfig(call.request), callback);
+}
+
+function createJiraIssue(call, callback) {
+    handleCall(reportService.createJiraIssue(call.request), callback);
+}
+
+function getAllJira(call, callback) {
+    handleCall(reportService.getAllJira(call.request), callback);
 }

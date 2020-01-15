@@ -145,7 +145,7 @@ message GetJiraConfigResponse {
     JiraParameters record = 1;
 }
 
-message AddJiraConfigsRequest {
+message JiraConfigsRequest {
     JiraParameters jiraParameter = 1;
 }
 
@@ -156,6 +156,13 @@ message createJiraIssueRequest{
 message createJiraIssueResponse{
     string message = 1;
     string jiraIssueLink = 2;
+}
+
+message getAllJiraRequest{
+    string status = 1;
+}
+message getAllJiraResponse{
+    repeated JiraTickets records = 1;
 }
 
 service ReportService {
@@ -178,5 +185,9 @@ service ReportService {
     rpc DeleteChannelConfig(DeleteChannelConfigRequest) returns (ConfigsResponse) {};
     rpc GetScheduleReportLog(GetScheduleReportLogRequest) returns (GetScheduleReportLogResponse) {};
     rpc GetJiraConfig(GetJiraConfigRequest) returns (GetJiraConfigResponse) {};
-    rpc AddJiraConfigs(AddJiraConfigsRequest) returns (ConfigsResponse) {};
+    rpc AddJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
+    rpc UpdateJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
+    rpc createJiraIssue(createJiraIssueRequest) returns (createJiraIssueResponse) {};
+    rpc getAllJira(getAllJiraRequest) returns (getAllJiraResponse) {};
+
 }
