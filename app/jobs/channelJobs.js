@@ -82,8 +82,7 @@ var job = {
                     }
                 });
 
-                var password = util.encrypt(request.emailParameter.password);
-                request.emailParameter.password = password;
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
 
                 if (emailSMTP) {
                     channel = await models.ChannelConfigs.update({
@@ -404,8 +403,7 @@ var job = {
                     }
                 });
 
-                var password = util.encrypt(request.emailParameter.password);
-                request.emailParameter.password = password;
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
 
                 if (jira) {
                     channel = await models.ChannelConfigs.update({
@@ -450,7 +448,7 @@ var job = {
         }
     },
 
-    updateJiraConfiguration: async function (request) {
+    updateJiraConfiguration: async function (request) { 
         if (request) {
             const transaction = await db.sequelize.transaction();
             let channel;
@@ -461,8 +459,7 @@ var job = {
                     }
                 });
 
-                var password = util.encrypt(request.emailParameter.password);
-                request.emailParameter.password = password;
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
 
                 if (jira) {
                     channel = await models.ChannelConfigs.update({
@@ -480,11 +477,11 @@ var job = {
 
                 logger.log({
                     level: 'info',
-                    message: 'update Jira config is saved into database',
+                    message: 'Jira configs are updated successfully',
                     channel: channel.communication_channel_id,
                 });
                 return ({
-                    success: 1, message: "update Jira config is added successfully"
+                    success: 1, message: "Jira configs are updated successfully"
                 });
 
             }
@@ -493,7 +490,7 @@ var job = {
 
                 logger.log({
                     level: 'error',
-                    message: 'error while updating Jira config into database',
+                    message: 'error while updating Jira configs',
                     error: ex,
                 });
                 return { success: 0, message: ex };
@@ -518,7 +515,7 @@ var job = {
                 };
             }
             else {
-                return { success: 0, message: "Jira config not found" };
+                return { success: 0, message: "Jira config is not found" };
             }
         }
         catch (ex) {
