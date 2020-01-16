@@ -531,7 +531,7 @@ var job = {
         }
     },
 
-    createJiraIssue: async function (request) {
+    createjiraTicket: async function (request) {
         //TO DO : api calling 
         var jiraSettings = getJiraConfig();
     },

@@ -149,13 +149,13 @@ message JiraConfigsRequest {
     JiraParameters jiraParameter = 1;
 }
 
-message createJiraIssueRequest{
+message createjiraTicketRequest{
     int32 id =1;
 }
 
-message createJiraIssueResponse{
+message createjiraTicketResponse{
     string message = 1;
-    string jiraIssueLink = 2;
+    string jiraTicketLink = 2;
 }
 
 message getAllJiraRequest{
@@ -187,7 +187,7 @@ service ReportService {
     rpc GetJiraConfig(GetJiraConfigRequest) returns (GetJiraConfigResponse) {};
     rpc AddJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
     rpc UpdateJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
-    rpc createJiraIssue(createJiraIssueRequest) returns (createJiraIssueResponse) {};
+    rpc createjiraTicket(createjiraTicketRequest) returns (createjiraTicketResponse) {};
     rpc getAllJira(getAllJiraRequest) returns (getAllJiraResponse) {};
 
 }

@@ -28,7 +28,7 @@ module.exports = {
     AddJiraConfigs,
     updateJiraConfiguration,
     getJiraConfig,
-    createJiraIssue,
+    createjiraTicket,
     getAllJira,
 };
 
@@ -469,10 +469,10 @@ function getJiraConfig(){
 
 
 
-function createJiraIssue(){
+function createjiraTicket(){
     return new Promise(function (resolve, reject) {
         if (request) {
-            channelJobs.createJiraIssue(request).then(function (result) {
+            channelJobs.createjiraTicket(request).then(function (result) {
                 if (result.success === 1) {
                     resolve( result.message );
                 } else {
