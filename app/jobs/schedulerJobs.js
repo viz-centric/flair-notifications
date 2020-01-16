@@ -315,7 +315,7 @@ var job = {
                         log.task_status = logItem.task_status;
                         log.thresholdMet = logItem.thresholdMet;
                         log.notificationSent = logItem.notificationSent;
-                        log.channel = logItem.channel
+                        log.channel = logItem.channel;
                         log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }

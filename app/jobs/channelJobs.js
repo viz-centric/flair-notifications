@@ -3,6 +3,7 @@ var models = require('../database/models/index');
 var db = require('../database/models/index');
 var logger = require('../logger');
 var util = require('../util');
+var axios = require('axios');
 
 var job = {
     getChannelProperties: async function () {
@@ -81,8 +82,7 @@ var job = {
                     }
                 });
 
-                var password = util.encrypt(request.emailParameter.password);
-                request.emailParameter.password = password;
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
 
                 if (emailSMTP) {
                     channel = await models.ChannelConfigs.update({
@@ -175,6 +175,7 @@ var job = {
             });
             if (channel) {
                 var password = util.decrypt(channel.config.password);
+                channel.config.id = channel.id;
                 channel.config.password = password;
                 return {
                     success: 1,
@@ -388,7 +389,156 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-    }
+    },
+  
+    //jira method start
+    AddJiraConfigs: async function (request) {
+        if (request) {
+            const transaction = await db.sequelize.transaction();
+            let channel;
+            try {
+                var jira = await models.ChannelConfigs.findOne({
+                    where: {
+                        communication_channel_id: "Jira"
+                    }
+                });
+
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
+
+                if (jira) {
+                    channel = await models.ChannelConfigs.update({
+                        config: request.emailParameter,
+                        communication_channel_id: request.communication_channel_id
+                    },
+                        {
+                            where: {
+                                communication_channel_id: "Jira"
+                            }
+                        }, { transaction });
+                }
+                else {
+                    channel = await models.ChannelConfigs.create({
+                        config: request.emailParameter,
+                        communication_channel_id: "Jira"
+                    }, { transaction });
+                }
+
+                await transaction.commit();
+
+                logger.log({
+                    level: 'info',
+                    message: 'new Jira config is saved into database',
+                    channel: channel.communication_channel_id,
+                });
+                return ({
+                    success: 1, message: "new Jira config is added successfully"
+                });
+
+            }
+            catch (ex) {
+                await transaction.rollback();
+
+                logger.log({
+                    level: 'error',
+                    message: 'error while saving Jira config into database',
+                    error: ex,
+                });
+                return { success: 0, message: ex };
+            }
+        }
+    },
+
+    updateJiraConfiguration: async function (request) { 
+        if (request) {
+            const transaction = await db.sequelize.transaction();
+            let channel;
+            try {
+                var jira = await models.ChannelConfigs.findOne({
+                    where: {
+                        communication_channel_id: "Jira"
+                    }
+                });
+
+                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
+
+                if (jira) {
+                    channel = await models.ChannelConfigs.update({
+                        config: request.emailParameter,
+                        communication_channel_id: request.communication_channel_id
+                    },
+                        {
+                            where: {
+                                communication_channel_id: "Jira"
+                            }
+                        }, { transaction });
+                }
+
+                await transaction.commit();
+
+                logger.log({
+                    level: 'info',
+                    message: 'Jira configs are updated successfully',
+                    channel: channel.communication_channel_id,
+                });
+                return ({
+                    success: 1, message: "Jira configs are updated successfully"
+                });
+
+            }
+            catch (ex) {
+                await transaction.rollback();
+
+                logger.log({
+                    level: 'error',
+                    message: 'error while updating Jira configs',
+                    error: ex,
+                });
+                return { success: 0, message: ex };
+            }
+        }
+    },
+
+    getJiraConfig: async function () {
+        try {
+            var channel = await models.ChannelConfigs.findOne({
+                where: {
+                    communication_channel_id: "Jira"
+                }
+            });
+            if (channel) {
+                var apiToken = util.decrypt(channel.config.apiToken);
+                channel.config.apiToken = apiToken;
+                channel.config.id = channel.id;
+                return {
+                    success: 1,
+                    record: channel.config
+                };
+            }
+            else {
+                return { success: 0, message: "Jira config is not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching Jira config',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+    },
+
+    createjiraTicket: async function (request) {
+        //TO DO : api calling 
+        var jiraSettings = getJiraConfig();
+    },
+
+    getAllJira: async function (request) {
+        //TO DO : api calling 
+        var jiraSettings = getJiraConfig();
+    },
+   
+    //jira method end
 }
 
 module.exports = job;

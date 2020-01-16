@@ -24,7 +24,12 @@ module.exports = {
     updateEmailSMTP,
     addTeamConfigs,
     addEmailConfigs,
-    deleteChannelConfig
+    deleteChannelConfig,
+    AddJiraConfigs,
+    updateJiraConfiguration,
+    getJiraConfig,
+    createjiraTicket,
+    getAllJira,
 };
 
 /**
@@ -401,6 +406,90 @@ function deleteChannelConfig(request) {
         logger.info(`deleteing webhook URL`, request);
         if (request) {
             channelJobs.deleteChannelConfig(request.id).then(function (result) {
+                if (result.success === 1) {
+                    resolve( result.message );
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+
+function AddJiraConfigs(){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.AddJiraConfigs(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve( result.message );
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+function updateJiraConfiguration(){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.updateJiraConfiguration(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve( result.message );
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+function getJiraConfig(){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.getJiraConfig(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve( result.message );
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+
+
+function createjiraTicket(){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.createjiraTicket(request).then(function (result) {
+                if (result.success === 1) {
+                    resolve( result.message );
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+
+function getAllJira(){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.getAllJira(request).then(function (result) {
                 if (result.success === 1) {
                     resolve( result.message );
                 } else {
