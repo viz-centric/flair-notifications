@@ -4,9 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     createdAt : DataTypes.DATE,
     updatedAt : DataTypes.DATE,
     rawQuery: {type: DataTypes.JSON, allowNull: false},
+    viewData : DataTypes.STRING
   }, {});
 
   SchedulerTaskMeta.associate = function(models) {
+
     SchedulerTaskMeta.belongsTo(models.SchedulerTaskLog, {
       foreignKey: 'SchedulerTaskLogId',
       onDelete: 'CASCADE',

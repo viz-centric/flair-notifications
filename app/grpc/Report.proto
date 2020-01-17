@@ -70,7 +70,16 @@ message ReportLog {
     bool thresholdMet = 3;
     bool notificationSent = 4;
     string channel = 5;
-    Query query = 6;
+    string schedulerTaskMetaId = 6;
+    string dashboardName = 7;
+    string viewName = 8;
+    string viewData = 9;
+    string descripition = 10;
+    string comment = 11;
+    bool isTicketCreated = 12;
+    bool enableTicketCreation = 13;
+    string viewTicket = 14;
+    Query query = 15;
 }
 
 message ChannelParameters {
@@ -116,4 +125,6 @@ message JiraTickets {
     string createDate = 4;
     string assignPerson = 5;
     string priority = 6;
+    string reporter = 7;
+    string summary = 8;
 }

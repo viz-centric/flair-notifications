@@ -60,7 +60,7 @@ var job = {
             let constraints_obj = await models.ReportConstraint.create({
                 ReportId: report.id,
                 constraints: JSON.parse(params.constraints),
-            }, {transaction});
+            }, { transaction });
 
             logger.log({
                 level: 'info',
@@ -178,8 +178,8 @@ var job = {
                     }, { transaction });
 
                 let constraints_obj = await models.ReportConstraint.update({
-                        constraints: JSON.parse(report_data.constraints),
-                    },
+                    constraints: JSON.parse(report_data.constraints),
+                },
                     {
                         where: {
                             ReportId: exist_report.id
@@ -300,6 +300,11 @@ var job = {
             if (report) {
                 try {
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
+                        include: [
+                            {
+                                model: models.SchedulerTaskMeta,
+                            }
+                        ],
                         where: {
                             SchedulerJobId: report.SchedulerTask.id
                         },
@@ -316,6 +321,15 @@ var job = {
                         log.thresholdMet = logItem.thresholdMet;
                         log.notificationSent = logItem.notificationSent;
                         log.channel = logItem.channel;
+                        if (logItem.SchedulerTaskMetum) {
+                            log.schedulerTaskMetaId = logItem.SchedulerTaskMetum.id;
+                            log.viewData = logItem.SchedulerTaskMetum.viewData;
+                        }
+                        log.dashboardName = report.dashboard_name;
+                        log.viewName = report.view_name;
+                        
+                        log.descripition = report.mail_body;
+                        log.comment = "";
                         log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }
@@ -413,7 +427,7 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:{ active: true }
+                        where: { active: true }
                     },
                     {
                         model: models.ReportConstraint
@@ -591,7 +605,20 @@ var job = {
                 reject({ message: 'error while generating image' + ex });
             }
         });
-    }
+    },
+    getSchedulerMetaData: async function (id) {
+        try {
+            var SchedulerLogs = await models.SchedulerTaskMeta.findOne({
+                where: {
+                    id: id
+                }
+            });
+            return SchedulerLogs;
+        } catch (error) {
+            return "Scheduler metadata is not found";
+        }
+
+    },
 };
 
 module.exports = job;

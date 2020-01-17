@@ -216,15 +216,29 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         task_status: "success",
                                         thresholdMet: thresholdAlertEmail,
                                         notificationSent: true,
-                                        channel: "Email"
+                                        channel: "Email",
+                                        enableTicketCreation:true
                                     }, { transaction });
 
                                     const schedulerTaskMeta = await models.SchedulerTaskMeta.create({
                                         SchedulerTaskLogId: shedularlog.id,
-                                        rawQuery: rawQuery,
+                                        rawQuery: rawQuery
                                     }, { transaction });
-                                    await transaction.commit();
+
                                     viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
+                                    await transaction.commit();
+
+                                    const updateTransaction = await db.sequelize.transaction();
+                                    await models.SchedulerTaskMeta.update({
+                                        viewData: viewDataLink
+                                    }, {
+                                        where: {
+                                            id: schedulerTaskMeta.id
+                                        }
+                                    }, { updateTransaction });
+
+                                    await updateTransaction.commit();
+
                                     flairInsightsLink = util.getGlairInsightsLink(shareLink, reports_data.report_line_obj.visualizationid)
                                     var emailData = {
                                         subject: subject,
@@ -243,7 +257,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         chartResponse: response,
                                         visualizationType: reports_data.report_line_obj.viz_type
                                     }
-
 
                                 } catch (error) {
                                     await transaction.rollback();
@@ -295,6 +308,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     tableData: json_res.data,
                                     webhookURL: webhookURL,
                                     visualizationId: reports_data.report_line_obj.visualizationid,
+                                    isThresholdReport: thresholdAlertEmail,
                                     rawQuery
                                 }
                                 sendNotification.sendTeamNotification(teamData, reports_data);
@@ -344,7 +358,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "no data found",
-                    thresholdMet: thresholdAlertEmail,
+                    thresholdMet: false,
                     notificationSent: false,
                     channel: ''
                 });
