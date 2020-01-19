@@ -313,9 +313,9 @@ var job = {
                     for (var logItem of SchedulerLogs.rows) {
                         var log = {};
                         log.task_status = logItem.task_status;
-                        log.threshold_met = logItem.threshold_met;
-                        log.notification_sent = logItem.notification_sent;
-                        log.channel = logItem.channel
+                        log.thresholdMet = logItem.thresholdMet;
+                        log.notificationSent = logItem.notificationSent;
+                        log.channel = logItem.channel;
                         log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
                         outputlogs.push(log);
                     }

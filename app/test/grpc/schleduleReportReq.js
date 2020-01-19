@@ -29,15 +29,11 @@ const payload = {
         stride_cloud_id: null,
         stride_conversation_id: null,
         communication_list: {
-        	email:[{
+            email: [{
                 user_email: "flairadmin@localhost",
-                user_name: "Administrator Administrator",
-        		channel_config_id:"dddddd"
-        	}],
-        	teams:{
-        		webhook:"abc@gmail.com",
-        		channel_config_id:"dddddd"
-        	}
+                user_name: "Administrator Administrator"
+            }],
+            teams: [1, 2]
         }
     },
     schedule: {

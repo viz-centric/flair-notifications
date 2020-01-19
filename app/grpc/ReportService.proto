@@ -77,67 +77,51 @@ message SearchReportsResponse {
 }
 
 message GetChannelPropertiesRequest {
-    
+    string channel = 1;
 }
 
 message GetChannelPropertiesResponse {
-   repeated ChannelConnection request = 1;
+   repeated ChannelParameters channelParameters = 1;
 }
 
 message AddTeamConfigsRequest {
-    TeamConfig team_config = 1;
+    TeamConfigParameters teamConfigParameter = 1;
 }
 
-message AddTeamConfigsResponse {
+message ConfigsResponse {
     string message = 1;
 }
 
 message AddEmailConfigsRequest {
-    EmailConfig email_config = 1;
-}
-
-message AddEmailConfigsResponse {
-    string message = 1;
+    EmailParameters emailParameter = 1;
 }
 
 message GetEmailConfigRequest {
-
+    int32 id =1;
 }
 
 message GetEmailConfigResponse {
-    EmailConfigList records = 1;
+    EmailParameters record = 1;
 }
 
 message GetTeamConfigRequest {
-
+    int32 id =1;
 }
 
 message GetTeamConfigResponse {
-    TeamConfigList records = 1;
+    repeated TeamConfigParameters records = 1;
 }
 
 message UpdateTeamWebhookURLRequest{
-    TeamConfig team_config = 1;
-}
-
-message UpdateTeamWebhookURLResponse{
-    string message = 1;
+    TeamConfigParameters teamConfigParameter = 1;
 }
 
 message UpdateEmailSMTPRequest{
-    EmailConfig email_config = 1;
-}
-
-message UpdateEmailSMTPResponse{
-    string message = 1;
+    EmailParameters emailParameter = 1;
 }
 
 message DeleteChannelConfigRequest{
-    string id = 1;
-}
-
-message DeleteChannelConfigResponse{
-    string message = 1;
+    int32 id = 1;
 }
 
 message GetScheduleReportLogRequest {
@@ -153,6 +137,34 @@ message ApiError {
     string message = 1;
 }
 
+message GetJiraConfigRequest {
+    int32 id =1;
+}
+
+message GetJiraConfigResponse {
+    JiraParameters record = 1;
+}
+
+message JiraConfigsRequest {
+    JiraParameters jiraParameter = 1;
+}
+
+message createjiraTicketRequest{
+    int32 id =1;
+}
+
+message createjiraTicketResponse{
+    string message = 1;
+    string jiraTicketLink = 2;
+}
+
+message getAllJiraRequest{
+    string status = 1;
+}
+message getAllJiraResponse{
+    repeated JiraTickets records = 1;
+}
+
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
@@ -164,12 +176,18 @@ service ReportService {
     rpc GetScheduleReportLogs(GetScheduleReportLogsRequest) returns (GetScheduleReportLogsResponse) {};
     rpc SearchReports(SearchReportsRequest) returns (SearchReportsResponse) {};
     rpc GetChannelProperties(GetChannelPropertiesRequest) returns (GetChannelPropertiesResponse) {};
-    rpc AddTeamConfigs(AddTeamConfigsRequest) returns (AddTeamConfigsResponse) {};
-    rpc AddEmailConfigs(AddEmailConfigsRequest) returns (AddEmailConfigsResponse) {};
+    rpc AddTeamConfigs(AddTeamConfigsRequest) returns (ConfigsResponse) {};
+    rpc AddEmailConfigs(AddEmailConfigsRequest) returns (ConfigsResponse) {};
     rpc GetEmailConfig(GetEmailConfigRequest) returns (GetEmailConfigResponse) {};
     rpc GetTeamConfig(GetTeamConfigRequest) returns (GetTeamConfigResponse) {};
-    rpc UpdateTeamWebhookURL(UpdateTeamWebhookURLRequest) returns (UpdateTeamWebhookURLResponse) {};
-    rpc UpdateEmailSMTP(UpdateEmailSMTPRequest) returns (UpdateEmailSMTPResponse) {};
-    rpc DeleteChannelConfig(DeleteChannelConfigRequest) returns (DeleteChannelConfigResponse) {};
+    rpc UpdateTeamWebhookURL(UpdateTeamWebhookURLRequest) returns (ConfigsResponse) {};
+    rpc UpdateEmailSMTP(UpdateEmailSMTPRequest) returns (ConfigsResponse) {};
+    rpc DeleteChannelConfig(DeleteChannelConfigRequest) returns (ConfigsResponse) {};
     rpc GetScheduleReportLog(GetScheduleReportLogRequest) returns (GetScheduleReportLogResponse) {};
+    rpc GetJiraConfig(GetJiraConfigRequest) returns (GetJiraConfigResponse) {};
+    rpc AddJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
+    rpc UpdateJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
+    rpc createjiraTicket(createjiraTicketRequest) returns (createjiraTicketResponse) {};
+    rpc getAllJira(getAllJiraRequest) returns (getAllJiraResponse) {};
+
 }

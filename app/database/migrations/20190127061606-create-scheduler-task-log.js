@@ -14,10 +14,10 @@ module.exports = {
       task_status: {
         type: Sequelize.STRING
       },
-      threshold_met: {
+      thresholdMet: {
         type: Sequelize.BOOLEAN
       },
-      notification_sent:
+      notificationSent:
       {
         type: Sequelize.BOOLEAN
       },
