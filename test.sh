@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 cd docker/dev
 docker-compose build
 docker-compose run --rm agent

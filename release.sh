@@ -1,8 +1,8 @@
 #!/bin/sh
-
+set -e
 RELEASE_COMMAND=$1
 
-if [ -z "$RELEASE_COMMAND" ]
+if [[ -z "$RELEASE_COMMAND" ]]
 then
     RELEASE_COMMAND="patch"
     echo "\$RELEASE_COMMAND is empty"
