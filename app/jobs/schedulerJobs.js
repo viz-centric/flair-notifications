@@ -8,6 +8,8 @@ var execution = require('../execution');
 var buildVisualizationService = require('../services/build-visualization.service');
 var logger = require('../logger');
 const Sequelize = require('sequelize');
+const channelJobs = require('./channelJobs');
+
 const Op = Sequelize.Op;
 const defaultPage = 0;
 const defaultPageSize = 10;
@@ -314,30 +316,10 @@ var job = {
                         limit,
                         offset,
                     });
-                    var outputlogs = [];
-                    for (var logItem of SchedulerLogs.rows) {
-                        var log = {};
-                        log.task_status = logItem.task_status;
-                        log.thresholdMet = logItem.thresholdMet;
-                        log.notificationSent = logItem.notificationSent;
-                        log.channel = logItem.channel;
-                        if (logItem.SchedulerTaskMetum) {
-                            log.schedulerTaskMetaId = logItem.SchedulerTaskMetum.id;
-                            log.viewData = logItem.SchedulerTaskMetum.viewData;
-                        }
-                        log.dashboardName = report.dashboard_name;
-                        log.viewName = report.view_name;
-                        
-                        log.descripition = report.mail_body;
-                        log.comment = "";
-                        log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
-                        outputlogs.push(log);
+                    if (SchedulerLogs) {
+                        return await this.getReportLogs(SchedulerLogs, report);
                     }
-                    return {
-                        success: 1,
-                        totalRecords: SchedulerLogs.count,
-                        SchedulerLogs: outputlogs
-                    };
+
                 }
                 catch (ex) {
                     return { success: 0, message: ex };
@@ -619,6 +601,40 @@ var job = {
         }
 
     },
+    getReportLogs: async function (SchedulerLogs, report) {
+        try {
+            var outputlogs = [];
+            for (var logItem of SchedulerLogs.rows) {
+                var log = {};
+                log.task_status = logItem.task_status;
+                log.thresholdMet = logItem.thresholdMet;
+                log.notificationSent = logItem.notificationSent;
+                log.channel = logItem.channel;
+                if (logItem.SchedulerTaskMetum) {
+                    log.schedulerTaskMetaId = logItem.SchedulerTaskMetum.id;
+                    log.viewData = logItem.SchedulerTaskMetum.viewData;
+                    log.viewTicket = await channelJobs.getJiraLink(logItem.SchedulerTaskMetum.id);
+                }
+                log.dashboardName = report.dashboard_name;
+                log.viewName = report.view_name;
+
+                log.descripition = report.mail_body;
+                log.isTicketCreated = logItem.isTicketCreated;
+                log.enableTicketCreation = logItem.enableTicketCreation;
+                log.comment = "";
+                log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
+                outputlogs.push(log);
+            }
+            return {
+                success: 1,
+                totalRecords: SchedulerLogs.count,
+                SchedulerLogs: outputlogs
+            };
+        } catch (error) {
+            return "Scheduler metadata is not found";
+        }
+
+    }
 };
 
 module.exports = job;

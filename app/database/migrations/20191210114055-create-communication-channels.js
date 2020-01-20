@@ -89,7 +89,7 @@ module.exports = {
         channel_parameters: JSON.stringify({
           "connectionProperties": [
             {
-              "displayName": "Organization URL",
+              "displayName": "Domain Name",
               "fieldName": "organization",
               "order": 0,
               "fieldType": "String",

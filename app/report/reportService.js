@@ -204,7 +204,7 @@ async function getScheduleReportLog(request) {
         throw { error: { message: `Error loading schedule report log ${e.message}` } };
     }
     logger.info(`Get scheduled report log via grpc for ${taskLogMetaId} result`, taskMeta);
-    return { report_log: { query: taskMeta.rawQuery } };
+    return { report_log:   taskMeta  };
 }
 
 function searchReports(request) {

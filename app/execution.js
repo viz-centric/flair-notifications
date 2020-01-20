@@ -171,6 +171,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
         data_call.then(async function (response) {
             var json_res = JSON.parse(response.data);
             if (json_res && json_res.data.length > 0) {
+                var vizID = reports_data.report_line_obj.visualizationid;
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
@@ -217,15 +218,13 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         thresholdMet: thresholdAlertEmail,
                                         notificationSent: true,
                                         channel: "Email",
-                                        enableTicketCreation:true
+                                        enableTicketCreation: true
                                     }, { transaction });
 
                                     const schedulerTaskMeta = await models.SchedulerTaskMeta.create({
                                         SchedulerTaskLogId: shedularlog.id,
                                         rawQuery: rawQuery
                                     }, { transaction });
-
-                                    viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
                                     await transaction.commit();
 
                                     const updateTransaction = await db.sequelize.transaction();
@@ -239,7 +238,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                                     await updateTransaction.commit();
 
-                                    flairInsightsLink = util.getGlairInsightsLink(shareLink, reports_data.report_line_obj.visualizationid)
+                                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID)
                                     var emailData = {
                                         subject: subject,
                                         description: mailBody,
@@ -307,7 +306,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     base64: ImageBase64[0].encodedUrl,
                                     tableData: json_res.data,
                                     webhookURL: webhookURL,
-                                    visualizationId: reports_data.report_line_obj.visualizationid,
+                                    visualizationId: vizID,
                                     isThresholdReport: thresholdAlertEmail,
                                     rawQuery
                                 }

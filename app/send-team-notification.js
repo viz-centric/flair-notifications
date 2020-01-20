@@ -97,8 +97,8 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
             SchedulerJobId: reportData['report_shedular_obj']['id'],
             task_executed: new Date(Date.now()).toISOString(),
             task_status: "success",
-            enableTicketCreation:true,
-            thresholdMet: reportData.report_obj.thresholdAlert,
+            enableTicketCreation: true,
+            thresholdMet: reportData.report_obj.thresholdAlert ? true : false,
             notificationSent: notificationSent,
             channel: 'Teams'
         }, { transaction });
@@ -115,7 +115,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         var thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
 
         config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, schedulerTaskMeta.id);
-        config.potentialAction[3].targets[0].uri =   flairInsightsLink = util.getGlairInsightsLink(teamConfig.shareLink, teamConfig.visualizationId)
+        config.potentialAction[3].targets[0].uri = flairInsightsLink = util.getGlairInsightsLink(teamConfig.shareLink, teamConfig.visualizationId)
         config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
 
         const updateTransaction = await db.sequelize.transaction();
@@ -147,7 +147,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                         transaction.rollback();
                         logger.log({
                             level: 'error',
-                            message: 'error while sending team' + thresholdAlertEmail ? ' for threshold alert' : '',
+                            message: 'error while sending team' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                             errMsg: error,
                         });
                     }
