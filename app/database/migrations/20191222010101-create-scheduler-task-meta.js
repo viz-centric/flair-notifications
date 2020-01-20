@@ -20,6 +20,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.JSON
       },
+      viewData: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       SchedulerTaskLogId: {
         type: Sequelize.BIGINT,
         onDelete: 'CASCADE',

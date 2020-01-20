@@ -7,7 +7,7 @@ function schedulertaskDTO(schedulerTaskObj) {
     timezone: schedulerTaskObj.timezone,
     thresholdMet: schedulerTaskObj.thresholdMet,
     notificationSent: schedulerTaskObj.notificationSent,
-    ticket: schedulerTaskObj.ticket,
+    isTicketCreated: schedulerTaskObj.isTicketCreated,
     start_date: moment(schedulerTaskObj.start_date).format(util.dateFormat()),
     end_date: moment(schedulerTaskObj.end_date).format("YYYY-MM-DD")
   }

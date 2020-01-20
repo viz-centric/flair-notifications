@@ -83,7 +83,45 @@ module.exports = {
         }),
         createdAt: new Date(),
         updatedAt: new Date()
-      }])
+      },
+      {
+        id: 'Jira',
+        channel_parameters: JSON.stringify({
+          "connectionProperties": [
+            {
+              "displayName": "Organization URL",
+              "fieldName": "organization",
+              "order": 0,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "Project Key",
+              "fieldName": "key",
+              "order": 1,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "User Name",
+              "fieldName": "userName",
+              "order": 2,
+              "fieldType": "String",
+              "required": true
+            },
+            {
+              "displayName": "API Token",
+              "fieldName": "apiToken",
+              "order": 3,
+              "fieldType": "String",
+              "required": true
+            }
+          ]
+        }),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+      ])
     });
   },
 
