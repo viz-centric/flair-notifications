@@ -28,8 +28,9 @@ module.exports = {
     AddJiraConfigs,
     updateJiraConfiguration,
     getJiraConfig,
-    createjiraTicket,
+    createJiraTicket,
     getAllJira,
+    disableTicketCreation
 };
 
 /**
@@ -204,7 +205,7 @@ async function getScheduleReportLog(request) {
         throw { error: { message: `Error loading schedule report log ${e.message}` } };
     }
     logger.info(`Get scheduled report log via grpc for ${taskLogMetaId} result`, taskMeta);
-    return { report_log: { query: taskMeta.rawQuery } };
+    return { report_log: taskMeta };
 }
 
 function searchReports(request) {
@@ -363,7 +364,7 @@ function addTeamConfigs(request) {
         if (request) {
             channelJobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve(result.message);
+                    resolve({ message: result.message });
                 } else {
                     reject(result.message);
                 }
@@ -407,7 +408,7 @@ function deleteChannelConfig(request) {
         if (request) {
             channelJobs.deleteChannelConfig(request.id).then(function (result) {
                 if (result.success === 1) {
-                    resolve( result.message );
+                    resolve(result.message);
                 } else {
                     reject(result.message);
                 }
@@ -419,12 +420,12 @@ function deleteChannelConfig(request) {
 }
 
 
-function AddJiraConfigs(){
+function AddJiraConfigs(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.AddJiraConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve( result.message );
+                    resolve({ message: result.message });
                 } else {
                     reject(result.message);
                 }
@@ -435,12 +436,12 @@ function AddJiraConfigs(){
     });
 }
 
-function updateJiraConfiguration(){
+function updateJiraConfiguration(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.updateJiraConfiguration(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve( result.message );
+                    resolve(result.message);
                 } else {
                     reject(result.message);
                 }
@@ -451,14 +452,14 @@ function updateJiraConfiguration(){
     });
 }
 
-function getJiraConfig(){
+function getJiraConfig(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.getJiraConfig(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve( result.message );
+                    resolve({ record: result.record });
                 } else {
-                    reject(result.message);
+                    reject({ message: result.message });
                 }
             }, function (err) {
                 reject({ message: err });
@@ -467,14 +468,12 @@ function getJiraConfig(){
     });
 }
 
-
-
-function createjiraTicket(){
+function createJiraTicket(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
-            channelJobs.createjiraTicket(request).then(function (result) {
-                if (result.success === 1) {
-                    resolve( result.message );
+            channelJobs.createJiraTicket(request).then(function (result) {
+                if (result) {
+                    resolve(result);
                 } else {
                     reject(result.message);
                 }
@@ -486,12 +485,28 @@ function createjiraTicket(){
 }
 
 
-function getAllJira(){
+function getAllJira(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.getAllJira(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve( result.message );
+                    resolve({ totalRecords: result.totalRecords, records: result.issues });
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+function disableTicketCreation(request) {
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            jobs.disableTicketCreation(request).then(function (result) {
+                if (result.success === 1) {
+                    reject(result.message);
                 } else {
                     reject(result.message);
                 }

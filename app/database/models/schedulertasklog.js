@@ -6,10 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     thresholdMet: DataTypes.BOOLEAN,
     notificationSent: DataTypes.BOOLEAN,
     channel: DataTypes.STRING,
-    ticket: DataTypes.STRING
+    isTicketCreated : DataTypes.BOOLEAN,
+    enableTicketCreation: DataTypes.BOOLEAN
 
   }, {});
   SchedulerTaskLog.associate = function (models) {
+    SchedulerTaskLog.hasOne(models.SchedulerTaskMeta, { onDelete: 'cascade' });
+
     SchedulerTaskLog.belongsTo(models.SchedulerTask, {
       foreignKey: 'SchedulerJobId',
       onDelete: 'CASCADE',

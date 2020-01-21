@@ -24,8 +24,11 @@ module.exports = {
       channel: {
         type: Sequelize.STRING
       },
-      ticket: {
-        type: Sequelize.STRING
+      isTicketCreated: {
+        type: Sequelize.BOOLEAN
+      },
+      enableTicketCreation:{
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

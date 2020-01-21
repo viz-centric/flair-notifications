@@ -4,6 +4,11 @@ var db = require('../database/models/index');
 var logger = require('../logger');
 var util = require('../util');
 var axios = require('axios');
+var jiraConfig = require('./jira-ticket');
+var modelsUtil = require('./models-utils');
+
+var moment = require('moment');
+
 
 var job = {
     getChannelProperties: async function () {
@@ -17,7 +22,6 @@ var job = {
                     channelObject.connectionProperties = channel[index].channel_parameters.connectionProperties
                     channelList.push(channelObject);
                 }
-
             }
             else {
                 return { success: 1, message: "channel not found" };
@@ -390,7 +394,7 @@ var job = {
             return { success: 0, message: ex };
         }
     },
-  
+
     //jira method start
     AddJiraConfigs: async function (request) {
         if (request) {
@@ -403,12 +407,12 @@ var job = {
                     }
                 });
 
-                request.emailParameter.password = util.encrypt(request.emailParameter.password);;
+                request.jiraParameter.apiToken = util.encrypt(request.jiraParameter.apiToken);
 
                 if (jira) {
                     channel = await models.ChannelConfigs.update({
-                        config: request.emailParameter,
-                        communication_channel_id: request.communication_channel_id
+                        config: request.jiraParameter,
+                        communication_channel_id: 'Jira'
                     },
                         {
                             where: {
@@ -418,7 +422,7 @@ var job = {
                 }
                 else {
                     channel = await models.ChannelConfigs.create({
-                        config: request.emailParameter,
+                        config: request.jiraParameter,
                         communication_channel_id: "Jira"
                     }, { transaction });
                 }
@@ -448,7 +452,7 @@ var job = {
         }
     },
 
-    updateJiraConfiguration: async function (request) { 
+    updateJiraConfiguration: async function (request) {
         if (request) {
             const transaction = await db.sequelize.transaction();
             let channel;
@@ -528,16 +532,180 @@ var job = {
         }
     },
 
-    createjiraTicket: async function (request) {
-        //TO DO : api calling 
-        var jiraSettings = getJiraConfig();
+    getSchedulerMetaData: async function (request) {
+        try {
+            var report;
+            var SchedulerLogsMeta = await models.SchedulerTaskMeta.findOne({
+                include: [
+                    {
+                        model: models.SchedulerTaskLog,
+                    }],
+                where: {
+                    id: request
+                }
+            })
+            if (SchedulerLogsMeta) {
+                var SchedulerJob = await models.SchedulerTask.findOne({
+                    where: { id: SchedulerLogsMeta.SchedulerTaskLog.SchedulerJobId }
+                });
+
+                report = await models.Report.findOne({
+                    include: [
+                        {
+                            model: models.AssignReport,
+                        }],
+                    where: { id: SchedulerJob.ReportId }
+                });
+            }
+
+            if (report) {
+                return {
+                    report: report,
+                    SchedulerLogsMeta: SchedulerLogsMeta
+                }
+
+            }
+        } catch (error) {
+            return {
+                message: "Scheduler logs metadata not found "
+            }
+        }
+    },
+    createJiraTicket: async function (request) {
+        var jiraSettings = await this.getJiraConfig();
+        var reportsData = await this.getSchedulerMetaData(request.id);
+        var jiraCreated = false, jiraDetails;
+        jiraConfig.fields.project.key = jiraSettings.record.key;
+        jiraConfig.fields.summary = reportsData.report.title_name + " (" + reportsData.report.dashboard_name + ")" + moment(reportsData.SchedulerLogsMeta.createdAt).format(util.dateFormat());;
+
+        jiraConfig.fields.description.content[0].content[0].text = reportsData.report.mail_body;
+        jiraConfig.fields.description.content[1].content[0].marks[0].attrs.href = reportsData.SchedulerLogsMeta.viewData;
+        await axios.post(jiraSettings.record.organization + '/rest/api/3/issue', jiraConfig, {
+
+            withCredentials: true,
+            auth: {
+                username: jiraSettings.record.userName,
+                password: jiraSettings.record.apiToken,
+            }
+        })
+            .then((res) => {
+                if (res.data.id) {
+                    jiraCreated = true;
+                    jiraDetails = res;
+                }
+            })
+            .catch((error) => {
+                logger.log({
+                    level: 'error',
+                    message: 'error occured while creating jira ticket',
+                });
+            })
+
+        if (jiraCreated) {
+
+            return await modelsUtil.saveCreatedJira(jiraDetails, jiraSettings, reportsData)
+        }
+        else {
+            logger.log({
+                level: 'error',
+                message: 'error occured while creating jira ticket',
+            });
+        }
+
     },
 
+
     getAllJira: async function (request) {
-        //TO DO : api calling 
-        var jiraSettings = getJiraConfig();
+        try {
+            var issueList = [], totalIssue = 0, jiraId = [], response;
+            var jiraSettings = await this.getJiraConfig();
+            var JiraTickets = await this.getCreatedTicketList();
+
+            JiraTickets.forEach(element => {
+                jiraId.push(element.jiraKey);
+            });
+
+            config = {
+                'All': {
+                    getEndPoint: function () {
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                    }
+                },
+                'Closed': {
+                    getEndPoint: function () {
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                    }
+                },
+                'Open': {
+                    getEndPoint: function () {
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                    }
+                },
+                'In Progress': {
+                    getEndPoint: function () {
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status="In Progress" AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                    }
+                },
+                'To Do': {
+                    getEndPoint: function () {
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status="To Do" AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                    }
+                }
+            };
+           
+            await axios.get(config[request.status].getEndPoint(), {
+
+                withCredentials: true,
+                auth: {
+                    username: jiraSettings.record.userName,
+                    password: jiraSettings.record.apiToken,
+                }
+            })
+                .then((res) => {
+                    response = res;
+                })
+                .catch((error) => {
+                    logger.log({
+                        level: 'error',
+                        message: 'error occured while fetching Jira Tickets',
+                    })
+                    return { success: 1, message: 'error' };
+                })
+            var iraTickets = await modelsUtil.getTicketsList(response, jiraSettings);
+            issueList = iraTickets.issues;
+            totalIssue = iraTickets.totalRecords
+            return {
+                success: 1,
+                issues: issueList,
+                totalRecords: totalIssue
+            };
+        } catch (error) {
+            return { success: 0, message: 'error' };
+        }
+
+    },
+    getCreatedTicketList: async function () {
+        try {
+            var JiraTickets = await models.JiraTickets.findAll();
+            if (JiraTickets) {
+
+                return JiraTickets
+            }
+            else {
+                return { success: 0, message: "Jira Tickets is not found" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching Jira Tickets',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
     },
    
+
     //jira method end
 }
 

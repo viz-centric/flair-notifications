@@ -8,6 +8,8 @@ var execution = require('../execution');
 var buildVisualizationService = require('../services/build-visualization.service');
 var logger = require('../logger');
 const Sequelize = require('sequelize');
+const modelsUtil = require('./models-utils');
+
 const Op = Sequelize.Op;
 const defaultPage = 0;
 const defaultPageSize = 10;
@@ -60,7 +62,7 @@ var job = {
             let constraints_obj = await models.ReportConstraint.create({
                 ReportId: report.id,
                 constraints: JSON.parse(params.constraints),
-            }, {transaction});
+            }, { transaction });
 
             logger.log({
                 level: 'info',
@@ -178,8 +180,8 @@ var job = {
                     }, { transaction });
 
                 let constraints_obj = await models.ReportConstraint.update({
-                        constraints: JSON.parse(report_data.constraints),
-                    },
+                    constraints: JSON.parse(report_data.constraints),
+                },
                     {
                         where: {
                             ReportId: exist_report.id
@@ -300,6 +302,11 @@ var job = {
             if (report) {
                 try {
                     var SchedulerLogs = await models.SchedulerTaskLog.findAndCountAll({
+                        include: [
+                            {
+                                model: models.SchedulerTaskMeta,
+                            }
+                        ],
                         where: {
                             SchedulerJobId: report.SchedulerTask.id
                         },
@@ -309,21 +316,10 @@ var job = {
                         limit,
                         offset,
                     });
-                    var outputlogs = [];
-                    for (var logItem of SchedulerLogs.rows) {
-                        var log = {};
-                        log.task_status = logItem.task_status;
-                        log.thresholdMet = logItem.thresholdMet;
-                        log.notificationSent = logItem.notificationSent;
-                        log.channel = logItem.channel;
-                        log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
-                        outputlogs.push(log);
+                    if (SchedulerLogs) {
+                        return await modelsUtil.getReportLogs(SchedulerLogs, report);
                     }
-                    return {
-                        success: 1,
-                        totalRecords: SchedulerLogs.count,
-                        SchedulerLogs: outputlogs
-                    };
+
                 }
                 catch (ex) {
                     return { success: 0, message: ex };
@@ -395,8 +391,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
     getJob: async function (visualizationid) {
         logger.info(`Get job for vizualization id ${visualizationid}`);
@@ -413,7 +407,7 @@ var job = {
                     },
                     {
                         model: models.SchedulerTask,
-                        where:{ active: true }
+                        where: { active: true }
                     },
                     {
                         model: models.ReportConstraint
@@ -445,8 +439,6 @@ var job = {
                 message: ex
             };
         }
-
-
     },
     JobCountByUser: async function (username) {
         logger.info(`Job count by user ${username}`);
@@ -559,8 +551,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
     buildVisualizationImage: function (params) {
         return new Promise((resolve, reject) => {
@@ -579,18 +569,79 @@ var job = {
                 buildVisualizationService.loadDataAndBuildVisualization(report, params.thresholdAlert).then(function (visualizationBytes) {
                     resolve(visualizationBytes);
                 }).catch(function (error) {
-                    reject({ message: 'error while generating image' + error });
+                    reject({ message: 'error occurred while generating visualization' + error });
                 });
             }
             catch (ex) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating image',
+                    message: 'error occurred while generating visualization',
                     error: ex,
                 });
-                reject({ message: 'error while generating image' + ex });
+                reject({ message: 'error occurred while generating visualization' + ex });
             }
         });
+    },
+    getSchedulerMetaData: async function (id) {
+        try {
+            var SchedulerLogs = await models.SchedulerTaskMeta.findOne({
+                where: {
+                    id: id
+                }
+            });
+            return SchedulerLogs;
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'Scheduler metadata is not found',
+                error: ex.getMessage(),
+            });
+            return "Scheduler metadata is not found";
+        }
+
+    },
+ 
+    disableTicketCreation: async function (params) {
+        try {
+
+            var exist_log = await models.SchedulerTaskMeta.findOne({
+                include: [
+                    {
+                        model: models.SchedulerTaskLog,
+                    }],
+                where: {
+                    id: params.schedulerTaskLogs
+                }
+            })
+            if (exist_log) {
+                const transaction = await db.sequelize.transaction();
+                try {
+                    let log = await models.SchedulerTaskLog.update({
+                        enableTicketCreation: !exist_log.SchedulerTaskLog.enableTicketCreation
+                    },
+                        {
+                            where: {
+                                id: exist_log.SchedulerTaskLog.id
+                            }
+                        }, { transaction });
+
+                    transaction.commit();
+                }
+                catch (ex) {
+                    logger.log({
+                        level: 'error',
+                        message: 'error occured while updating scheduler logs',
+                        errMsg: ex.message,
+                    });
+                    await transaction.rollback();
+                    return { success: 0, message: ex };
+                }
+            }
+
+        } catch (error) {
+
+        }
+
     }
 };
 
