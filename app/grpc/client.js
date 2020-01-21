@@ -24,7 +24,7 @@ const grpcClient = {
      return new Promise((resolve, reject) => {
        logger.info(`Get records promise`, query);
        client.GetData(query, (error, response) => {
-         logger.info(`Get records response ${query} resp ${response}`);
+         logger.info(`Get records response`, query, response, error);
          if (!error) {
            resolve(response);
          } else {

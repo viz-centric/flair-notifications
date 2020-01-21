@@ -1,6 +1,7 @@
 const AppConfig = require('./load_config');
 const grpc = require('grpc');
 const report = require('./grpc/report');
+const healthGrpcConnector = require('./grpc/health-grpc-connector.service');
 const fs = require('fs');
 const logger = require('./logger');
 
@@ -46,4 +47,5 @@ function registerEndpoints(server) {
     report.forEach(function (item) {
         item(server);
     });
+    healthGrpcConnector.construct(server);
 }
