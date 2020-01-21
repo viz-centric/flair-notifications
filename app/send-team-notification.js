@@ -147,7 +147,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                         transaction.rollback();
                         logger.log({
                             level: 'error',
-                            message: 'error while sending team' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                            message: 'error occurred while sending team' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                             errMsg: error,
                         });
                     }
@@ -155,7 +155,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                 .catch((error) => {
                     logger.log({
                         level: 'error',
-                        message: 'error while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                        message: 'error occurred while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                         errMsg: error,
                     });
                     let shedularlog = models.SchedulerTaskLog.create({
@@ -177,7 +177,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         await transaction.rollback();
         logger.log({
             level: 'error',
-            message: 'error while inserting team message in data base ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+            message: 'error occurred while inserting team message in data base ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
             errMsg: error,
         });
     }

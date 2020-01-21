@@ -28,8 +28,9 @@ module.exports = {
     AddJiraConfigs,
     updateJiraConfiguration,
     getJiraConfig,
-    createjiraTicket,
+    createJiraTicket,
     getAllJira,
+    disableTicketCreation
 };
 
 /**
@@ -204,7 +205,7 @@ async function getScheduleReportLog(request) {
         throw { error: { message: `Error loading schedule report log ${e.message}` } };
     }
     logger.info(`Get scheduled report log via grpc for ${taskLogMetaId} result`, taskMeta);
-    return { report_log:   taskMeta  };
+    return { report_log: taskMeta };
 }
 
 function searchReports(request) {
@@ -467,10 +468,10 @@ function getJiraConfig(request) {
     });
 }
 
-function createjiraTicket(request) {
+function createJiraTicket(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
-            channelJobs.createjiraTicket(request).then(function (result) {
+            channelJobs.createJiraTicket(request).then(function (result) {
                 if (result) {
                     resolve(result);
                 } else {
@@ -489,7 +490,23 @@ function getAllJira(request) {
         if (request) {
             channelJobs.getAllJira(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ records: result.issues });
+                    resolve({ totalRecords: result.totalRecords, records: result.issues });
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+function disableTicketCreation(request) {
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            jobs.disableTicketCreation(request).then(function (result) {
+                if (result.success === 1) {
+                    reject(result.message);
                 } else {
                     reject(result.message);
                 }

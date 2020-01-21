@@ -16,7 +16,7 @@ async function getSchedulerTaskMeta(taskLogMetaId) {
     scheduleData.viewName = schedulerMeta.report.view_name;
     scheduleData.descripition = schedulerMeta.report.mail_body;
     scheduleData.query = schedulerMeta.SchedulerLogsMeta.rawQuery;
-    scheduleData.task_executed = schedulerMeta.SchedulerLogsMeta.createdAt;
+    scheduleData.taskExecuted = schedulerMeta.SchedulerLogsMeta.createdAt;
 
     return scheduleData;
 }

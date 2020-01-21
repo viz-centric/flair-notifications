@@ -50,8 +50,9 @@ function constructReportService(server) {
         AddJiraConfigs,
         updateJiraConfiguration,
         getJiraConfig,
-        createjiraTicket,
-        getAllJira
+        createJiraTicket,
+        getAllJira,
+        disableTicketCreation
     })
 }
 
@@ -141,10 +142,14 @@ function getJiraConfig(call, callback) {
     handleCall(reportService.getJiraConfig(call.request), callback);
 }
 
-function createjiraTicket(call, callback) {
-    handleCall(reportService.createjiraTicket(call.request), callback);
+function createJiraTicket(call, callback) {
+    handleCall(reportService.createJiraTicket(call.request), callback);
 }
 
 function getAllJira(call, callback) {
     handleCall(reportService.getAllJira(call.request), callback);
+}
+
+function disableTicketCreation(call, callback){
+    handleCall(reportService.disableTicketCreation(call.request), callback);
 }

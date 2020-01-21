@@ -8,7 +8,7 @@ var execution = require('../execution');
 var buildVisualizationService = require('../services/build-visualization.service');
 var logger = require('../logger');
 const Sequelize = require('sequelize');
-const channelJobs = require('./channelJobs');
+const modelsUtil = require('./models-utils');
 
 const Op = Sequelize.Op;
 const defaultPage = 0;
@@ -317,7 +317,7 @@ var job = {
                         offset,
                     });
                     if (SchedulerLogs) {
-                        return await this.getReportLogs(SchedulerLogs, report);
+                        return await modelsUtil.getReportLogs(SchedulerLogs, report);
                     }
 
                 }
@@ -391,8 +391,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
     getJob: async function (visualizationid) {
         logger.info(`Get job for vizualization id ${visualizationid}`);
@@ -441,8 +439,6 @@ var job = {
                 message: ex
             };
         }
-
-
     },
     JobCountByUser: async function (username) {
         logger.info(`Job count by user ${username}`);
@@ -555,8 +551,6 @@ var job = {
             });
             return { success: 0, message: ex };
         }
-
-
     },
     buildVisualizationImage: function (params) {
         return new Promise((resolve, reject) => {
@@ -575,16 +569,16 @@ var job = {
                 buildVisualizationService.loadDataAndBuildVisualization(report, params.thresholdAlert).then(function (visualizationBytes) {
                     resolve(visualizationBytes);
                 }).catch(function (error) {
-                    reject({ message: 'error while generating image' + error });
+                    reject({ message: 'error occurred while generating visualization' + error });
                 });
             }
             catch (ex) {
                 logger.log({
                     level: 'error',
-                    message: 'error while generating image',
+                    message: 'error occurred while generating visualization',
                     error: ex,
                 });
-                reject({ message: 'error while generating image' + ex });
+                reject({ message: 'error occurred while generating visualization' + ex });
             }
         });
     },
@@ -597,41 +591,55 @@ var job = {
             });
             return SchedulerLogs;
         } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'Scheduler metadata is not found',
+                error: ex.getMessage(),
+            });
             return "Scheduler metadata is not found";
         }
 
     },
-    getReportLogs: async function (SchedulerLogs, report) {
+ 
+    disableTicketCreation: async function (params) {
         try {
-            var outputlogs = [];
-            for (var logItem of SchedulerLogs.rows) {
-                var log = {};
-                log.task_status = logItem.task_status;
-                log.thresholdMet = logItem.thresholdMet;
-                log.notificationSent = logItem.notificationSent;
-                log.channel = logItem.channel;
-                if (logItem.SchedulerTaskMetum) {
-                    log.schedulerTaskMetaId = logItem.SchedulerTaskMetum.id;
-                    log.viewData = logItem.SchedulerTaskMetum.viewData;
-                    log.viewTicket = await channelJobs.getJiraLink(logItem.SchedulerTaskMetum.id);
-                }
-                log.dashboardName = report.dashboard_name;
-                log.viewName = report.view_name;
 
-                log.descripition = report.mail_body;
-                log.isTicketCreated = logItem.isTicketCreated;
-                log.enableTicketCreation = logItem.enableTicketCreation;
-                log.comment = "";
-                log.task_executed = moment(logItem.task_executed).format("DD-MM-YYYY HH:mm")
-                outputlogs.push(log);
+            var exist_log = await models.SchedulerTaskMeta.findOne({
+                include: [
+                    {
+                        model: models.SchedulerTaskLog,
+                    }],
+                where: {
+                    id: params.schedulerTaskLogs
+                }
+            })
+            if (exist_log) {
+                const transaction = await db.sequelize.transaction();
+                try {
+                    let log = await models.SchedulerTaskLog.update({
+                        enableTicketCreation: !exist_log.SchedulerTaskLog.enableTicketCreation
+                    },
+                        {
+                            where: {
+                                id: exist_log.SchedulerTaskLog.id
+                            }
+                        }, { transaction });
+
+                    transaction.commit();
+                }
+                catch (ex) {
+                    logger.log({
+                        level: 'error',
+                        message: 'error occured while updating scheduler logs',
+                        errMsg: ex.message,
+                    });
+                    await transaction.rollback();
+                    return { success: 0, message: ex };
+                }
             }
-            return {
-                success: 1,
-                totalRecords: SchedulerLogs.count,
-                SchedulerLogs: outputlogs
-            };
+
         } catch (error) {
-            return "Scheduler metadata is not found";
+
         }
 
     }
