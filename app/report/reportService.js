@@ -30,7 +30,8 @@ module.exports = {
     getJiraConfig,
     createJiraTicket,
     getAllJira,
-    disableTicketCreation
+    disableTicketCreation,
+    notifyOpenedJiraTicket
 };
 
 /**
@@ -364,7 +365,7 @@ function addTeamConfigs(request) {
         if (request) {
             channelJobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ message: result.message });
+                    resolve(result.message);
                 } else {
                     reject(result.message);
                 }
@@ -505,6 +506,22 @@ function disableTicketCreation(request) {
     return new Promise(function (resolve, reject) {
         if (request) {
             jobs.disableTicketCreation(request).then(function (result) {
+                if (result.success === 1) {
+                    reject(result.message);
+                } else {
+                    reject(result.message);
+                }
+            }, function (err) {
+                reject({ message: err });
+            })
+        }
+    });
+}
+
+function notifyOpenedJiraTicket(request){
+    return new Promise(function (resolve, reject) {
+        if (request) {
+            channelJobs.sentMailForOpenTickets(request).then(function (result) {
                 if (result.success === 1) {
                     reject(result.message);
                 } else {

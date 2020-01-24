@@ -168,10 +168,11 @@ message GetAllJiraResponse {
     repeated JiraTickets records = 2;
 }
 message DisableTicketCreationRequest { 
-    int32 schedulerTaskLogs = 1;
+    int32 schedulerTaskLogId = 1;
 }
-message DisableTicketCreationResponse {
-      string message = 1;
+
+message NotifyOpenedJiraTicketRequest{
+    OpenJiraTicket openJiraTicketConfig = 1;
 }
 
 service ReportService {
@@ -198,6 +199,6 @@ service ReportService {
     rpc UpdateJiraConfigs(JiraConfigsRequest) returns (ConfigsResponse) {};
     rpc CreateJiraTicket(CreateJiraTicketRequest) returns (CreateJiraTicketResponse) {};
     rpc GetAllJira(GetAllJiraRequest) returns (GetAllJiraResponse) {};
-    rpc DisableTicketCreation(DisableTicketCreationRequest) returns (DisableTicketCreationResponse) {};
-
+    rpc DisableTicketCreation(DisableTicketCreationRequest) returns (ConfigsResponse) {};
+    rpc NotifyOpenedJiraTicket(NotifyOpenedJiraTicketRequest) returns (ConfigsResponse) {};
 }

@@ -1,7 +1,8 @@
 const models = require('../database/models/index');
 const logger = require('../logger');
 const channelJobs = require('../jobs/channelJobs');
-
+const dateFormat = "DD-MM-YYYY HH:mm";
+const moment = require('moment');
 const service = {
     getSchedulerTaskMeta
 };
@@ -16,7 +17,7 @@ async function getSchedulerTaskMeta(taskLogMetaId) {
     scheduleData.viewName = schedulerMeta.report.view_name;
     scheduleData.descripition = schedulerMeta.report.mail_body;
     scheduleData.query = schedulerMeta.SchedulerLogsMeta.rawQuery;
-    scheduleData.taskExecuted = schedulerMeta.SchedulerLogsMeta.createdAt;
+    scheduleData.taskExecuted = moment(schedulerMeta.SchedulerLogsMeta.createdAt).format(dateFormat);
 
     return scheduleData;
 }

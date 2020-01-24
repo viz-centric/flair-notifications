@@ -130,3 +130,9 @@ message JiraTickets {
     string viewTicket = 9;
     string createdBy = 10;
 }
+
+message OpenJiraTicket {
+    string project = 1;
+    int32 webhookID = 2;
+    repeated string channels = 3;
+}

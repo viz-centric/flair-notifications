@@ -204,7 +204,7 @@ var job = {
         if (request) {
             var exist_channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: request.id,
+                    id: request.teamConfigParameter.id,
                     communication_channel_id: "Teams"
                 }
             });
@@ -216,12 +216,12 @@ var job = {
                     request.teamConfigParameter.webhookURL = webhook
 
                     let channel = await models.ChannelConfigs.update({
-                        teamConfigParameter: request.teamConfigParameter,
+                        config: request.teamConfigParameter,
                     },
                         {
                             where: {
-                                communication_channel_id: request.communication_channel_id,
-                                id: request.id,
+                                communication_channel_id: "Teams",
+                                id: request.teamConfigParameter.id,
                             }
                         }, { transaction });
 
@@ -638,7 +638,13 @@ var job = {
                 },
                 'Open': {
                     getEndPoint: function () {
-                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                        if (request.page === "All") {
+                            return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ')';
+                        }
+                        else {
+                            return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
+                        }
+
                     }
                 },
                 'In Progress': {
@@ -652,7 +658,7 @@ var job = {
                     }
                 }
             };
-           
+
             await axios.get(config[request.status].getEndPoint(), {
 
                 withCredentials: true,
@@ -671,9 +677,9 @@ var job = {
                     })
                     return { success: 1, message: 'error' };
                 })
-            var iraTickets = await modelsUtil.getTicketsList(response, jiraSettings);
-            issueList = iraTickets.issues;
-            totalIssue = iraTickets.totalRecords
+            var jiraTickets = await modelsUtil.getTicketsList(response, jiraSettings);
+            issueList = jiraTickets.issues;
+            totalIssue = jiraTickets.totalRecords
             return {
                 success: 1,
                 issues: issueList,
@@ -704,8 +710,52 @@ var job = {
             return { success: 0, message: ex };
         }
     },
-   
 
+    sentMailForOpenTickets: async function (config) {
+        try {
+            var emailConfig = {};
+            var jira = {
+                status: "Open",
+                page: "All"
+            }
+            var openTickets = await this.getAllJira(jira);
+            if (config.openJiraTicketConfig.channels.indexOf('Email')) {
+                emailConfig.SMTPConfig = await this.getSMTPConfig();
+                emailConfig.createdBy = openTickets.issues.reduce(function (r, a) {
+                    r[a.createdBy] = r[a.createdBy] || [];
+                    r[a.createdBy].push(a);
+                    return r;
+                }, Object.create(null));
+
+                emailConfig.reporter = openTickets.issues.reduce(function (r, a) {
+                    r[a.reporter] = r[a.reporter] || [];
+                    r[a.reporter].push(a);
+                    return r;
+                }, Object.create(null));
+
+                emailConfig.assign = openTickets.issues.reduce(function (r, a) {
+                    r[a.assignPerson] = r[a.assignPerson] || [];
+                    r[a.assignPerson].push(a);
+                    return r;
+                }, Object.create(null));
+                modelsUtil.sendNotification(emailConfig);
+            }
+            if (config.openJiraTicketConfig.channels.indexOf('Teama')) {
+                var webhook = await this.getWebhookList([config.openJiraTicketConfig.webhookID]);
+                if (webhook) {
+                    modelsUtil.sendTeamMessage(openTickets.issues, webhook.records[0].config.webhookURL);
+                }
+            }
+            return "notification sent successfully for open tickets";
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occured while sending notification for open tickets',
+                error: error,
+            });
+            return { success: 0, message: 'error occured while sending notification for open tickets' + error };
+        }
+    },
     //jira method end
 }
 
