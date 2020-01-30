@@ -7,11 +7,14 @@ var moment = require('moment');
 const dateFormat = "DD-MM-YYYY HH:mm";
 var config = require('./team-message-payload');
 const discovery = require('../discovery');
+const taskLoggerURL = "#/administration/report-management#TaskLogger";
+const AppConfig = require('./load-notification-config');
 
-let flairBiUrl;
+let flairBiUrl, notificationConfig;
 
 async function init() {
-    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + "#/administration/report-management#TaskLogger";
+    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + taskLoggerURL;
+    notificationConfig = await AppConfig.getConfig();
 }
 init();
 
@@ -222,9 +225,9 @@ var job = {
         };
         userList.forEach(function (element) {
             if (element !== "") {
-                mailOptions.subject = "Action required - Open Flair BI Alert Jira's - " + moment(moment().format()).format(dateFormat);
+                mailOptions.subject = notificationConfig.notifyOpenedTicketSubject + moment(moment().format()).format(dateFormat);
                 mailOptions.to = element.split("/")[1];
-                mailOptions.html = "<h3>Following are the Open threshold alert Jira's that have been created from Flair BI Insights, If any issues accessing these Jira's please contact your system admin</h3>"
+                mailOptions.html = "<h3>" + notificationConfig.notifyOpenedTicketBody + "</h3>"
                 tickets[element].forEach(function (ticket) {
                     mailOptions.html += "<li><a target='_blank' href=" + ticket.viewTicket.split('|')[1] + ">" + ticket.viewTicket.split('|')[0] + " : " + ticket.summary + "</a></li>"
                 })
@@ -246,9 +249,9 @@ var job = {
     sendTeamMessage: async function (tickets, webhook) {
         try {
 
-            config.title = "Action required - Open Flair BI Alert Jira's - " + moment(moment().format()).format(dateFormat);
+            config.title = notificationConfig.notifyOpenedTicketSubject + moment(moment().format()).format(dateFormat);
 
-            var html = "<h3>Following are the Open threshold alert Jira's that have been created from Flair BI Insights, If any issues accessing these Jira's please contact your system admin</h3>"
+            var html = "<h3>" + notificationConfig.notifyOpenedTicketBody + "</h3>";
             tickets.forEach(function (ticket, index) {
                 html += "<li><a target='_blank' href=" + ticket.viewTicket.split('|')[1] + ">" + ticket.viewTicket.split('|')[0] + " : " + ticket.summary + "</a></li>"
             })

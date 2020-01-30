@@ -4,7 +4,9 @@ var moment = require('moment');
 var execution = require('./execution');
 var logger = require('./logger');
 var channelJobs = require('./jobs/channelJobs');
-const AppConfig = require('./load_config');
+var util = require('./util');
+
+const AppConfig = require('./jobs/load-notification-config');
 
 var shedular = {
     shedulJob: function (visualizationid, cron_exp, start_date, end_date) {
@@ -112,9 +114,10 @@ var shedular = {
     notifyOpenedTicket: async function () {
         try {
             const config = await AppConfig.getConfig();
+            var channelList = util.channelList();
             var job = scheduler.scheduleJob(config.notifyOpenedTicketJobCron, function () {
                 var config = {
-                    channels: ['Email']
+                    channels: [channelList.email]
                 }
                 channelJobs.sentMailForOpenTickets(config);
             });
