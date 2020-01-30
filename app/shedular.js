@@ -112,7 +112,7 @@ var shedular = {
     notifyOpenedTicket: async function () {
         try {
             const config = await AppConfig.getConfig();
-            var job = scheduler.scheduleJob(config.notifyOpenedTicket, function () {
+            var job = scheduler.scheduleJob(config.notifyOpenedTicketJobCron, function () {
                 var config = {
                     channels: ['Email']
                 }

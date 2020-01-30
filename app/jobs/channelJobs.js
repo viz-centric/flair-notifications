@@ -746,7 +746,10 @@ var job = {
                     modelsUtil.sendTeamMessage(openTickets.issues, webhook.records[0].config.webhookURL);
                 }
             }
-            return "notification sent successfully for open tickets";
+            return {
+                message: "notification sent successfully for open tickets",
+                success: 1,
+            }
 
         } catch (error) {
             logger.log({

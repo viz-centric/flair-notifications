@@ -41,7 +41,7 @@ var util = {
     },
 
     checkChannel: function (channelList, channelName) {
-        if (channelList.indexOf(channelName)) {
+        if (channelList.indexOf(channelName) !== -1) {
             return true;
         }
         else {
