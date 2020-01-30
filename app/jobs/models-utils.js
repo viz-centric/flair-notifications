@@ -261,15 +261,13 @@ var job = {
             config.sections[0].facts = null;
             config.potentialAction = [];
 
-            if (tickets.length > 15) {
-                config.potentialAction.push({
-                    "@type": "OpenUri",
-                    "name": "View more open Jira tickets",
-                    "targets": [
-                        { "os": "default", "uri": flairBiUrl }
-                    ]
-                })
-            }
+            config.potentialAction.push({
+                "@type": "OpenUri",
+                "name": "View more open Jira tickets",
+                "targets": [
+                    { "os": "default", "uri": flairBiUrl }
+                ]
+            })
 
             await axios.post(webhook, config)
                 .then(async (res) => {

@@ -638,13 +638,7 @@ var job = {
                 },
                 'Open': {
                     getEndPoint: function () {
-                        if (request.page === "All") {
-                            return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ')';
-                        }
-                        else {
-                            return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
-                        }
-
+                        return jiraSettings.record.organization + '/rest/api/3/search?jql=project in (' + jiraSettings.record.key + ') AND status!=Done AND id in (' + jiraId.toString() + ') &startAt=' + request.page * request.pageSize + '&maxResults=' + request.pageSize + '';
                     }
                 },
                 'In Progress': {
@@ -716,7 +710,8 @@ var job = {
             var emailConfig = {};
             var jira = {
                 status: "Open",
-                page: "All"
+                page: 0,
+                pageSize: 10
             }
             var openTickets = await this.getAllJira(jira);
 
