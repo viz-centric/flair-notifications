@@ -3,6 +3,10 @@ var models = require('./database/models/index');
 var moment = require('moment');
 var execution = require('./execution');
 var logger = require('./logger');
+var channelJobs = require('./jobs/channelJobs');
+var util = require('./util');
+
+const AppConfig = require('./jobs/load-notification-config');
 
 var shedular = {
     shedulJob: function (visualizationid, cron_exp, start_date, end_date) {
@@ -106,7 +110,25 @@ var shedular = {
         all_jobs = scheduler.scheduledJobs;
         result = all_jobs[jobName].reschedule(cron_expression);
         return result;
-    }
+    },
+    notifyOpenedTicket: async function () {
+        try {
+            const config = await AppConfig.getConfig();
+            var channelList = util.channelList();
+            var job = scheduler.scheduleJob(config.notifyOpenedTicketJobCron, function () {
+                var config = {
+                    channels: [channelList.email]
+                }
+                channelJobs.sentMailForOpenTickets(config);
+            });
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occured while scheduling job for open Tickets'
+            });
+        }
+
+    },
 }
 
 module.exports = shedular;

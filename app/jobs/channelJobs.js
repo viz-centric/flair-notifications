@@ -204,7 +204,7 @@ var job = {
         if (request) {
             var exist_channel = await models.ChannelConfigs.findOne({
                 where: {
-                    id: request.id,
+                    id: request.teamConfigParameter.id,
                     communication_channel_id: "Teams"
                 }
             });
@@ -216,12 +216,12 @@ var job = {
                     request.teamConfigParameter.webhookURL = webhook
 
                     let channel = await models.ChannelConfigs.update({
-                        teamConfigParameter: request.teamConfigParameter,
+                        config: request.teamConfigParameter,
                     },
                         {
                             where: {
-                                communication_channel_id: request.communication_channel_id,
-                                id: request.id,
+                                communication_channel_id: "Teams",
+                                id: request.teamConfigParameter.id,
                             }
                         }, { transaction });
 
@@ -652,7 +652,7 @@ var job = {
                     }
                 }
             };
-           
+
             await axios.get(config[request.status].getEndPoint(), {
 
                 withCredentials: true,
@@ -671,9 +671,9 @@ var job = {
                     })
                     return { success: 1, message: 'error' };
                 })
-            var iraTickets = await modelsUtil.getTicketsList(response, jiraSettings);
-            issueList = iraTickets.issues;
-            totalIssue = iraTickets.totalRecords
+            var jiraTickets = await modelsUtil.getTicketsList(response, jiraSettings);
+            issueList = jiraTickets.issues;
+            totalIssue = jiraTickets.totalRecords
             return {
                 success: 1,
                 issues: issueList,
@@ -704,8 +704,57 @@ var job = {
             return { success: 0, message: ex };
         }
     },
-   
 
+    sentMailForOpenTickets: async function (config) {
+        try {
+            var emailConfig = {};
+            var jira = {
+                status: "Open",
+                page: 0,
+                pageSize: 10
+            }
+            var openTickets = await this.getAllJira(jira);
+
+            var channelList = util.channelList();
+
+            if (util.checkChannel(config.openJiraTicketConfig.channels, channelList.email)) {
+
+                emailConfig.SMTPConfig = await this.getSMTPConfig();
+
+                emailConfig.createdBy = openTickets.issues.reduce(function (r, a) {
+                    r[a.createdBy] = r[a.createdBy] || [];
+                    r[a.createdBy].push(a);
+                    return r;
+                }, Object.create(null));
+
+                emailConfig.assign = openTickets.issues.reduce(function (r, a) {
+                    r[a.assignPerson] = r[a.assignPerson] || [];
+                    r[a.assignPerson].push(a);
+                    return r;
+                }, Object.create(null));
+
+                modelsUtil.sendEmailMessage(emailConfig);
+            }
+            if (util.checkChannel(config.openJiraTicketConfig.channels, channelList.team)) {
+                var webhook = await this.getWebhookList([config.openJiraTicketConfig.webhookID]);
+                if (webhook.records) {
+                    modelsUtil.sendTeamMessage(openTickets.issues, webhook.records[0].config.webhookURL);
+                }
+            }
+            return {
+                message: "notification sent successfully for open tickets",
+                success: 1,
+            }
+
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occured while sending notification for open tickets',
+                error: error,
+            });
+            return { success: 0, message: 'error occured while sending notification for open tickets' + error };
+        }
+    },
     //jira method end
 }
 

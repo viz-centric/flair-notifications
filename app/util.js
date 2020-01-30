@@ -8,6 +8,12 @@ var util = {
     dateFormat: function () {
         return "YYYY-MM-DD HH:mm";
     },
+    channelList: function () {
+        return {
+            team: "Teams",
+            email: "Email"
+        }
+    },
     encrypt: function (text) {
         let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
         let encrypted = cipher.update(text);
@@ -33,5 +39,14 @@ var util = {
     getGlairInsightsLink: function (urlString, id) {
         return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management/report/" + id;
     },
+
+    checkChannel: function (channelList, channelName) {
+        if (channelList.indexOf(channelName) !== -1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
 module.exports = util;

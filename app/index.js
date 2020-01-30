@@ -1,5 +1,6 @@
 const AppConfig = require('./load_config');
 const restartJobModule = require('./restart-jobs');
+const shedular = require('./shedular');
 const logger = require('./logger');
 const grpc = require('./grpc');
 const http = require('./http');
@@ -22,6 +23,7 @@ async function init(config) {
   await grpc.start(grpcPort, sslConfig);
 
   restartJobModule.restartJobs();
+  shedular.notifyOpenedTicket();
 }
 
 async function start() {

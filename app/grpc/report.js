@@ -42,17 +42,18 @@ function constructReportService(server) {
         addTeamConfigs,
         addEmailConfigs,
         updateEmailSMTP,
-        updateTeamWebhookURL,
+        UpdateTeamWebhookURL,
         getChannelProperties,
         deleteChannelConfig,
         getTeamConfig,
         getEmailConfig,
         AddJiraConfigs,
-        updateJiraConfiguration,
+        updateJiraConfigs,
         getJiraConfig,
         createJiraTicket,
         getAllJira,
-        disableTicketCreation
+        disableTicketCreation,
+        notifyOpenedJiraTicket
     })
 }
 
@@ -104,7 +105,6 @@ function addEmailConfigs(call, callback) {
     handleCall(reportService.addEmailConfigs(call.request), callback);
 }
 
-
 function getChannelProperties(call, callback) {
     handleCall(reportService.getChannelProperties(call.request), callback);
 }
@@ -118,7 +118,7 @@ function updateEmailSMTP(call, callback) {
     handleCall(reportService.updateEmailSMTP(call.request), callback);
 }
 
-function updateTeamWebhookURL(call, callback) {
+function UpdateTeamWebhookURL(call, callback) {
     handleCall(reportService.updateTeamWebhookURL(call.request), callback);
 }
 
@@ -134,7 +134,7 @@ function AddJiraConfigs(call, callback) {
     handleCall(reportService.AddJiraConfigs(call.request), callback);
 }
 
-function updateJiraConfiguration(call, callback) {
+function updateJiraConfigs(call, callback) {
     handleCall(reportService.updateJiraConfiguration(call.request), callback);
 }
 
@@ -152,4 +152,8 @@ function getAllJira(call, callback) {
 
 function disableTicketCreation(call, callback){
     handleCall(reportService.disableTicketCreation(call.request), callback);
+}
+
+function notifyOpenedJiraTicket(call, callback){
+    handleCall(reportService.notifyOpenedJiraTicket(call.request), callback);
 }

@@ -6,81 +6,27 @@ const channelJob = require('./jobs/channelJobs');
 const db = require('./database/models/index');
 var moment = require('moment');
 const util = require('./util');
-
-
-let config = {
-    "@type": "MessageCard",
-    "@context": "http://schema.org/extensions",
-    "themeColor": "0076D7",
-    "text": "",
-    "title": "",
-    "summary": "",
-    "sections": [{
-        "facts": [{
-            "name": "Deshboaed: ",
-            "value": ""
-        }, {
-            "name": "View",
-            "value": ""
-        }],
-        "activitySubtitle": "",
-        "markdown": true
-    }],
-    "potentialAction": [
-        {
-            "@type": "OpenUri",
-            "name": "Go to Widget",
-            "targets": [
-                { "os": "default", "uri": "" }
-            ]
-        },
-        {
-            "@type": "OpenUri",
-            "name": "Go to Dashboard",
-            "targets": [
-                { "os": "default", "uri": "" }
-            ]
-        },
-        {
-            "@type": "OpenUri",
-            "name": "View Data",
-            "targets": [
-                { "os": "default", "uri": "https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjdh9Lb_cvmAhXhheYKHVpDCZMQPAgH" }
-            ]
-        },
-        {
-            "@type": "OpenUri",
-            "name": "Flair Insights",
-            "targets": [
-                { "os": "default", "uri": "https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjdh9Lb_cvmAhXhheYKHVpDCZMQPAgH" }
-            ]
-        }
-    ]
-}
-
+var config = require('./jobs/team-message-payload')
 
 exports.sendTeamNotification = async function sendNotification(teamConfig, reportData) {
     config.title = teamConfig.reportTitle;
-
-    var tbody = "- |";
-
     var tablekey = Object.keys(teamConfig.tableData[0]);
-
+    var table = "<table><tr style='border:1px solid #e1e3e3'>";
     for (var j = 0; j < tablekey.length; j++) {
-        tbody += tablekey[j] + " | ";
+        table += "<th>" + tablekey[j] + "</th>";
     }
-    tbody += "\r";
+    table += "</tr><tbody>";
     for (let index = 0; index < teamConfig.tableData.length; index++) {
         const element = teamConfig.tableData[index];
-        tbody += "- | "
+        table += "<tr style='border:1px solid #e1e3e3'>";
         for (var j = 0; j < tablekey.length; j++) {
-            tbody += element[tablekey[j]] + " | ";
+            table += "<td>" + element[tablekey[j]] + "</td>";
         }
-        tbody += "\r"
+        table += "</tr>";
     }
-
-    config.sections[0].text = tbody;
-    config.sections[0].summary = tbody;
+    table += "</tr></tbody><table>";
+    config.sections[0].text = table;
+    config.sections[0].summary = table;
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
@@ -89,9 +35,9 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
 
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
 
-    var notificationSent = false, error_message = "";
+    var notificationSent = true, error_message = "";
 
-    const transaction = await db.sequelize.transaction();
+    var transaction = await db.sequelize.transaction();
     try {
         let shedularlog = await models.SchedulerTaskLog.create({
             SchedulerJobId: reportData['report_shedular_obj']['id'],
@@ -112,7 +58,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
 
         await transaction.commit();
 
-        var thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
+        thresholdTime = "Threshold run at " + moment(schedulerTaskMeta.createdAt).format(util.dateFormat());
 
         config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, schedulerTaskMeta.id);
         config.potentialAction[3].targets[0].uri = flairInsightsLink = util.getGlairInsightsLink(teamConfig.shareLink, teamConfig.visualizationId)
@@ -130,19 +76,37 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
 
         await updateTransaction.commit();
 
-
         for (let index = 0; index < webhookURL.records.length; index++) {
             await axios.post(webhookURL.records[index].config.webhookURL, config)
-                .then((res) => {
+                .then(async (res) => {
                     try {
                         if (res.data == "1") {
                             notificationSent = true;
                         }
                         else {
+                            var _transaction = await db.sequelize.transaction();
                             notificationSent = false;
-                            error_message = d.data;
-                            transaction.rollback();
+                            error_message = res.data;
+
+                            var log = await models.SchedulerTaskLog.findOne({
+                                where: {
+                                    id: shedularlog.id
+                                }
+                            })
+
+                            await models.SchedulerTaskLog.update({
+                                task_status: error_message,
+                                notificationSent: false
+                            },
+                                {
+                                    where: {
+                                        id: shedularlog.id
+                                    }
+                                }, { _transaction });
+                            _transaction.commit();
                         }
+
+
                     } catch (error) {
                         transaction.rollback();
                         logger.log({

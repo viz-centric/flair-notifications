@@ -1,10 +1,23 @@
-
+const nodemailer = require('nodemailer');
 var models = require('../database/models/index');
 var db = require('../database/models/index');
 var logger = require('../logger');
-var channelJobs= require('./channelJobs');
+const axios = require('axios');
 var moment = require('moment');
 const dateFormat = "DD-MM-YYYY HH:mm";
+var config = require('./team-message-payload');
+const discovery = require('../discovery');
+const taskLoggerURL = "#/administration/report-management#TaskLogger";
+const AppConfig = require('./load-notification-config');
+
+let flairBiUrl, notificationConfig;
+
+async function init() {
+    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + taskLoggerURL;
+    notificationConfig = await AppConfig.getConfig();
+}
+init();
+
 var job = {
 
     saveCreatedJira: async function (jiraDetails, jiraSettings, reportsData) {
@@ -166,10 +179,137 @@ var job = {
                 message: 'error while fetching Jira Tickets',
                 error: ex.getMessage(),
             });
-            return "error occurred while getting jira link";
+            return "error occurred while getting jira Tickets";
         }
 
     },
+    sendEmailMessage: async function (emailConfig) {
+
+        try {
+            var SMTPConfig = emailConfig.SMTPConfig;
+            var assign = Object.keys(emailConfig.assign);
+            this.sendMail(assign, "assign", emailConfig["assign"], SMTPConfig);
+
+            var createdBy = Object.keys(emailConfig.assign);
+            this.sendMail(createdBy, "created by ", emailConfig["createdBy"], SMTPConfig);
+
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occurred while sending notification of open tickets',
+                error: error,
+            });
+        }
+    },
+    sendMail: async function (userList, userType, tickets, SMTPConfig) {
+
+        var transporter = nodemailer.createTransport({
+            host: SMTPConfig.records.config.host,
+            port: SMTPConfig.records.config.port,
+            pool: true,
+            secure: false,
+            auth: {
+                user: SMTPConfig.records.config.user,
+                pass: SMTPConfig.records.config.password
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        var mailOptions = {
+            from: SMTPConfig.records.config.sender,
+            to: null,
+            subject: null,
+            html: ""
+        };
+        userList.forEach(function (element) {
+            if (element !== "") {
+                mailOptions.subject = notificationConfig.notifyOpenedTicketSubject + moment(moment().format()).format(dateFormat);
+                mailOptions.to = element.split("/")[1];
+                mailOptions.html = "<h3>" + notificationConfig.notifyOpenedTicketBody + "</h3>"
+                tickets[element].forEach(function (ticket) {
+                    mailOptions.html += "<li><a target='_blank' href=" + ticket.viewTicket.split('|')[1] + ">" + ticket.viewTicket.split('|')[0] + " : " + ticket.summary + "</a></li>"
+                })
+                transporter.sendMail(mailOptions, function (err, info) {
+                    if (err) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error occurred while sending email notification for open tickets',
+                            error: error,
+                        });
+                        reject(err)
+                    } else {
+                        resolve(info.response);
+                    }
+                });
+            }
+        })
+    },
+    sendTeamMessage: async function (tickets, webhook) {
+        try {
+
+            config.title = notificationConfig.notifyOpenedTicketSubject + moment(moment().format()).format(dateFormat);
+
+            var html = "<h3>" + notificationConfig.notifyOpenedTicketBody + "</h3>";
+            tickets.forEach(function (ticket, index) {
+                html += "<li><a target='_blank' href=" + ticket.viewTicket.split('|')[1] + ">" + ticket.viewTicket.split('|')[0] + " : " + ticket.summary + "</a></li>"
+            })
+            config.sections[0].text = html;
+            config.summary = "summary";
+
+            config.sections[0].facts = null;
+            config.potentialAction = [];
+
+            config.potentialAction.push({
+                "@type": "OpenUri",
+                "name": "View more open Jira tickets",
+                "targets": [
+                    { "os": "default", "uri": flairBiUrl }
+                ]
+            })
+
+            await axios.post(webhook, config)
+                .then(async (res) => {
+                    try {
+                        if (res.data == "1") {
+                            logger.log({
+                                level: 'info',
+                                message: 'notification is sent to team successfully'
+                            });
+                        }
+                        else {
+                            logger.log({
+                                level: 'error',
+                                message: 'error occurred while sending team notification for open tickets',
+                                errMsg: res.data,
+                            });
+                        }
+                    } catch (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error occurred while sending team notification for open tickets',
+                            errMsg: error,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    logger.log({
+                        level: 'error',
+                        message: 'error occurred while sending team notification for open tickets',
+                        errMsg: error,
+                    });
+
+                })
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occurred while sending team notification',
+                errMsg: error,
+            });
+        }
+    },
+
 }
 
 module.exports = job;
