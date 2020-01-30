@@ -1,7 +1,6 @@
 httpPort: 8090
 grpcPort: 8091
 imageFolder: ./images/
-notifyOpenedTicketJobCron: 0 9 */1 * *
 discovery:
   eureka:
     url: http://admin:admin@localhost:8761/eureka
