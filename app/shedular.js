@@ -3,7 +3,9 @@ var models = require('./database/models/index');
 var moment = require('moment');
 var execution = require('./execution');
 var logger = require('./logger');
-var channelJobs = require('./jobs/channelJobs')
+var channelJobs = require('./jobs/channelJobs');
+const AppConfig = require('./load_config');
+
 var shedular = {
     shedulJob: function (visualizationid, cron_exp, start_date, end_date) {
         if (start_date && end_date) {
@@ -107,9 +109,10 @@ var shedular = {
         result = all_jobs[jobName].reschedule(cron_expression);
         return result;
     },
-    notifyOpenedTicket: function () {
+    notifyOpenedTicket: async function () {
         try {
-            var job = scheduler.scheduleJob('0 9 */1 * *', function () {
+            const config = await AppConfig.getConfig();
+            var job = scheduler.scheduleJob(config.notifyOpenedTicket, function () {
                 var config = {
                     channels: ['Email']
                 }

@@ -719,17 +719,16 @@ var job = {
                 page: "All"
             }
             var openTickets = await this.getAllJira(jira);
-            if (config.openJiraTicketConfig.channels.indexOf('Email')) {
+
+            var channelList = util.channelList();
+
+            if (util.checkChannel(config.openJiraTicketConfig.channels, channelList.email)) {
+
                 emailConfig.SMTPConfig = await this.getSMTPConfig();
+
                 emailConfig.createdBy = openTickets.issues.reduce(function (r, a) {
                     r[a.createdBy] = r[a.createdBy] || [];
                     r[a.createdBy].push(a);
-                    return r;
-                }, Object.create(null));
-
-                emailConfig.reporter = openTickets.issues.reduce(function (r, a) {
-                    r[a.reporter] = r[a.reporter] || [];
-                    r[a.reporter].push(a);
                     return r;
                 }, Object.create(null));
 
@@ -738,15 +737,17 @@ var job = {
                     r[a.assignPerson].push(a);
                     return r;
                 }, Object.create(null));
-                modelsUtil.sendNotification(emailConfig);
+
+                modelsUtil.sendEmailMessage(emailConfig);
             }
-            if (config.openJiraTicketConfig.channels.indexOf('Teama')) {
+            if (util.checkChannel(config.openJiraTicketConfig.channels, channelList.team)) {
                 var webhook = await this.getWebhookList([config.openJiraTicketConfig.webhookID]);
-                if (webhook) {
+                if (webhook.records) {
                     modelsUtil.sendTeamMessage(openTickets.issues, webhook.records[0].config.webhookURL);
                 }
             }
             return "notification sent successfully for open tickets";
+
         } catch (error) {
             logger.log({
                 level: 'error',

@@ -5,7 +5,16 @@ var logger = require('../logger');
 const axios = require('axios');
 var moment = require('moment');
 const dateFormat = "DD-MM-YYYY HH:mm";
-var config = require('./team-message-payload')
+var config = require('./team-message-payload');
+const discovery = require('../discovery');
+
+let flairBiUrl;
+
+async function init() {
+    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + "#/administration/report-management#TaskLogger";
+}
+init();
+
 var job = {
 
     saveCreatedJira: async function (jiraDetails, jiraSettings, reportsData) {
@@ -171,7 +180,7 @@ var job = {
         }
 
     },
-    sendNotification: async function (emailConfig) {
+    sendEmailMessage: async function (emailConfig) {
 
         try {
             var SMTPConfig = emailConfig.SMTPConfig;
@@ -181,9 +190,12 @@ var job = {
             var createdBy = Object.keys(emailConfig.assign);
             this.sendMail(createdBy, "created by ", emailConfig["createdBy"], SMTPConfig);
 
-
         } catch (error) {
-            console.log(error)
+            logger.log({
+                level: 'error',
+                message: 'error occurred while sending notification of open tickets',
+                error: error,
+            });
         }
     },
     sendMail: async function (userList, userType, tickets, SMTPConfig) {
@@ -218,14 +230,17 @@ var job = {
                 })
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
-                        console.log(err); //to see error in case of container, will remove latter 
+                        logger.log({
+                            level: 'error',
+                            message: 'error occurred while sending email notification for open tickets',
+                            error: error,
+                        });
                         reject(err)
                     } else {
                         resolve(info.response);
                     }
                 });
             }
-
         })
     },
     sendTeamMessage: async function (tickets, webhook) {
@@ -248,7 +263,7 @@ var job = {
                     "@type": "OpenUri",
                     "name": "View more open Jira tickets",
                     "targets": [
-                        { "os": "default", "uri": "http://localhost:8002/#/administration/report-management#TaskLogger" }
+                        { "os": "default", "uri": flairBiUrl }
                     ]
                 })
             }
@@ -259,20 +274,20 @@ var job = {
                         if (res.data == "1") {
                             logger.log({
                                 level: 'info',
-                                message: 'team notification sent successfully'
+                                message: 'notification is sent to team successfully'
                             });
                         }
                         else {
                             logger.log({
                                 level: 'error',
-                                message: 'error occurred while sending team notification',
+                                message: 'error occurred while sending team notification for open tickets',
                                 errMsg: res.data,
                             });
                         }
                     } catch (error) {
                         logger.log({
                             level: 'error',
-                            message: 'error occurred while sending team notification',
+                            message: 'error occurred while sending team notification for open tickets',
                             errMsg: error,
                         });
                     }
@@ -280,13 +295,17 @@ var job = {
                 .catch((error) => {
                     logger.log({
                         level: 'error',
-                        message: 'error occurred while sending team notification',
+                        message: 'error occurred while sending team notification for open tickets',
                         errMsg: error,
                     });
 
                 })
         } catch (error) {
-            console.log("dfd")
+            logger.log({
+                level: 'error',
+                message: 'error occurred while sending team notification',
+                errMsg: error,
+            });
         }
     },
 
