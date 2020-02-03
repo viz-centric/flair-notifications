@@ -1,6 +1,7 @@
 httpPort: 8090
 grpcPort: 8091
 imageFolder: ./images/
+compressImageFolder: ./compress-images/
 discovery:
   eureka:
     url: http://admin:admin@localhost:8761/eureka
