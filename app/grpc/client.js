@@ -28,13 +28,13 @@ const grpcClient = {
         //TO DO: undo after testing 
         logger.info(`Get records response ${JSON.stringify(query)} resp ${JSON.stringify(response)}`);
         if (!error) {
+          //TO DO: undo after testing
+          logger.info(`getRecords  resolve ${JSON.stringify(response)} `);
           resolve(response);
-          //TO DO: undo after testing
-          logger.info(`getRecords  resolve ${response} `);
         } else {
-          reject(error.message);
           //TO DO: undo after testing
-          logger.info(`getRecords  reject error.message`);
+          logger.info(`getRecords  reject ${JSON.stringify(error)} `);
+          reject(error.message);
         }
       });
     });
