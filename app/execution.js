@@ -166,7 +166,36 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
     var grpcRetryCount = 0;
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
+
+        //TO DO: undo after testing 
+        logger.log({
+            level: 'info',
+            message: 'calling preProcessQuery method'
+        });
+
         const rawQuery = queryService.preProcessQuery(query);
+
+        //TO DO: undo after testing 
+        logger.log({
+            level: 'info',
+            message: 'response of preProcessQuery method' + rawQuery
+        });
+
+
+        //TO DO: undo after testing 
+        logger.log({
+            level: 'info',
+            message: 'calling getRecords method'
+        });
+
+        var data_call = grpc_client.getRecords(rawQuery);
+
+        //TO DO: undo after testing 
+        logger.log({
+            level: 'info',
+            message: 'response of getRecords method' + JSON.parse(data_call)
+        });
+
         var data_call = grpc_client.getRecords(rawQuery);
         data_call.then(async function (response) {
             var json_res = JSON.parse(response.data);

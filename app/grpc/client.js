@@ -7,32 +7,38 @@ const PROTO_PATH = './app/grpc/QueryService.proto';
 let grpcClientInstance;
 
 const queryproto = grpc.loadPackageDefinition(
-   protoLoader.loadSync(PROTO_PATH, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-   })
+  protoLoader.loadSync(PROTO_PATH, {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  })
 );
 
 const grpcClient = {
-   getRecords: async function (query) {
-     logger.info(`Get records for query ${query}`);
-     let client = grpcClientInstance;
-     logger.info(`Get records obtained client`, client);
-     return new Promise((resolve, reject) => {
-       logger.info(`Get records promise`, query);
-       client.GetData(query, (error, response) => {
-         logger.info(`Get records response ${query} resp ${response}`);
-         if (!error) {
-           resolve(response);
-         } else {
-           reject(error.message);
-         }
-       });
-     });
-   }
+  getRecords: async function (query) {
+    logger.info(`Get records for query ${query}`);
+    let client = grpcClientInstance;
+    logger.info(`Get records obtained client`, client);
+    return new Promise((resolve, reject) => {
+      logger.info(`Get records promise`, query);
+      client.GetData(query, (error, response) => {
+        logger.info(`Get records response ${query} resp ${response}`);
+        //TO DO: undo after testing 
+        logger.info(`Get records response ${JSON.stringify(query)} resp ${JSON.stringify(response)}`);
+        if (!error) {
+          resolve(response);
+          //TO DO: undo after testing
+          logger.info(`getRecords  resolve ${response} `);
+        } else {
+          reject(error.message);
+          //TO DO: undo after testing
+          logger.info(`getRecords  reject error.message`);
+        }
+      });
+    });
+  }
 };
 
 async function init() {
