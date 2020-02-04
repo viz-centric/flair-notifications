@@ -53,7 +53,7 @@ var shedular = {
                         }
                     ],
                 }).then(function (report) {
-                    var reports_data = {
+                    reports_data = {
                         report_obj: report,
                         report_line_obj: report.reportline,
                         report_assign_obj: report.AssignReport,
@@ -62,6 +62,14 @@ var shedular = {
                     execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
 
                 }).catch(function (err) {
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                        level: 'info',
+                        message: 'report data ' + JSON.stringify(reports_data)
+                    });
+
+
                     logger.log({
                         level: 'error',
                         message: 'error while generationg reports',
@@ -70,7 +78,7 @@ var shedular = {
                     let shedularlog = models.SchedulerTaskLog.create({
                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
-                        task_status: ex,
+                        task_status: 'error while generationg reports',
                         thresholdMet: reports_data.Report.thresholdAlert,
                         notificationSent: false,
                         channel: reports_data.SchedulerTask.channel

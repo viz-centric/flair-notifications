@@ -178,7 +178,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
         //TO DO: undo after testing 
         logger.log({
             level: 'info',
-            message: 'response of preProcessQuery method' + rawQuery
+            message: 'response of preProcessQuery method ' + JSON.stringify(rawQuery)
         });
 
 
@@ -196,9 +196,22 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
             message: 'response of getRecords method' + JSON.parse(data_call)
         });
 
-        var data_call = grpc_client.getRecords(rawQuery);
         data_call.then(async function (response) {
+
+            //TO DO: undo after testing 
+            logger.log({
+                level: 'info',
+                message: 'processing grpc response data'
+            });
+
             var json_res = JSON.parse(response.data);
+
+            //TO DO: undo after testing 
+            logger.log({
+                level: 'info',
+                message: 'data for createing visualization' + json_res
+            });
+
             if (json_res && json_res.data.length > 0) {
                 var vizID = reports_data.report_line_obj.visualizationid;
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
