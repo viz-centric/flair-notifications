@@ -195,7 +195,7 @@ const updateSchedulerTaskLog = async function (data, shedularlog, channel) {
         await transaction.rollback();
         logger.log({
             level: 'error',
-            message: 'error while saving scheduler log',
+            message: 'error occured while updating scheduler log',
             errMsg: error,
         });
     }
@@ -327,7 +327,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         await transaction.rollback();
                         logger.log({
                             level: 'error',
-                            message: 'error while saving scheduler log',
+                            message: 'error occured while saving scheduler log',
                             errMsg: error,
                         });
                     }
