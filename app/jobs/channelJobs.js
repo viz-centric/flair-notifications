@@ -24,7 +24,7 @@ var job = {
                 }
             }
             else {
-                return { success: 0, message: "channel not found" };
+                return { success: 0, message: "channel is not found" };
             }
             return { success: 1, channelProperties: channelList };
         }
@@ -354,7 +354,7 @@ var job = {
                 };
             }
             else {
-                return { success: 0, message: "channel not found" };
+                return { success: 0, message: "channel is not found" };
             }
         }
         catch (ex) {
@@ -382,7 +382,7 @@ var job = {
                 };
             }
             else {
-                return { success: 0, message: "channel not found" };
+                return { success: 0, message: "channel is not found" };
             }
         }
         catch (ex) {

@@ -102,7 +102,7 @@ var job = {
                     issue.assignPerson = element.fields.assignee.name + "/" + element.fields.assignee.emailAddress;
                 }
                 else {
-                    issue.assignPerson = "Unassigned";
+                    issue.assignPerson = notificationConfig.unassignedTicket;
                 }
                 issue.reporter = element.fields.reporter.name + "/ " + element.fields.reporter.emailAddress;
                 issue.priority = element.fields.priority.name;
