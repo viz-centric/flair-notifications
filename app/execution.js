@@ -367,7 +367,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                         await updateSchedulerTaskLog(error, shedularlog, channelList.email);
                                         logger.log({
                                             level: 'error',
-                                            message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                            message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : 'error while sending mail',
                                             errMsg: error,
                                         });
                                         if (mailRetryCount < 2) {
@@ -386,7 +386,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 });
 
                                 await updateSchedulerTaskLog(error, shedularlog, channelList.email);
-                            
+
                             });
                         }
                         if (util.checkChannel(channels, channelList.team)) {
@@ -419,21 +419,21 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                                         logger.log({
                                             level: 'error',
-                                            message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                            message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : 'error while sending mail',
                                             errMsg: error,
                                         });
                                         if (mailRetryCount < 2) {
                                             setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
-                                      
+
                                     });
 
 
                             }).catch(async function (error) {
                                 logger.log({
                                     level: 'error',
-                                    message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                    message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : 'error while generating image',
                                     errMsg: error,
                                 });
                                 await updateSchedulerTaskLog(error, shedularlog, channelList.team);
