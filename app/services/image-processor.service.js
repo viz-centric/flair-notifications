@@ -163,10 +163,23 @@ async function generateImageEmail(svgHtml, imageName) {
 
 const imageProcessor = {
   saveImageConvertToBase64ForEmail: async function (imageName, svgHtml) {
+
+    //TO DO: undo after testing 
+    logger.log({
+      level: 'info',
+      message: 'start generate image for email'
+    });
+
     return await generateImageEmail(svgHtml, imageName);
   },
 
   saveImageConvertToBase64Team: async function (imageName, svgHtml) {
+
+    //TO DO: undo after testing 
+    logger.log({
+      level: 'info',
+      message: 'start generate image for team'
+    });
     return await generateImageTeam(svgHtml, imageName);
   }
 };
