@@ -74,7 +74,11 @@ exports.sendMail = async function sendMailToGmail(emailData) {
                             console.log(err); //to see error in case of container, will remove latter 
                             reject(err)
                         } else {
-                            resolve(info.response);
+
+                            resolve({
+                                success: 1,
+                                message: emailData.toMailList.toString()
+                            });
                         }
                     });
                 }

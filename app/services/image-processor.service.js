@@ -24,47 +24,88 @@ async function init() {
 
 init();
 
-async function generateImage(svgHtml, image_dir, imageName, isTeamMessage) {
+async function generateImageTeam(svgHtml, imageName) {
   return new Promise((resolve, reject) => {
     try {
-      wkhtmltoimage.generate(svgHtml, { output: image_dir + imageName }, async function (code, signal) {
-        await base64Img.base64(image_dir + imageName, function (err, base64Bytes) {
+      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
+        await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
           var encodedUrl = "data:image/png;base64," + base64Bytes;
-          var base64 = [];
-          if (fs.existsSync(image_dir + imageName)) {
+          if (fs.existsSync(config.imageFolder + imageName)) {
 
-            base64.push({ key: "Email", "encodedUrl": encodedUrl })
+            (async () => {
+              await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
+                { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
+                { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
+                { svg: { engine: 'svgo', command: '--multipass' } },
+                { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
 
-            if (isTeamMessage) {
-              (async () => {
-                await compress_images(image_dir + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
-                  { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
-                  { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
-                  { svg: { engine: 'svgo', command: '--multipass' } },
-                  { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
+                  if (completed === true) {
+                    base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+                      encodedUrl = base64Bytes;
+                      if (fs.existsSync(config.compressImageFolder + imageName)) {
+                        fs.unlinkSync(config.compressImageFolder + imageName);
+                        fs.unlinkSync(config.imageFolder + imageName);
+                        resolve(encodedUrl);
+                      }
+                    });
+                  }
+                });
 
-                    if (completed === true) {
-                      base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
-                        encodedUrl = base64Bytes;
-                        if (fs.existsSync(config.compressImageFolder + imageName)) {
-                          fs.unlinkSync(config.compressImageFolder + imageName);
-                          base64.push({ key: "Teams", "encodedUrl": encodedUrl })
-                          resolve(base64);
-                        }
-                      });
-                    }
-                  });
-
-              })();
-            }
-            else {
-              resolve(base64);
-            }
-
-            // fs.unlinkSync(image_dir + imageName);
-
+            })();
           }
 
+        }, function (error) {
+          logger.log({
+            level: 'error',
+            message: "error occured while converting image to base64 uri",
+            errMsg: "error occured while converting image to base64 uri : " + error.message,
+          });
+          let shedularlog = models.SchedulerTaskLog.create({
+            SchedulerJobId: reports_data['report_shedular_obj']['id'],
+            task_executed: new Date(Date.now()).toISOString(),
+            task_status: "error occured while converting image to base64 uri : " + error.message,
+          });
+          reject(error.message);
+        });
+      }, function (error) {
+        logger.log({
+          level: 'error',
+          message: "error occured while converting svg html to image",
+          errMsg: "error occured while converting svg html to image : " + error.message,
+        });
+        let shedularlog = models.SchedulerTaskLog.create({
+          SchedulerJobId: reports_data['report_shedular_obj']['id'],
+          task_executed: new Date(Date.now()).toISOString(),
+          task_status: "error occured while converting svg html to image : " + error.message,
+        });
+        reject(error.message);
+      });
+    } catch (ex) {
+      logger.log({
+        level: 'error',
+        message: "error occured while processing an image",
+        errMsg: "error occured while processing an image : " + ex.message,
+      });
+      let shedularlog = models.SchedulerTaskLog.create({
+        SchedulerJobId: reports_data['report_shedular_obj']['id'],
+        task_executed: new Date(Date.now()).toISOString(),
+        task_status: "error occured while processing an image" + ex.message,
+      });
+      reject(ex.message);
+    }
+  });
+}
+
+async function generateImageEmail(svgHtml, imageName) {
+  return new Promise((resolve, reject) => {
+    try {
+      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
+        await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
+          var encodedUrl = "data:image/png;base64," + base64Bytes;
+          if (fs.existsSync(config.imageFolder + imageName)) {
+            fs.unlinkSync(config.imageFolder + imageName);
+            resolve(encodedUrl);
+          }
         }, function (error) {
           logger.log({
             level: 'error',
@@ -106,11 +147,16 @@ async function generateImage(svgHtml, image_dir, imageName, isTeamMessage) {
   });
 }
 
+
 const imageProcessor = {
-  saveImageConvertToBase64: async function (imageName, svgHtml, isTeamMessage) {
+  saveImageConvertToBase64ForEmail: async function (imageName, svgHtml) {
     config = await AppConfig.getConfig();
-    const image_dir = config.imageFolder;
-    return await generateImage(svgHtml, image_dir, imageName, isTeamMessage);
+    return await generateImageEmail(svgHtml, imageName);
+  },
+
+  saveImageConvertToBase64Team: async function (imageName, svgHtml) {
+    config = await AppConfig.getConfig();
+    return await generateImageTeam(svgHtml, imageName);
   }
 };
 
