@@ -132,7 +132,7 @@ exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(r
                 generate_chart = chartMap[report.visualization].generateChart(report, json_res.data);
                 generate_chart.then(function (response) {
                     var imagefilename =thresholdAlertEmail?'threshold_alert_chart_'+report.visualizationId:report.visualizationId +new Date().getTime()+'.png';
-                    imageProcessor.saveImageConvertToBase64(imagefilename,response).then(function (bytes) {
+                    imageProcessor.saveImageConvertToBase64ForEmail(imagefilename,response).then(function (bytes) {
                         resolve(bytes);
                     }).catch(function (error) {
                         reject(error);

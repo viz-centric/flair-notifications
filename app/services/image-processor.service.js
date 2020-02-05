@@ -48,7 +48,20 @@ async function generateImageTeam(svgHtml, imageName) {
                         resolve(encodedUrl);
                       }
                     });
+
                   }
+                }, function (error) {
+                  logger.log({
+                    level: 'error',
+                    message: "error occured while converting image to base64 uri",
+                    errMsg: "error occured while converting image to base64 uri : " + error.message,
+                  });
+                  let shedularlog = models.SchedulerTaskLog.create({
+                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                    task_executed: new Date(Date.now()).toISOString(),
+                    task_status: "error occured while converting image to base64 uri : " + error.message,
+                  });
+                  reject(error.message);
                 });
 
             })();
@@ -150,12 +163,10 @@ async function generateImageEmail(svgHtml, imageName) {
 
 const imageProcessor = {
   saveImageConvertToBase64ForEmail: async function (imageName, svgHtml) {
-    config = await AppConfig.getConfig();
     return await generateImageEmail(svgHtml, imageName);
   },
 
   saveImageConvertToBase64Team: async function (imageName, svgHtml) {
-    config = await AppConfig.getConfig();
     return await generateImageTeam(svgHtml, imageName);
   }
 };

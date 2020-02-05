@@ -6,7 +6,15 @@ const channelJob = require('./jobs/channelJobs');
 const db = require('./database/models/index');
 var moment = require('moment');
 const util = require('./util');
-var config = require('./jobs/team-message-payload')
+var config = require('./jobs/team-message-payload');
+const AppConfig = require('./jobs/load-notification-config');
+
+let notificationConfig;
+
+async function init() {
+    notificationConfig = await AppConfig.getConfig();
+}
+init();
 
 exports.sendTeamNotification = async function sendNotification(teamConfig, reportData) {
     config.title = teamConfig.reportTitle;
@@ -18,7 +26,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     }
     table += "</tr><tbody>";
     for (let index = 0; index < teamConfig.tableData.length; index++) {
-        if (index < 20) {
+        if (index < notificationConfig.totalRecord) {
             const element = teamConfig.tableData[index];
             table += "<tr>";
             for (var j = 0; j < tablekey.length; j++) {
