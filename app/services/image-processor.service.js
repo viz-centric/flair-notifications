@@ -25,12 +25,45 @@ async function init() {
 init();
 
 async function generateImageTeam(svgHtml, imageName) {
+
+  //TO DO: undo after testing 
+  logger.log({
+    level: 'info',
+    message: "generateImageTeam " + svgHtml + " file name " + imageName
+  });
+
+  //TO DO: undo after testing 
+  logger.log({
+    level: 'info',
+    message: "config object" + config + " config data  " + JSON.stringify(config)
+  });
+
   return new Promise((resolve, reject) => {
     try {
       wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
+
+        //TO DO: undo after testing 
+        logger.log({
+          level: 'info',
+          message: "images created for team  " + config.imageFolder + imageName
+        });
+
         await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
           var encodedUrl = "data:image/png;base64," + base64Bytes;
+
+          //TO DO: undo after testing 
+          logger.log({
+            level: 'info',
+            message: "base64 created for team images  " + encodedUrl
+          });
+
           if (fs.existsSync(config.imageFolder + imageName)) {
+
+            //TO DO: undo after testing 
+            logger.log({
+              level: 'info',
+              message: "start images compress_images : " + config.imageFolder + imageName + " path : " + config.compressImageFolder
+            });
 
             (async () => {
               await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
@@ -40,6 +73,14 @@ async function generateImageTeam(svgHtml, imageName) {
                 { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
 
                   if (completed === true) {
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "images compress_images is done  "
+                    });
+
+
                     base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
                       if (fs.existsSync(config.compressImageFolder + imageName)) {
@@ -47,6 +88,15 @@ async function generateImageTeam(svgHtml, imageName) {
                         fs.unlinkSync(config.imageFolder + imageName);
                         resolve(encodedUrl);
                       }
+                    });
+
+                  }
+                  if (error) {
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "error while compress image" + error
                     });
 
                   }
@@ -112,9 +162,36 @@ async function generateImageTeam(svgHtml, imageName) {
 async function generateImageEmail(svgHtml, imageName) {
   return new Promise((resolve, reject) => {
     try {
+
+      //TO DO: undo after testing 
+      logger.log({
+        level: 'info',
+        message: "generateImageEmail " + svgHtml + " file name " + imageName
+      });
+
+      //TO DO: undo after testing 
+      logger.log({
+        level: 'info',
+        message: "config object" + config + " config data  " + JSON.stringify(config)
+      });
+
       wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
+
+        //TO DO: undo after testing 
+        logger.log({
+          level: 'info',
+          message: "images created for email  " + config.imageFolder + imageName
+        });
+
         await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
           var encodedUrl = "data:image/png;base64," + base64Bytes;
+
+          //TO DO: undo after testing 
+          logger.log({
+            level: 'info',
+            message: "base64 created for email images  " + encodedUrl
+          });
+
           if (fs.existsSync(config.imageFolder + imageName)) {
             fs.unlinkSync(config.imageFolder + imageName);
             resolve(encodedUrl);
@@ -170,7 +247,15 @@ const imageProcessor = {
       message: 'start generate image for email'
     });
 
-    return await generateImageEmail(svgHtml, imageName);
+    var base64 = await generateImageEmail(svgHtml, imageName);
+
+    //TO DO: undo after testing 
+    logger.log({
+      level: 'info',
+      message: 'generateImageEmail response ' + base64
+    });
+
+    return base64;
   },
 
   saveImageConvertToBase64Team: async function (imageName, svgHtml) {
@@ -180,7 +265,16 @@ const imageProcessor = {
       level: 'info',
       message: 'start generate image for team'
     });
-    return await generateImageTeam(svgHtml, imageName);
+
+    var base64 = await generateImageTeam(svgHtml, imageName);
+
+    //TO DO: undo after testing 
+    logger.log({
+      level: 'info',
+      message: 'generateImageTeam response ' + base64
+    });
+
+    return base64;
   }
 };
 
