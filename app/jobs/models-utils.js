@@ -102,7 +102,7 @@ var job = {
                     issue.assignPerson = element.fields.assignee.name + "/" + element.fields.assignee.emailAddress;
                 }
                 else {
-                    issue.assignPerson = "";
+                    issue.assignPerson = "Unassigned";
                 }
                 issue.reporter = element.fields.reporter.name + "/ " + element.fields.reporter.emailAddress;
                 issue.priority = element.fields.priority.name;
@@ -190,7 +190,7 @@ var job = {
             var assign = Object.keys(emailConfig.assign);
             this.sendMail(assign, "assign", emailConfig["assign"], SMTPConfig);
 
-            var createdBy = Object.keys(emailConfig.assign);
+            var createdBy = Object.keys(emailConfig.createdBy);
             this.sendMail(createdBy, "created by ", emailConfig["createdBy"], SMTPConfig);
 
         } catch (error) {
@@ -257,6 +257,7 @@ var job = {
             })
             config.sections[0].text = html;
             config.summary = "summary";
+            config.text = "";
 
             config.sections[0].facts = null;
             config.potentialAction = [];

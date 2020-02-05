@@ -56,7 +56,7 @@ module.exports = {
               "displayName": "Password",
               "fieldName": "password",
               "order": 4,
-              "fieldType": "String",
+              "fieldType": "Password",
               "required": true
             }]
         }),
@@ -113,7 +113,7 @@ module.exports = {
               "displayName": "API Token",
               "fieldName": "apiToken",
               "order": 3,
-              "fieldType": "String",
+              "fieldType": "Password",
               "required": true
             }
           ]

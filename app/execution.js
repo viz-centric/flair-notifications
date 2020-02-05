@@ -10,7 +10,7 @@ var logger = require('./logger');
 var imageProcessor = require('./services/image-processor.service');
 const queryService = require('./services/query-service');
 const retryDelay = 3000 //in miliseconds
-
+let channelStatus = [];
 const chartMap = {
     'Clustered Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
@@ -161,9 +161,51 @@ const chartMap = {
     }
 };
 
+const updateSchedulerTaskLog = async function (data, shedularlog, channel) {
+
+    var log = await models.SchedulerTaskLog.findOne({
+        where: {
+            id: shedularlog.id
+        }
+    });
+
+    const transaction = await db.sequelize.transaction();
+    try {
+
+        var channelData = JSON.parse(log.channel);
+        channelData = channelData.map(function (val) {
+            if (val.channel === channel) {
+                val.notificationSent = data.success == 1 ? true : false
+                val.status = data.message
+            }
+            return val;
+        })
+
+        await models.SchedulerTaskLog.update({
+            channel: JSON.stringify(channelData),
+        }, {
+            where: {
+                id: shedularlog.id
+            }
+        }, { transaction });
+
+        await transaction.commit();
+
+    } catch (error) {
+        await transaction.rollback();
+        logger.log({
+            level: 'error',
+            message: 'error while saving scheduler log',
+            errMsg: error,
+        });
+    }
+}
+
 exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
     let query = reports_data.report_line_obj.query;
+
     var grpcRetryCount = 0;
+
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
 
@@ -190,12 +232,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
         var data_call = grpc_client.getRecords(rawQuery);
 
-        //TO DO: undo after testing 
-        logger.log({
-            level: 'info',
-            message: 'response of getRecords method' + JSON.parse(data_call)
-        });
-
         data_call.then(async function (response) {
 
             //TO DO: undo after testing 
@@ -204,6 +240,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 message: 'processing grpc response data'
             });
 
+            var channels = reports_data['report_assign_obj']['channel'];
             var json_res = JSON.parse(response.data);
 
             //TO DO: undo after testing 
@@ -213,15 +250,25 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
             });
 
             if (json_res && json_res.data.length > 0) {
+
+                channelStatus = [];
+                for (let index = 0; index < channels.length; index++) {
+                    channelStatus.push(
+                        {
+                            channel: channels[index],
+                            notificationSent: true,
+                            status: "success"
+                        }
+                    )
+                }
+
                 var vizID = reports_data.report_line_obj.visualizationid;
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
-                generate_chart.then(function (response) {
-                    var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + '.png' : reports_data['report_obj']['report_name'] + '.png';
+                generate_chart.then(async function (response) {
                     var toMailList = [];
-
                     //get communication lists
                     var communicationList = reports_data['report_assign_obj']['communication_list'];
 
@@ -240,79 +287,84 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var viewName = reports_data['report_obj']['view_name']
                     var mailRetryCount = 0;
                     var viewDataLink = "", flairInsightsLink = "";
-                    function sendReport(subject, toMailList, mailBody, reportTitle, imagefilename) {
+
+                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID);
+
+                    let shedularlog = null, schedulerTaskMeta = null;
+
+                    const transaction = await db.sequelize.transaction();
+                    try {
+                        shedularlog = await models.SchedulerTaskLog.create({
+                            SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                            task_executed: new Date(Date.now()).toISOString(),
+                            task_status: "success",
+                            thresholdMet: thresholdAlertEmail,
+                            notificationSent: true,
+                            channel: JSON.stringify(channelStatus),
+                            enableTicketCreation: true
+                        }, { transaction });
+
+                        schedulerTaskMeta = await models.SchedulerTaskMeta.create({
+                            SchedulerTaskLogId: shedularlog.id,
+                            rawQuery: rawQuery
+                        }, { transaction });
+                        await transaction.commit();
+
+                        viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
+
+
+                        const updateTransaction = await db.sequelize.transaction();
+                        await models.SchedulerTaskMeta.update({
+                            viewData: viewDataLink
+                        }, {
+                            where: {
+                                id: schedulerTaskMeta.id
+                            }
+                        }, { updateTransaction });
+
+                        await updateTransaction.commit();
+                    } catch (error) {
+                        await transaction.rollback();
+                        logger.log({
+                            level: 'error',
+                            message: 'error while saving scheduler log',
+                            errMsg: error,
+                        });
+                    }
+
+                    async function sendReport(subject, toMailList, mailBody, reportTitle) {
                         mailRetryCount += 1;
-                        var channels = reports_data['report_assign_obj']['channel'];
 
-                        var isTeamMessage = channels.indexOf("Teams") != -1 ? true : false;
-                        imageProcessor.saveImageConvertToBase64(imagefilename, response, isTeamMessage).then(async function (bytes) {
+                        var channelList = util.channelList();
 
-                            if (channels.indexOf('Email') >= 0) {
+                        if (util.checkChannel(channels, channelList.email)) {
 
-                                var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Email" })
+                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png';
+                            imageProcessor.saveImageConvertToBase64ForEmail(imagefilename, response).then(async function (bytes) {
 
-                                const transaction = await db.sequelize.transaction();
-                                try {
-                                    const shedularlog = await models.SchedulerTaskLog.create({
-                                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                        task_executed: new Date(Date.now()).toISOString(),
-                                        task_status: "success",
-                                        thresholdMet: thresholdAlertEmail,
-                                        notificationSent: true,
-                                        channel: "Email",
-                                        enableTicketCreation: true
-                                    }, { transaction });
-
-                                    const schedulerTaskMeta = await models.SchedulerTaskMeta.create({
-                                        SchedulerTaskLogId: shedularlog.id,
-                                        rawQuery: rawQuery
-                                    }, { transaction });
-                                    await transaction.commit();
-
-                                    const updateTransaction = await db.sequelize.transaction();
-                                    await models.SchedulerTaskMeta.update({
-                                        viewData: viewDataLink
-                                    }, {
-                                        where: {
-                                            id: schedulerTaskMeta.id
-                                        }
-                                    }, { updateTransaction });
-
-                                    await updateTransaction.commit();
-
-                                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID)
-                                    var emailData = {
-                                        subject: subject,
-                                        description: mailBody,
-                                        reportTitle: reportTitle,
-                                        buildUrl: buildUrl,
-                                        shareLink: shareLink,
-                                        base64: ImageBase64[0].encodedUrl,
-                                        tableData: json_res.data,
-                                        toMailList: toMailList,
-                                        viewDataLink: viewDataLink,
-                                        flairInsightsLink: flairInsightsLink,
-                                        dashboard: dashboard,
-                                        viewName: viewName,
-                                        imagefilename: imagefilename,
-                                        chartResponse: response,
-                                        visualizationType: reports_data.report_line_obj.viz_type
-                                    }
-
-                                } catch (error) {
-                                    await transaction.rollback();
-                                    logger.log({
-                                        level: 'error',
-                                        message: 'error while saving scheduler log',
-                                        errMsg: error,
-                                    });
+                                var emailData = {
+                                    subject: subject,
+                                    description: mailBody,
+                                    reportTitle: reportTitle,
+                                    buildUrl: buildUrl,
+                                    shareLink: shareLink,
+                                    base64: bytes,
+                                    tableData: json_res.data,
+                                    toMailList: toMailList,
+                                    viewDataLink: viewDataLink,
+                                    flairInsightsLink: flairInsightsLink,
+                                    dashboard: dashboard,
+                                    viewName: viewName,
+                                    imagefilename: imagefilename,
+                                    chartResponse: response,
+                                    visualizationType: reports_data.report_line_obj.viz_type
                                 }
 
-                                sendmailtool.sendMail(emailData).then(async function (success) {
-
+                                sendmailtool.sendMail(emailData).then(async function (data) {
+                                    await updateSchedulerTaskLog(data, shedularlog, channelList.email);
                                 },
-                                    function (error) {
-                                        transaction.rollback();
+                                    async function (error) {
+                                        await updateSchedulerTaskLog(error, shedularlog, channelList.email);
                                         logger.log({
                                             level: 'error',
                                             message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',
@@ -322,21 +374,25 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
-                                        else {
-                                            let shedularlog = models.SchedulerTaskLog.create({
-                                                SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                                task_executed: new Date(Date.now()).toISOString(),
-                                                task_status: "mail " + error,
-                                                thresholdMet: thresholdAlertEmail,
-                                                notificationSent: false,
-                                                channel: "Email"
-                                            });
-                                        }
 
                                     });
-                            }
-                            if (channels.indexOf('Teams') >= 0) {
-                                var ImageBase64 = bytes.filter(function (val) { return val["key"] == "Teams" })
+
+
+                            }).catch(async function (error) {
+                                logger.log({
+                                    level: 'error',
+                                    message: thresholdAlertEmail ? 'error while generating image for threshold alert' : 'error while generating image',
+                                    errMsg: error,
+                                });
+
+                                await updateSchedulerTaskLog(error, shedularlog, channelList.email);
+                            
+                            });
+                        }
+                        if (util.checkChannel(channels, channelList.team)) {
+                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png';
+
+                            imageProcessor.saveImageConvertToBase64Team(imagefilename, response).then(async function (bytes) {
 
                                 var teamData = {
                                     dashboard: dashboard,
@@ -345,51 +401,72 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     reportTitle: reportTitle,
                                     buildUrl: buildUrl,
                                     shareLink: shareLink,
-                                    base64: ImageBase64[0].encodedUrl,
+                                    base64: bytes,
                                     tableData: json_res.data,
                                     webhookURL: webhookURL,
                                     visualizationId: vizID,
                                     isThresholdReport: thresholdAlertEmail,
+                                    shedularlog: shedularlog,
+                                    schedulerTaskMeta: schedulerTaskMeta,
                                     rawQuery
                                 }
-                                sendNotification.sendTeamNotification(teamData, reports_data);
-                            }
+                                sendNotification.sendTeamNotification(teamData, reports_data).then(async function (data) {
+                                    await updateSchedulerTaskLog(data, shedularlog, channelList.team);
+                                },
+                                    async function (error) {
 
-                        }).catch(function (error) {
-                            logger.log({
-                                level: 'error',
-                                message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : '',
-                                errMsg: error,
+                                        await updateSchedulerTaskLog(error, shedularlog, channelList.team);
+
+                                        logger.log({
+                                            level: 'error',
+                                            message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                            errMsg: error,
+                                        });
+                                        if (mailRetryCount < 2) {
+                                            setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
+                                                retryDelay);
+                                        }
+                                      
+                                    });
+
+
+                            }).catch(async function (error) {
+                                logger.log({
+                                    level: 'error',
+                                    message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : '',
+                                    errMsg: error,
+                                });
+                                await updateSchedulerTaskLog(error, shedularlog, channelList.team);
+
                             });
-                            let shedularlog = models.SchedulerTaskLog.create({
-                                SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                                task_executed: new Date(Date.now()).toISOString(),
-                                task_status: "mail " + error,
-                                thresholdMet: thresholdAlertEmail,
-                                notificationSent: false,
-                                channel: ''
-                            });
-                        });
+                        }
+
                     }
 
-                    sendReport(subject, toMailList, mailBody, reportTitle, imagefilename);
+                    sendReport(subject, toMailList, mailBody, reportTitle);
 
-                }, function (err) {
+                }, async function (err) {
                     logger.log({
                         level: 'error',
                         message: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
                         errMsg: err,
                     });
-                    let shedularlog = models.SchedulerTaskLog.create({
-                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                        task_executed: new Date(Date.now()).toISOString(),
-                        task_status: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
-                        thresholdMet: thresholdAlertEmail,
-                        notificationSent: false,
-                        channel: ''
-                    });
+                    await updateSchedulerTaskLog(err, shedularlog, channelList.team);
+
                 });
             } else {
+
+                channelStatus = [];
+                for (let index = 0; index < channels.length; index++) {
+                    channelStatus.push(
+                        {
+                            channel: channels[index],
+                            notificationSent: false,
+                            status: "no data found"
+                        }
+                    )
+                }
+
                 logger.log({
                     level: 'error',
                     message: "no data found",
@@ -401,7 +478,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     task_status: "no data found",
                     thresholdMet: false,
                     notificationSent: false,
-                    channel: ''
+                    channel: JSON.stringify(channelStatus),
                 });
             }
         }, function (err) {
@@ -420,7 +497,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     task_status: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                     thresholdMet: thresholdAlertEmail,
                     notificationSent: false,
-                    channel: '',
+                    channel: JSON.stringify(channelStatus),
                 });
             }
 

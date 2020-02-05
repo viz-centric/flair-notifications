@@ -79,7 +79,7 @@ var shedular = {
                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
                         task_status: 'error while generationg reports',
-                        thresholdMet: reports_data.Report.thresholdAlert,
+                        thresholdMet: reports_data.report_obj.thresholdAlert,
                         notificationSent: false,
                         channel: reports_data.SchedulerTask.channel
                     });

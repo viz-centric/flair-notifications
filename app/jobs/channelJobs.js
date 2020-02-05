@@ -24,7 +24,7 @@ var job = {
                 }
             }
             else {
-                return { success: 1, message: "channel not found" };
+                return { success: 0, message: "channel not found" };
             }
             return { success: 1, channelProperties: channelList };
         }
