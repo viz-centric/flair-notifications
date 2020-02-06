@@ -10,11 +10,3 @@ ssl:
   caCert: certs/trustCertCollectionFile.crt
   serverCert: certs/certChainFile.crt
   serverKey: certs/privateKeyFile.key
-mailService:
-    host: smtp.ethereal.email
-    port: 587
-    sender: admin-vizcentric@gmail.com
-    testUser: admin@vizcentric.com
-    auth :
-      user: rudolph.schoen@ethereal.email
-      pass: 
