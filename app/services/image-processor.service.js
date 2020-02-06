@@ -15,6 +15,10 @@ function createImageDir(config) {
   if (!fs.existsSync(imageDir)) {
     fs.mkdirSync(imageDir);
   }
+
+  if (!fs.existsSync(config.compressImageFolder)) {
+    fs.mkdirSync(config.compressImageFolder);
+  }
 }
 
 async function init() {
