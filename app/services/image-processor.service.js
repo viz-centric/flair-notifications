@@ -80,12 +80,38 @@ async function generateImageTeam(svgHtml, imageName) {
                       message: "images compress_images is done  "
                     });
 
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "start convert compress image to base64 : " + config.compressImageFolder + imageName
+                    });
 
                     base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
+
+                      //TO DO: undo after testing 
+                      logger.log({
+                        level: 'info',
+                        message: "done convert compress image to base64 : " + encodedUrl
+                      });
+
+
+                      //TO DO: undo after testing 
+                      logger.log({
+                        level: 'info',
+                        message: "checking compress file  : " + config.compressImageFolder + imageName
+                      });
+
                       if (fs.existsSync(config.compressImageFolder + imageName)) {
                         fs.unlinkSync(config.compressImageFolder + imageName);
-                        fs.unlinkSync(config.imageFolder + imageName);
+                        //fs.unlinkSync(config.imageFolder + imageName);
+
+                        //TO DO: undo after testing 
+                        logger.log({
+                          level: 'info',
+                          message: "retuen base64 for team : "
+                        });
+
                         resolve(encodedUrl);
                       }
                     });
