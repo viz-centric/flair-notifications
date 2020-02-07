@@ -114,7 +114,7 @@ async function generateImageTeam(svgHtml, imageName) {
                       });
 
                       if (fs.existsSync(config.compressImageFolder + imageName)) {
-                       // fs.unlinkSync(config.compressImageFolder + imageName);
+                        // fs.unlinkSync(config.compressImageFolder + imageName);
                         //fs.unlinkSync(config.imageFolder + imageName);
 
                         //TO DO: undo after testing 
@@ -123,7 +123,7 @@ async function generateImageTeam(svgHtml, imageName) {
                           message: "retuen base64 for team : "
                         });
 
-                        resolve(encodedUrl);
+                        resolve(encodedUrl); 
                       }
                       else {
                         //TO DO: undo after testing 
@@ -238,7 +238,7 @@ async function generateImageEmail(svgHtml, imageName) {
           });
 
           if (fs.existsSync(config.imageFolder + imageName)) {
-           // fs.unlinkSync(config.imageFolder + imageName);
+            // fs.unlinkSync(config.imageFolder + imageName);
             resolve(encodedUrl);
           }
         }, function (error) {
