@@ -44,116 +44,137 @@ async function generateImageTeam(svgHtml, imageName) {
 
   return new Promise((resolve, reject) => {
     try {
-      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + "/" + imageName }, async function (code, signal) {
+      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
 
         //TO DO: undo after testing 
         logger.log({
           level: 'info',
-          message: "images created for team path : " + config.imageFolder + "/" + imageName
+          message: "images created for team  " + config.imageFolder + imageName
         });
 
-        if (fs.existsSync(config.imageFolder + "/" + imageName)) {
+        await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
+          var encodedUrl = "data:image/png;base64," + base64Bytes;
 
           //TO DO: undo after testing 
           logger.log({
             level: 'info',
-            message: "start images compression : " + config.imageFolder + "/" + imageName + " path : " + config.compressImageFolder+ "/" + imageName 
+            message: "base64 created for team images  " //+ encodedUrl
           });
 
-          (async () => {
-            await compress_images(config.imageFolder + "/" + imageName, config.compressImageFolder + "/", { compress_force: false, statistic: true, autoupdate: true }, false,
-              { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
-              { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
-              { svg: { engine: 'svgo', command: '--multipass' } },
-              { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
+          if (fs.existsSync(config.imageFolder + imageName)) {
 
-                if (completed === true) {
+            //TO DO: undo after testing 
+            logger.log({
+              level: 'info',
+              message: "start images compress_images : " + config.imageFolder + imageName + " path : " + config.compressImageFolder
+            });
 
-                  //TO DO: undo after testing 
-                  logger.log({
-                    level: 'info',
-                    message: "images compress_images is done  "
-                  });
+            (async () => {
+              await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
+                { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
+                { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
+                { svg: { engine: 'svgo', command: '--multipass' } },
+                { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
 
-
-                  //TO DO: undo after testing 
-                  logger.log({
-                    level: 'info',
-                    message: "statistic : " + JSON.stringify(statistic)
-                  });
-
-                  //TO DO: undo after testing 
-                  logger.log({
-                    level: 'info',
-                    message: "start compress image to base64 : " + config.compressImageFolder + "/" + imageName
-                  });
-
-                  base64Img.base64(config.compressImageFolder + "/" + imageName, function (err, base64Bytes) {
-                    encodedUrl = base64Bytes;
+                  if (completed === true) {
 
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "done convert compress image to base64 : " + encodedUrl
+                      message: "images compress_images is done  "
+                    });
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "start convert compress image to base64 : " + config.compressImageFolder + "/" + imageName
                     });
 
 
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "checking compress file  : " + config.compressImageFolder + "/" + imageName
+                      message: "statistic : " + JSON.stringify(statistic)
                     });
 
-                    if (fs.existsSync(config.compressImageFolder + "/" + imageName)) {
-                      //fs.unlinkSync(config.compressImageFolder + "/" + imageName);
-                      //fs.unlinkSync(config.imageFolder + imageName);
+                    base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+                      encodedUrl = base64Bytes;
 
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "retuen base64 for team : "
+                        message: "done convert compress image to base64 : " + encodedUrl
                       });
 
-                      resolve(encodedUrl);
-                    }
-                    else {
+
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "exist file or not ?" + fs.existsSync(config.compressImageFolder + "/" + imageName) + ":  config.compressImageFolder + " / " + imageName"
+                        message: "checking compress file  : " + config.compressImageFolder + imageName
                       });
-                      resolve(encodedUrl);
-                    }
-                  });
 
-                }
-                if (error) {
+                      if (fs.existsSync(config.compressImageFolder + imageName)) {
+                       // fs.unlinkSync(config.compressImageFolder + imageName);
+                        //fs.unlinkSync(config.imageFolder + imageName);
 
-                  //TO DO: undo after testing 
+                        //TO DO: undo after testing 
+                        logger.log({
+                          level: 'info',
+                          message: "retuen base64 for team : "
+                        });
+
+                        resolve(encodedUrl);
+                      }
+                      else {
+                        //TO DO: undo after testing 
+                        logger.log({
+                          level: 'info',
+                          message: "exist file or not ?" + fs.existsSync(config.compressImageFolder + "/" + imageName) + ":  config.compressImageFolder + " / " + imageName"
+                        });
+                        resolve(encodedUrl);
+                      }
+                    });
+
+                  }
+                  if (error) {
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "error while compress image" + error
+                    });
+
+                  }
+                }, function (error) {
                   logger.log({
-                    level: 'info',
-                    message: "error while compress image" + error
+                    level: 'error',
+                    message: "error occured while converting image to base64 uri",
+                    errMsg: "error occured while converting image to base64 uri : " + error.message,
                   });
-
-                }
-              }, function (error) {
-                logger.log({
-                  level: 'error',
-                  message: "error occured while converting image to base64 uri",
-                  errMsg: "error occured while converting image to base64 uri : " + error.message,
+                  let shedularlog = models.SchedulerTaskLog.create({
+                    SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                    task_executed: new Date(Date.now()).toISOString(),
+                    task_status: "error occured while converting image to base64 uri : " + error.message,
+                  });
+                  reject(error.message);
                 });
-                let shedularlog = models.SchedulerTaskLog.create({
-                  SchedulerJobId: reports_data['report_shedular_obj']['id'],
-                  task_executed: new Date(Date.now()).toISOString(),
-                  task_status: "error occured while converting image to base64 uri : " + error.message,
-                });
-                reject(error.message);
-              });
 
-          })();
-        }
+            })();
+          }
 
-
+        }, function (error) {
+          logger.log({
+            level: 'error',
+            message: "error occured while converting image to base64 uri",
+            errMsg: "error occured while converting image to base64 uri : " + error.message,
+          });
+          let shedularlog = models.SchedulerTaskLog.create({
+            SchedulerJobId: reports_data['report_shedular_obj']['id'],
+            task_executed: new Date(Date.now()).toISOString(),
+            task_status: "error occured while converting image to base64 uri : " + error.message,
+          });
+          reject(error.message);
+        });
       }, function (error) {
         logger.log({
           level: 'error',
@@ -217,7 +238,7 @@ async function generateImageEmail(svgHtml, imageName) {
           });
 
           if (fs.existsSync(config.imageFolder + imageName)) {
-            fs.unlinkSync(config.imageFolder + imageName);
+           // fs.unlinkSync(config.imageFolder + imageName);
             resolve(encodedUrl);
           }
         }, function (error) {
