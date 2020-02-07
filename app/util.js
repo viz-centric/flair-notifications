@@ -36,8 +36,8 @@ var util = {
         return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource;
     },
 
-    getGlairInsightsLink: function (urlString, id) {
-        return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management/report/" + id;
+    getGlairInsightsLink: function (urlString, id, reportType) {
+        return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management/report/" + id + "/" + reportType;
     },
 
     checkChannel: function (channelList, channelName) {

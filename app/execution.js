@@ -257,7 +257,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         {
                             channel: channels[index],
                             notificationSent: true,
-                            status: "success"
+                            status: "-"
                         }
                     )
                 }
@@ -295,7 +295,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var mailRetryCount = 0;
                     var viewDataLink = "", flairInsightsLink = "";
 
-                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID);
+                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID,thresholdAlertEmail);
 
                     let shedularlog = null, schedulerTaskMeta = null;
 
@@ -422,7 +422,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         }
                         if (util.checkChannel(channels, channelList.team)) {
                             var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png';
-
 
                             //TO DO: undo after testing 
                             logger.log({
