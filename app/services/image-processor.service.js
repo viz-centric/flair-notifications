@@ -70,7 +70,7 @@ async function generateImageTeam(svgHtml, imageName) {
             });
 
             (async () => {
-              await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
+              await compress_images(config.imageFolder + imageName, config.compressImageFolder + "/", { compress_force: false, statistic: true, autoupdate: true }, false,
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
                 { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
                 { svg: { engine: 'svgo', command: '--multipass' } },
@@ -87,10 +87,17 @@ async function generateImageTeam(svgHtml, imageName) {
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "start convert compress image to base64 : " + config.compressImageFolder + imageName
+                      message: "start convert compress image to base64 : " + config.compressImageFolder + "/" + imageName
                     });
 
-                    base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "statistic : " + JSON.stringify(statistic)
+                    });
+
+                    base64Img.base64(config.compressImageFolder + "/" + imageName, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
 
                       //TO DO: undo after testing 
@@ -103,11 +110,11 @@ async function generateImageTeam(svgHtml, imageName) {
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "checking compress file  : " + config.compressImageFolder + imageName
+                        message: "checking compress file  : " + config.compressImageFolder + "/" + imageName
                       });
 
-                      if (fs.existsSync(config.compressImageFolder + imageName)) {
-                        fs.unlinkSync(config.compressImageFolder + imageName);
+                      if (fs.existsSync(config.compressImageFolder + "/" + imageName)) {
+                        fs.unlinkSync(config.compressImageFolder + "/" + imageName);
                         //fs.unlinkSync(config.imageFolder + imageName);
 
                         //TO DO: undo after testing 
@@ -219,7 +226,7 @@ async function generateImageEmail(svgHtml, imageName) {
           //TO DO: undo after testing 
           logger.log({
             level: 'info',
-            message: "base64 created for email images  " + encodedUrl
+            message: "base64 created for email images  " //+ encodedUrl
           });
 
           if (fs.existsSync(config.imageFolder + imageName)) {
