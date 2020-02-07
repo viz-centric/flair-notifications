@@ -30,6 +30,8 @@ init();
 
 async function generateImageTeam(svgHtml, imageName) {
 
+  var encodedUrl = "";
+
   //TO DO: undo after testing 
   logger.log({
     level: 'info',
@@ -53,7 +55,7 @@ async function generateImageTeam(svgHtml, imageName) {
         });
 
         await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
-          var encodedUrl = "data:image/png;base64," + base64Bytes;
+          encodedUrl = "data:image/png;base64," + base64Bytes;
 
           //TO DO: undo after testing 
           logger.log({
@@ -70,7 +72,7 @@ async function generateImageTeam(svgHtml, imageName) {
             });
 
             (async () => {
-              await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
+              await compress_images(config.imageFolder + imageName, config.compressImageFolder + "/", { compress_force: false, statistic: true, autoupdate: true }, false,
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
                 { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
                 { svg: { engine: 'svgo', command: '--multipass' } },
@@ -97,7 +99,7 @@ async function generateImageTeam(svgHtml, imageName) {
                       message: "statistic : " + JSON.stringify(statistic)
                     });
 
-                    base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+                    base64Img.base64(config.compressImageFolder + "/" + imageName, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
 
                       //TO DO: undo after testing 
@@ -113,8 +115,8 @@ async function generateImageTeam(svgHtml, imageName) {
                         message: "checking compress file  : " + config.compressImageFolder + imageName
                       });
 
-                      if (fs.existsSync(config.compressImageFolder + imageName)) {
-                        // fs.unlinkSync(config.compressImageFolder + imageName);
+                      if (fs.existsSync(config.compressImageFolder + "/" + imageName)) {
+                        // fs.unlinkSync(config.compressImageFolder+"/" + imageName);
                         //fs.unlinkSync(config.imageFolder + imageName);
 
                         //TO DO: undo after testing 
@@ -123,7 +125,7 @@ async function generateImageTeam(svgHtml, imageName) {
                           message: "retuen base64 for team : "
                         });
 
-                        resolve(encodedUrl); 
+                        resolve(encodedUrl);
                       }
                       else {
                         //TO DO: undo after testing 
@@ -143,6 +145,7 @@ async function generateImageTeam(svgHtml, imageName) {
                       level: 'info',
                       message: "error while compress image" + error
                     });
+                    resolve(encodedUrl);
 
                   }
                 }, function (error) {
@@ -156,7 +159,7 @@ async function generateImageTeam(svgHtml, imageName) {
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "error occured while converting image to base64 uri : " + error.message,
                   });
-                  reject(error.message);
+                  resolve(encodedUrl);
                 });
 
             })();
@@ -173,7 +176,7 @@ async function generateImageTeam(svgHtml, imageName) {
             task_executed: new Date(Date.now()).toISOString(),
             task_status: "error occured while converting image to base64 uri : " + error.message,
           });
-          reject(error.message);
+          resolve(encodedUrl);
         });
       }, function (error) {
         logger.log({
@@ -186,7 +189,7 @@ async function generateImageTeam(svgHtml, imageName) {
           task_executed: new Date(Date.now()).toISOString(),
           task_status: "error occured while converting svg html to image : " + error.message,
         });
-        reject(error.message);
+        resolve(encodedUrl);
       });
     } catch (ex) {
       logger.log({
@@ -199,7 +202,7 @@ async function generateImageTeam(svgHtml, imageName) {
         task_executed: new Date(Date.now()).toISOString(),
         task_status: "error occured while processing an image" + ex.message,
       });
-      reject(ex.message);
+      resolve(encodedUrl);
     }
   });
 }
@@ -208,6 +211,7 @@ async function generateImageEmail(svgHtml, imageName) {
   return new Promise((resolve, reject) => {
     try {
 
+      var encodedUrl = "";
       //TO DO: undo after testing 
       logger.log({
         level: 'info',
@@ -229,7 +233,7 @@ async function generateImageEmail(svgHtml, imageName) {
         });
 
         await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
-          var encodedUrl = "data:image/png;base64," + base64Bytes;
+          encodedUrl = "data:image/png;base64," + base64Bytes;
 
           //TO DO: undo after testing 
           logger.log({
@@ -239,8 +243,8 @@ async function generateImageEmail(svgHtml, imageName) {
 
           if (fs.existsSync(config.imageFolder + imageName)) {
             // fs.unlinkSync(config.imageFolder + imageName);
-            resolve(encodedUrl);
           }
+          resolve(encodedUrl);
         }, function (error) {
           logger.log({
             level: 'error',
@@ -251,7 +255,7 @@ async function generateImageEmail(svgHtml, imageName) {
             SchedulerJobId: reports_data['report_shedular_obj']['id'],
             task_status: "error occured while converting image to base64 uri : " + error.message,
           });
-          reject(error.message);
+          resolve(encodedUrl);
         });
       }, function (error) {
         logger.log({
@@ -264,7 +268,7 @@ async function generateImageEmail(svgHtml, imageName) {
           task_executed: new Date(Date.now()).toISOString(),
           task_status: "error occured while converting svg html to image : " + error.message,
         });
-        reject(error.message);
+        resolve(encodedUrl);
       });
     } catch (ex) {
       logger.log({
@@ -277,7 +281,7 @@ async function generateImageEmail(svgHtml, imageName) {
         task_executed: new Date(Date.now()).toISOString(),
         task_status: "error occured while processing an image" + ex.message,
       });
-      reject(ex.message);
+      resolve(encodedUrl);
     }
   });
 }
