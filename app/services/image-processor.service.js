@@ -46,15 +46,28 @@ async function generateImageTeam(svgHtml, imageName) {
 
   return new Promise((resolve, reject) => {
     try {
-      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
+      wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + "/" + imageName }, async function (code, signal) {
 
         //TO DO: undo after testing 
         logger.log({
           level: 'info',
-          message: "images created for team  " + config.imageFolder + imageName
+          message: "images created for team  " + config.imageFolder + "/" + imageName
         });
 
-        await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
+        //TO DO: undo after testing 
+        logger.log({
+          level: 'info',
+          message: "file inside: " + config.imageFolder + "/" + imageName
+        });
+
+        fs.readdirSync(config.imageFolder + "/" + imageName).forEach(file => {
+          logger.log({
+            level: 'info',
+            message: file
+          });
+        });
+
+        await base64Img.base64(config.imageFolder + "/" + imageName, function (err, base64Bytes) {
           encodedUrl = "data:image/png;base64," + base64Bytes;
 
           //TO DO: undo after testing 
@@ -63,16 +76,16 @@ async function generateImageTeam(svgHtml, imageName) {
             message: "base64 created for team images  " //+ encodedUrl
           });
 
-          if (fs.existsSync(config.imageFolder + imageName)) {
+          if (fs.existsSync(config.imageFolder + "/" + imageName)) {
 
             //TO DO: undo after testing 
             logger.log({
               level: 'info',
-              message: "start images compress_images : " + config.imageFolder + imageName + " path : " + config.compressImageFolder
+              message: "start images compress_images : " + config.imageFolder + "/" + imageName + " path : " + config.compressImageFolder + "/"
             });
 
             (async () => {
-              await compress_images(config.imageFolder + imageName, config.compressImageFolder, { compress_force: false, statistic: true, autoupdate: true }, false,
+              await compress_images(config.imageFolder + "/" + imageName, config.compressImageFolder + "/", { compress_force: false, statistic: true, autoupdate: true }, false,
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
                 { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
                 { svg: { engine: 'svgo', command: '--multipass' } },
@@ -83,15 +96,40 @@ async function generateImageTeam(svgHtml, imageName) {
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
+                      message: "file inside: " + config.imageFolder + "/" + imageName
+                    });
+
+                    fs.readdirSync(config.imageFolder + "/" + imageName).forEach(file => {
+                      logger.log({
+                        level: 'info',
+                        message: file
+                      });
+                    });
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
+                      message: "file inside: " + config.compressImageFolder + "/" + imageName
+                    });
+
+                    fs.readdirSync(config.compressImageFolder + "/" + imageName).forEach(file => {
+                      logger.log({
+                        level: 'info',
+                        message: file
+                      });
+                    });
+
+                    //TO DO: undo after testing 
+                    logger.log({
+                      level: 'info',
                       message: "images compress_images is done  "
                     });
 
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "start convert compress image to base64 : " + config.compressImageFolder + imageName
+                      message: "start convert compress image to base64 : " + config.compressImageFolder + "/" + imageName
                     });
-
 
                     //TO DO: undo after testing 
                     logger.log({
@@ -99,8 +137,9 @@ async function generateImageTeam(svgHtml, imageName) {
                       message: "statistic : " + JSON.stringify(statistic)
                     });
 
-                    base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+                    base64Img.base64(config.compressImageFolder + "/" + imageName, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
+
 
                       //TO DO: undo after testing 
                       logger.log({
@@ -108,14 +147,28 @@ async function generateImageTeam(svgHtml, imageName) {
                         message: "done convert compress image to base64 : " + encodedUrl
                       });
 
+                      //TO DO: undo after testing 
+                      logger.log({
+                        level: 'info',
+                        message: "checking compress file  : " + config.compressImageFolder + "/" + imageName
+                      });
+
 
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "checking compress file  : " + config.compressImageFolder + imageName
+                        message: "file inside: " + config.compressImageFolder + "/" + imageName
                       });
 
-                      if (fs.existsSync(config.compressImageFolder + imageName)) {
+                      fs.readdirSync(config.compressImageFolder + "/" + imageName).forEach(file => {
+                        logger.log({
+                          level: 'info',
+                          message: file
+                        });
+                      });
+
+
+                      if (fs.existsSync(config.compressImageFolder + "/" + imageName)) {
                         // fs.unlinkSync(config.compressImageFolder+ imageName);
                         //fs.unlinkSync(config.imageFolder + imageName);
 
@@ -131,7 +184,7 @@ async function generateImageTeam(svgHtml, imageName) {
                         //TO DO: undo after testing 
                         logger.log({
                           level: 'info',
-                          message: "file is exist not ?" + fs.existsSync(config.compressImageFolder + imageName) + ":" + config.compressImageFolder + imageName
+                          message: "file is exist not ?" + fs.existsSync(config.compressImageFolder + "/" + imageName) + ":" + config.compressImageFolder + "/" + imageName
                         });
                         resolve(encodedUrl);
                       }
