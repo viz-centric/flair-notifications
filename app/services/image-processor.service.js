@@ -131,7 +131,7 @@ async function generateImageTeam(svgHtml, imageName) {
                         //TO DO: undo after testing 
                         logger.log({
                           level: 'info',
-                          message: "exist file or not ?" + fs.existsSync(config.compressImageFolder + imageName) + ":  config.compressImageFolder + " / " + imageName"
+                          message: "file is exist not ?" + fs.existsSync(config.compressImageFolder + imageName) + ":" + config.compressImageFolder + imageName
                         });
                         resolve(encodedUrl);
                       }
