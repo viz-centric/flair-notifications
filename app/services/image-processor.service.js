@@ -60,7 +60,7 @@ async function generateImageTeam(svgHtml, imageName) {
           message: "file inside: " + config.imageFolder + "/" + imageName
         });
 
-        fs.readdirSync(config.imageFolder + "/").forEach(file => {
+        fs.readdirSync(config.imageFolder + "/" + imageName).forEach(file => {
           logger.log({
             level: 'info',
             message: file
@@ -96,10 +96,10 @@ async function generateImageTeam(svgHtml, imageName) {
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "file inside: " + config.imageFolder + "/"
+                      message: "file inside: " + config.imageFolder + "/" + imageName
                     });
 
-                    fs.readdirSync(config.imageFolder + "/").forEach(file => {
+                    fs.readdirSync(config.imageFolder + "/" + imageName).forEach(file => {
                       logger.log({
                         level: 'info',
                         message: file
@@ -109,10 +109,10 @@ async function generateImageTeam(svgHtml, imageName) {
                     //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
-                      message: "file inside: " + config.compressImageFolder + "/"
+                      message: "file inside: " + config.compressImageFolder + "/" + imageName
                     });
 
-                    fs.readdirSync(config.compressImageFolder + "/").forEach(file => {
+                    fs.readdirSync(config.compressImageFolder + "/" + imageName).forEach(file => {
                       logger.log({
                         level: 'info',
                         message: file
@@ -157,10 +157,10 @@ async function generateImageTeam(svgHtml, imageName) {
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "file inside: " + config.compressImageFolder + "/"
+                        message: "file inside: " + config.compressImageFolder + "/" + imageName
                       });
 
-                      fs.readdirSync(config.compressImageFolder + "/").forEach(file => {
+                      fs.readdirSync(config.compressImageFolder + "/" + imageName).forEach(file => {
                         logger.log({
                           level: 'info',
                           message: file
