@@ -26,7 +26,7 @@ RUN npm install --only=production
 
 COPY app /flair-notifications/app/
 
-VOLUME [ "/flair-notifications/images", "/flair-notifications/config","/flair-notifications/compress-images" ]
+VOLUME [ "/flair-notifications/images", "/flair-notifications/config","/flair-notifications/compressImages" ]
 
 EXPOSE 8080
 
