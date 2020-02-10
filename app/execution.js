@@ -209,45 +209,14 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
     function loadDataFromGrpc(query) {
         grpcRetryCount += 1;
 
-        //TO DO: undo after testing 
-        logger.log({
-            level: 'info',
-            message: 'calling preProcessQuery method'
-        });
-
         const rawQuery = queryService.preProcessQuery(query);
-
-        //TO DO: undo after testing 
-        logger.log({
-            level: 'info',
-            message: 'response of preProcessQuery method ' + JSON.stringify(rawQuery)
-        });
-
-
-        //TO DO: undo after testing 
-        logger.log({
-            level: 'info',
-            message: 'calling getRecords method'
-        });
 
         var data_call = grpc_client.getRecords(rawQuery);
 
         data_call.then(async function (response) {
 
-            //TO DO: undo after testing 
-            logger.log({
-                level: 'info',
-                message: 'processing grpc response data'
-            });
-
             var channels = reports_data['report_assign_obj']['channel'];
             var json_res = JSON.parse(response.data);
-
-            //TO DO: undo after testing 
-            logger.log({
-                level: 'info',
-                message: 'data for createing visualization' + json_res
-            });
 
             if (json_res && json_res.data.length > 0) {
 
@@ -268,13 +237,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
                 generate_chart.then(async function (response) {
-
-                    //TO DO: undo after testing 
-                    logger.log({
-                        level: 'info',
-                        message: 'start report sending : ' + response
-                    });
-
                     var toMailList = [];
                     //get communication lists
                     var communicationList = reports_data['report_assign_obj']['communication_list'];
@@ -295,7 +257,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var mailRetryCount = 0;
                     var viewDataLink = "", flairInsightsLink = "";
 
-                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID,thresholdAlertEmail);
+                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID, thresholdAlertEmail);
 
                     let shedularlog = null, schedulerTaskMeta = null;
 
@@ -346,12 +308,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                         if (util.checkChannel(channels, channelList.email)) {
 
-                            //TO DO: undo after testing 
-                            logger.log({
-                                level: 'info',
-                                message: 'start report sending  for email '
-                            });
-
                             var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png';
                             imageProcessor.saveImageConvertToBase64ForEmail(imagefilename, response).then(async function (bytes) {
 
@@ -373,19 +329,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     visualizationType: reports_data.report_line_obj.viz_type
                                 }
 
-                                //TO DO: undo after testing 
-                                logger.log({
-                                    level: 'info',
-                                    message: 'email report config '
-                                });
-
                                 sendmailtool.sendMail(emailData).then(async function (data) {
-
-                                    //TO DO: undo after testing 
-                                    logger.log({
-                                        level: 'info',
-                                        message: 'updateSchedulerTaskLog email response '
-                                    });
 
                                     await updateSchedulerTaskLog(data, shedularlog, channelList.email);
                                 },
@@ -410,25 +354,12 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     errMsg: error,
                                 });
 
-                                //TO DO: undo after testing 
-                                logger.log({
-                                    level: 'info',
-                                    message: 'updateSchedulerTaskLog email catch '
-                                });
-
                                 await updateSchedulerTaskLog(error, shedularlog, channelList.email);
 
                             });
                         }
                         if (util.checkChannel(channels, channelList.team)) {
                             var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png';
-
-                            //TO DO: undo after testing 
-                            logger.log({
-                                level: 'info',
-                                message: 'start report sending  for team '
-                            });
-
                             imageProcessor.saveImageConvertToBase64Team(imagefilename, response).then(async function (bytes) {
 
                                 var teamData = {
@@ -448,30 +379,13 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     rawQuery
                                 }
 
-                                //TO DO: undo after testing 
-                                logger.log({
-                                    level: 'info',
-                                    message: 'team report config '
-                                });
-
                                 sendNotification.sendTeamNotification(teamData, reports_data).then(async function (data) {
 
-                                    //TO DO: undo after testing 
-                                    logger.log({
-                                        level: 'info',
-                                        message: 'updateSchedulerTaskLog team response '
-                                    });
 
 
                                     await updateSchedulerTaskLog(data, shedularlog, channelList.team);
                                 },
                                     async function (error) {
-
-                                        //TO DO: undo after testing 
-                                        logger.log({
-                                            level: 'info',
-                                            message: 'updateSchedulerTaskLog team catch '
-                                        });
 
                                         await updateSchedulerTaskLog(error, shedularlog, channelList.team);
 

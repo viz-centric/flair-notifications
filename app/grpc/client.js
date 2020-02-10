@@ -25,15 +25,9 @@ const grpcClient = {
       logger.info(`Get records promise`, query);
       client.GetData(query, (error, response) => {
         logger.info(`Get records response ${query} resp ${response}`);
-        //TO DO: undo after testing 
-        logger.info(`Get records response ${JSON.stringify(query)} resp ${JSON.stringify(response)}`);
         if (!error) {
-          //TO DO: undo after testing
-          logger.info(`getRecords  resolve ${JSON.stringify(response)} `);
           resolve(response);
         } else {
-          //TO DO: undo after testing
-          logger.info(`getRecords  reject ${JSON.stringify(error)} `);
           reject(error.message);
         }
       });
