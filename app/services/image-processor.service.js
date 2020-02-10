@@ -148,7 +148,7 @@ async function generateImageTeam(svgHtml, imageName) {
                       });
 
                       if (fs.existsSync(config.compressImageFolder + imageName)) {
-                        // fs.unlinkSync(config.compressImageFolder+ imageName);
+                        fs.unlinkSync(config.compressImageFolder + imageName);
                         //fs.unlinkSync(config.imageFolder + imageName);
 
                         //TO DO: undo after testing 
@@ -272,7 +272,7 @@ async function generateImageEmail(svgHtml, imageName) {
           });
 
           if (fs.existsSync(config.imageFolder + imageName)) {
-            // fs.unlinkSync(config.imageFolder + imageName);
+            fs.unlinkSync(config.imageFolder + imageName);
           }
           resolve(encodedUrl);
         }, function (error) {
