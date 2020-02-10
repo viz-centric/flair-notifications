@@ -81,7 +81,7 @@ async function generateImageTeam(svgHtml, imageName) {
                   //TO DO: undo after testing 
                   logger.log({
                     level: 'info',
-                    message: "file list:   "+config.imageFolder
+                    message: "file list:   " + config.imageFolder
                   });
 
                   fs.readdir(config.imageFolder, (err, files) => {
@@ -94,10 +94,10 @@ async function generateImageTeam(svgHtml, imageName) {
                     });
                   });
 
-                   //TO DO: undo after testing 
-                   logger.log({
+                  //TO DO: undo after testing 
+                  logger.log({
                     level: 'info',
-                    message: "file list:   "+config.compressImageFolder
+                    message: "file list:   " + config.compressImageFolder
                   });
 
                   fs.readdir(config.compressImageFolder, (err, files) => {
@@ -129,44 +129,57 @@ async function generateImageTeam(svgHtml, imageName) {
                     message: "statistic : " + JSON.stringify(statistic)
                   });
 
-                  base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
-                    encodedUrl = base64Bytes;
 
-                    //TO DO: undo after testing 
-                    logger.log({
-                      level: 'info',
-                      message: "done convert compress image to base64 : " + encodedUrl
-                    });
-
-
-                    //TO DO: undo after testing 
-                    logger.log({
-                      level: 'info',
-                      message: "checking compress file  : " + config.compressImageFolder + imageName
-                    });
-
-                    if (fs.existsSync(config.compressImageFolder + imageName)) {
-                      // fs.unlinkSync(config.compressImageFolder+ imageName);
-                      //fs.unlinkSync(config.imageFolder + imageName);
+                  if (statistic) {
+                    base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
+                      encodedUrl = base64Bytes;
 
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "retuen base64 for team : "
+                        message: "done convert compress image to base64 : " + encodedUrl
                       });
 
-                      resolve(encodedUrl);
-                    }
-                    else {
+
                       //TO DO: undo after testing 
                       logger.log({
                         level: 'info',
-                        message: "file is exist not ?" + fs.existsSync(config.compressImageFolder + imageName) + ":" + config.compressImageFolder + imageName
+                        message: "checking compress file  : " + config.compressImageFolder + imageName
                       });
-                      resolve(encodedUrl);
-                    }
-                  });
 
+                      if (fs.existsSync(config.compressImageFolder + imageName)) {
+                        // fs.unlinkSync(config.compressImageFolder+ imageName);
+                        //fs.unlinkSync(config.imageFolder + imageName);
+
+                        //TO DO: undo after testing 
+                        logger.log({
+                          level: 'info',
+                          message: "retuen base64 for team : "
+                        });
+
+                        resolve(encodedUrl);
+                      }
+                      else {
+                        //TO DO: undo after testing 
+                        logger.log({
+                          level: 'info',
+                          message: "file is exist not ?" + fs.existsSync(config.compressImageFolder + imageName) + ":" + config.compressImageFolder + imageName
+                        });
+                        resolve(encodedUrl);
+                      }
+                    });
+                  }
+                  else {
+                    logger.log({
+                      level: 'error',
+                      message: "error while compress image" + error
+                    });
+                    resolve(encodedUrl);
+                    resolve(encodedUrl);
+                  }
+                }
+                else {
+                  resolve(encodedUrl);
                 }
                 if (error) {
 
