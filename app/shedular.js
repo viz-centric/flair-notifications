@@ -63,13 +63,6 @@ var shedular = {
 
                 }).catch(function (err) {
 
-                    //TO DO: undo after testing 
-                    logger.log({
-                        level: 'info',
-                        message: 'report data ' + JSON.stringify(reports_data)
-                    });
-
-
                     logger.log({
                         level: 'error',
                         message: 'error while generationg reports',
