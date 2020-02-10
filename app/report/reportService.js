@@ -214,7 +214,7 @@ function searchReports(request) {
     return new Promise(function (resolve, reject) {
         jobs.filterJobs(
             request.username, request.reportName, request.startDate,
-            request.endDate, request.page, request.pageSize
+            request.endDate, request.page, request.pageSize,request.thresholdAlert
         )
             .then(function (result) {
                 if (result.success === 1) {
