@@ -258,6 +258,7 @@ var job = {
             config.sections[0].text = html;
             config.summary = "summary";
             config.text = "";
+            config.fields.description.content[0].content[0].text = "";
 
             config.sections[0].facts = null;
             config.potentialAction = [];
@@ -310,6 +311,37 @@ var job = {
             });
         }
     },
+
+    createTableForNotification: function (data) {
+        try {
+
+            var tablekey = Object.keys(data[0]);
+            var table = "<table><tr>";
+            for (var j = 0; j < tablekey.length; j++) {
+                table += "<th style='border:1px solid #a0a7a7'>" + tablekey[j] + "</th>";
+            }
+            table += "</tr><tbody>";
+            for (let index = 0; index < data.length; index++) {
+                if (index < notificationConfig.totalRecord) {
+                    const element = data[index];
+                    table += "<tr>";
+                    for (var j = 0; j < tablekey.length; j++) {
+                        table += "<td style='border:1px solid #a0a7a7'>" + element[tablekey[j]] + "</td>";
+                    }
+                }
+            }
+            table += "</tr></tbody></table>";
+            return table;
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: 'error occurred while creating table for notification',
+                errMsg: error,
+            });
+
+        }
+    },
+
 
 }
 
