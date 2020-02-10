@@ -129,7 +129,7 @@ async function generateImageTeam(svgHtml, imageName) {
                     message: "statistic : " + JSON.stringify(statistic)
                   });
 
-                  base64Img.base64(config.compressImageFolder + imageName, function (err, base64Bytes) {
+                  base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
                     encodedUrl = base64Bytes;
 
                     //TO DO: undo after testing 
