@@ -69,6 +69,7 @@ message SearchReportsRequest {
     string endDate = 4;
     int32 pageSize = 5;
     int32 page = 6;
+    bool thresholdAlert = 7;
 }
 
 message SearchReportsResponse {
