@@ -6,9 +6,16 @@ var util = require('../util');
 var axios = require('axios');
 var jiraConfig = require('./jira-ticket');
 var modelsUtil = require('./models-utils');
+const AppConfig = require('./load-notification-config');
 
 var moment = require('moment');
 
+let notificationConfig;
+
+async function init() {
+    notificationConfig = await AppConfig.getConfig();
+}
+init();
 
 var job = {
     getChannelProperties: async function () {
@@ -553,6 +560,10 @@ var job = {
                     include: [
                         {
                             model: models.AssignReport,
+                        },
+                        {
+                            model: models.ReportLineItem,
+                            as: 'reportline',
                         }],
                     where: { id: SchedulerJob.ReportId }
                 });
@@ -576,10 +587,14 @@ var job = {
         var reportsData = await this.getSchedulerMetaData(request.id);
         var jiraCreated = false, jiraDetails;
         jiraConfig.fields.project.key = jiraSettings.record.key;
-        jiraConfig.fields.summary = reportsData.report.title_name + " (" + reportsData.report.dashboard_name + ")" + moment(reportsData.SchedulerLogsMeta.createdAt).format(util.dateFormat());;
+        jiraConfig.fields.summary = notificationConfig.ticketTitlePrefix + ": " + reportsData.report.title_name + " (" + reportsData.report.dashboard_name + ")" + moment(reportsData.SchedulerLogsMeta.createdAt).format(util.dateFormat());;
 
         jiraConfig.fields.description.content[0].content[0].text = reportsData.report.mail_body;
-        jiraConfig.fields.description.content[1].content[0].marks[0].attrs.href = reportsData.SchedulerLogsMeta.viewData;
+        jiraConfig.fields.description.content[1].content[0].marks[0].attrs.href = reportsData.report.share_link;
+        jiraConfig.fields.description.content[2].content[0].marks[0].attrs.href = reportsData.report.build_url;
+        jiraConfig.fields.description.content[3].content[0].marks[0].attrs.href = reportsData.SchedulerLogsMeta.viewData;
+        jiraConfig.fields.description.content[4].content[0].marks[0].attrs.href = util.getGlairInsightsLink(reportsData.report.share_link, reportsData.report.reportline.visualizationid,reportsData.report.thresholdAlert);
+
         await axios.post(jiraSettings.record.organization + '/rest/api/3/issue', jiraConfig, {
 
             withCredentials: true,
