@@ -100,16 +100,6 @@ async function generateImageTeam(svgHtml, imageName) {
                     message: "file list:   " + config.compressImageFolder
                   });
 
-                  fs.readdir(config.compressImageFolder, (err, files) => {
-                    files.forEach(file => {
-                      //TO DO: undo after testing 
-                      logger.log({
-                        level: 'info',
-                        message: files
-                      });
-                    });
-                  });
-
                   //TO DO: undo after testing 
                   logger.log({
                     level: 'info',
