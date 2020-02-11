@@ -360,7 +360,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         }
                         if (util.checkChannel(channels, channelList.team)) {
                             var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png';
-                            imageProcessor.saveImageConvertToBase64Team(imagefilename, response).then(async function (bytes) {
+                            imageProcessor.saveImageConvertToBase64ForTeam(imagefilename, response).then(async function (bytes) {
 
                                 var teamData = {
                                     dashboard: dashboard,
