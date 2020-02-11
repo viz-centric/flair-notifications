@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 const ejs = require("ejs");
 const AppConfig = require('./load_config');
 const jobs = require('./jobs/channelJobs');
+const modelsUtil = require('./jobs/models-utils');
+
 const appLogo = 'flairbi-logo.png';
 let transporter;
 let config;
@@ -41,6 +43,7 @@ exports.sendMail = async function sendMailToGmail(emailData) {
     var template_data = emailData;
     template_data.image_cid = "cid:" + image_cid;
     template_data.AppLogo = "cid:" + appLogo;
+    template_data.htmlTable = modelsUtil.createTableForNotification(emailData.tableData);
     return new Promise((resolve, reject) => {
         ejs.renderFile(__dirname + "/template/mail-template.ejs", template_data, function (err, html_data) {
             if (err) {

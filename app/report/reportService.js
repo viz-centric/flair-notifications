@@ -426,7 +426,7 @@ function AddJiraConfigs(request) {
         if (request) {
             channelJobs.AddJiraConfigs(request).then(function (result) {
                 if (result.success === 1) {
-                    resolve({ message: result.message });
+                    resolve(result.message);
                 } else {
                     reject(result.message);
                 }
