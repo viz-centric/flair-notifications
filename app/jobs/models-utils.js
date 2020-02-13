@@ -258,8 +258,7 @@ var job = {
             config.sections[0].text = html;
             config.summary = "summary";
             config.text = "";
-            config.fields.description.content[0].content[0].text = "";
-
+          
             config.sections[0].facts = null;
             config.potentialAction = [];
 

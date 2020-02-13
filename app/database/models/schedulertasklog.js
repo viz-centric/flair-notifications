@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     task_status: DataTypes.STRING,
     thresholdMet: DataTypes.BOOLEAN,
     notificationSent: DataTypes.BOOLEAN,
-    channel: DataTypes.STRING,
+    channel: DataTypes.TEXT,
     isTicketCreated : DataTypes.BOOLEAN,
     enableTicketCreation: DataTypes.BOOLEAN
 

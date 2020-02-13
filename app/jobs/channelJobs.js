@@ -625,10 +625,12 @@ var job = {
                 level: 'error',
                 message: 'error occured while creating jira ticket',
             });
+            return ({
+                message: "error occured while creating jira ticket",
+                jiraTicketLink: ""
+            });
         }
-
     },
-
 
     getAllJira: async function (request) {
         try {

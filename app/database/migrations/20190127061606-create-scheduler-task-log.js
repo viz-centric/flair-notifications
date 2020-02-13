@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       channel: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       isTicketCreated: {
         type: Sequelize.BOOLEAN

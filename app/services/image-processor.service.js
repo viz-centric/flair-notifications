@@ -37,8 +37,6 @@ async function generateImageTeam(svgHtml, imageName) {
       wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
 
         if (fs.existsSync(config.imageFolder + imageName)) {
-
-          //TO DO: undo after testing 
           logger.log({
             level: 'info',
             message: "start images compress_images : " + config.imageFolder + imageName + " path : " + config.compressImageFolder
@@ -53,21 +51,12 @@ async function generateImageTeam(svgHtml, imageName) {
 
                 if (completed === true) {
 
-                  //TO DO: undo after testing 
-                  logger.log({
-                    level: 'info',
-                    message: "images compress_images is done  "
-                  });
-
-                  //TO DO: undo after testing 
                   logger.log({
                     level: 'info',
                     message: "statistic : " + JSON.stringify(statistic)
                   });
 
                   if (statistic) {
-
-                    //TO DO: undo after testing 
                     logger.log({
                       level: 'info',
                       message: "start convert compress image to base64 : " + statistic.path_out_new
@@ -76,14 +65,15 @@ async function generateImageTeam(svgHtml, imageName) {
                     base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
                       encodedUrl = base64Bytes;
 
-                      //TO DO: undo after testing 
+                      var base64DisplayString = encodedUrl != undefined ? encodedUrl.substring(0, 15) + "..." : encodedUrl
+
                       logger.log({
                         level: 'info',
-                        message: "done convert compress image to base64 : " + encodedUrl
+                        message: "done convert compress image to base64 : " + base64DisplayString
                       });
 
                       if (fs.existsSync(statistic.path_out_new)) {
-                        //TO DO: undo after testing 
+
                         logger.log({
                           level: 'info',
                           message: "deleting compress image  : " + statistic.path_out_new
@@ -91,7 +81,7 @@ async function generateImageTeam(svgHtml, imageName) {
                         fs.unlinkSync(statistic.path_out_new);
                       }
                       if (fs.existsSync(config.imageFolder + imageName)) {
-                        //TO DO: undo after testing 
+
                         logger.log({
                           level: 'info',
                           message: "deleting team image  : " + config.imageFolder + imageName
@@ -114,8 +104,6 @@ async function generateImageTeam(svgHtml, imageName) {
                   resolve(encodedUrl);
                 }
                 if (error) {
-
-                  //TO DO: undo after testing 
                   logger.log({
                     level: 'info',
                     message: "error while compress image" + error
@@ -172,23 +160,9 @@ async function generateImageTeam(svgHtml, imageName) {
 async function generateImageEmail(svgHtml, imageName) {
   return new Promise((resolve, reject) => {
     try {
-
       var encodedUrl = "";
-      //TO DO: undo after testing 
-      logger.log({
-        level: 'info',
-        message: "generateImageEmail " + svgHtml + " file name " + imageName
-      });
-
-      //TO DO: undo after testing 
-      logger.log({
-        level: 'info',
-        message: "config object" + config + " config data  " + JSON.stringify(config)
-      });
-
       wkhtmltoimage.generate(svgHtml, { output: config.imageFolder + imageName }, async function (code, signal) {
 
-        //TO DO: undo after testing 
         logger.log({
           level: 'info',
           message: "images created for email  " + config.imageFolder + imageName
@@ -197,13 +171,18 @@ async function generateImageEmail(svgHtml, imageName) {
         await base64Img.base64(config.imageFolder + imageName, function (err, base64Bytes) {
           encodedUrl = "data:image/png;base64," + base64Bytes;
 
-          //TO DO: undo after testing 
+          var base64DisplayString = encodedUrl != undefined ? encodedUrl.substring(0, 5) + "..." : encodedUrl
+
           logger.log({
             level: 'info',
-            message: "base64 created for email images  " //+ encodedUrl
+            message: "base64 created for email images  " + base64DisplayString
           });
 
           if (fs.existsSync(config.imageFolder + imageName)) {
+            logger.log({
+              level: 'info',
+              message: "deleting email image  : " + config.imageFolder + imageName
+            });
             fs.unlinkSync(config.imageFolder + imageName);
           }
           resolve(encodedUrl);
@@ -248,20 +227,12 @@ async function generateImageEmail(svgHtml, imageName) {
   });
 }
 
-
 const imageProcessor = {
   saveImageConvertToBase64ForEmail: async function (imageName, svgHtml) {
     return await generateImageEmail(svgHtml, imageName);
   },
 
   saveImageConvertToBase64ForTeam: async function (imageName, svgHtml) {
-
-    //TO DO: undo after testing 
-    logger.log({
-      level: 'info',
-      message: 'start generate image for team'
-    });
-
     return await generateImageTeam(svgHtml, imageName);
   }
 };

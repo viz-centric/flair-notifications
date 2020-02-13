@@ -160,6 +160,13 @@ app.get('/api/deleteChannelConfig/', (req, res) => {
     })
 });
 
+app.get('/health', (req, res) => {
+    var result = {
+        "status": "UP"
+    }
+    res.send(result);
+});
+
 module.exports = app;    //for testing
 
 
