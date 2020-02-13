@@ -593,7 +593,7 @@ var job = {
         jiraConfig.fields.description.content[1].content[0].marks[0].attrs.href = reportsData.report.share_link;
         jiraConfig.fields.description.content[2].content[0].marks[0].attrs.href = reportsData.report.build_url;
         jiraConfig.fields.description.content[3].content[0].marks[0].attrs.href = reportsData.SchedulerLogsMeta.viewData;
-        jiraConfig.fields.description.content[4].content[0].marks[0].attrs.href = util.getGlairInsightsLink(reportsData.report.share_link, reportsData.report.reportline.visualizationid,reportsData.report.thresholdAlert);
+        jiraConfig.fields.description.content[4].content[0].marks[0].attrs.href = util.getGlairInsightsLink(reportsData.report.share_link, reportsData.report.reportline.visualizationid, reportsData.report.thresholdAlert);
 
         await axios.post(jiraSettings.record.organization + '/rest/api/3/issue', jiraConfig, {
 
@@ -613,6 +613,7 @@ var job = {
                 logger.log({
                     level: 'error',
                     message: 'error occured while creating jira ticket',
+                    error: error
                 });
             })
 
