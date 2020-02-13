@@ -7,7 +7,7 @@ var moment = require('moment');
 const dateFormat = "DD-MM-YYYY HH:mm";
 var config = require('./team-message-payload');
 const discovery = require('../discovery');
-const taskLoggerURL = "#/administration/report-management#TaskLogger";
+const taskLoggerURL = "#/administration/report-management/tasklogger";
 const AppConfig = require('./load-notification-config');
 
 let flairBiUrl, notificationConfig;
