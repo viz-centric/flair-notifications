@@ -12,19 +12,14 @@ module.exports = {
             "version": 1,
             "content": [
                 {
-                    "type": "paragraph",
+                    "type": "heading",
+                    "attrs": {
+                        "level": 5
+                    },
                     "content": [
                         {
-                            "text": "This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.This is the description.",
                             "type": "text",
-                            "marks": [
-                                {
-                                    "type": "textColor",
-                                    "attrs": {
-                                        "color": "#97a0af"
-                                    }
-                                }
-                            ]
+                            "text": "Heading 1"
                         }
                     ]
                 },
