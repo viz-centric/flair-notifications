@@ -389,7 +389,7 @@ var job = {
                 };
             }
             else {
-                return { success: 0, message: "channel is not found" };
+                return { success: 0, message: "Email SMTP is not configured" };
             }
         }
         catch (ex) {
