@@ -48,10 +48,10 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     try {
 
         var notificationSent = false, errorMsg = "";
-        thresholdTime = "Threshold run at " + moment(moment().format()).format(util.dateFormat());
+        thresholdTime = teamConfig.isThresholdReport ? "Threshold run at " + moment(moment().format()).format(util.dateFormat()) : "Scheduled report run at " + moment(moment().format()).format(util.dateFormat());
 
         config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, teamConfig.schedulerTaskMeta.id);
-        config.potentialAction[3].targets[0].uri = flairInsightsLink = util.getGlairInsightsLink(teamConfig.shareLink, teamConfig.visualizationId)
+        config.potentialAction[3].targets[0].uri = teamConfig.flairInsightsLink;
         config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
 
         return new Promise(async (resolve, reject) => {

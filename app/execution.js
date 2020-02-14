@@ -219,7 +219,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
             var json_res = JSON.parse(response.data);
 
             if (json_res && json_res.data.length > 0) {
-
                 channelStatus = [];
                 for (let index = 0; index < channels.length; index++) {
                     channelStatus.push(
@@ -278,9 +277,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                             rawQuery: rawQuery
                         }, { transaction });
                         await transaction.commit();
-
+                        
                         viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
-
 
                         const updateTransaction = await db.sequelize.transaction();
                         await models.SchedulerTaskMeta.update({
@@ -303,11 +301,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
                     async function sendReport(subject, toMailList, mailBody, reportTitle) {
                         mailRetryCount += 1;
-
                         var channelList = util.channelList();
-
                         if (util.checkChannel(channels, channelList.email)) {
-
                             var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png';
                             imageProcessor.saveImageConvertToBase64ForEmail(imagefilename, response).then(async function (bytes) {
 
@@ -330,7 +325,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 }
 
                                 sendmailtool.sendMail(emailData).then(async function (data) {
-
                                     await updateSchedulerTaskLog(data, shedularlog, channelList.email);
                                 },
                                     async function (error) {
@@ -345,7 +339,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                                 retryDelay);
                                         }
                                     });
-
 
                             }).catch(async function (error) {
                                 logger.log({
@@ -376,19 +369,15 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     isThresholdReport: thresholdAlertEmail,
                                     shedularlog: shedularlog,
                                     schedulerTaskMeta: schedulerTaskMeta,
+                                    flairInsightsLink: flairInsightsLink,
                                     rawQuery
                                 }
 
                                 sendNotification.sendTeamNotification(teamData, reports_data).then(async function (data) {
-
-
-
                                     await updateSchedulerTaskLog(data, shedularlog, channelList.team);
                                 },
                                     async function (error) {
-
                                         await updateSchedulerTaskLog(error, shedularlog, channelList.team);
-
                                         logger.log({
                                             level: 'error',
                                             message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : 'error while sending mail',
@@ -398,9 +387,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
-
                                     });
-
 
                             }).catch(async function (error) {
                                 logger.log({
@@ -409,12 +396,9 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     errMsg: error,
                                 });
                                 await updateSchedulerTaskLog(error, shedularlog, channelList.team);
-
                             });
                         }
-
                     }
-
                     sendReport(subject, toMailList, mailBody, reportTitle);
 
                 }, async function (err) {
