@@ -7,7 +7,7 @@ var moment = require('moment');
 const dateFormat = "DD-MM-YYYY HH:mm";
 var config = require('./team-message-payload');
 const discovery = require('../discovery');
-const taskLoggerURL = "#/administration/report-management/tasklogger";
+const taskLoggerURL = "/#/administration/report-management/tasklogger";
 const AppConfig = require('./load-notification-config');
 
 let flairBiUrl, notificationConfig;
@@ -258,7 +258,8 @@ var job = {
             config.sections[0].text = html;
             config.summary = "summary";
             config.text = "";
-          
+            config.sections[0].activitySubtitle = "";
+
             config.sections[0].facts = null;
             config.potentialAction = [];
 

@@ -1,6 +1,6 @@
 notifyOpenedTicketJobCron: 0 9 */1 * *
 notifyOpenedTicketSubject: Action required - Open Flair BI Alert Jira's - 
-notifyOpenedTicketBody: Following are the Open threshold alert Jira's that have been created from Flair BI Insights, If any issues accessing these Jira's please contact your system admin
+notifyOpenedTicketBody: Following are the open threshold alert Jira's that have been created from Flair BI Insights, If any issues accessing these Jira's please contact your system admin
 unassignedTicket: Unassigned
 ticketTitlePrefix: Flair BI
 totalRecord: 20
