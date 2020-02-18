@@ -3,10 +3,14 @@ const fs = require('fs');
 const AppConfig = require('../load_config');
 const base64Img = require('base64-img');
 var compress_images = require('compress-images');
+var path = require('path');
+var Jimp = require('jimp');
+const notificationAppConfig = require('../jobs/load-notification-config');
 
 const logger = require('./../logger');
 var models = require('../database/models/index');
-let config;
+let config, notificationConfig;
+
 function createImageDir(config) {
   const imageDir = config.imageFolder;
   logger.info(`Creating images dir ${imageDir}`);
@@ -23,6 +27,7 @@ function createImageDir(config) {
 
 async function init() {
   config = await AppConfig.getConfig();
+  notificationConfig = await notificationAppConfig.getConfig();
   createImageDir(config);
 }
 
@@ -48,50 +53,113 @@ async function generateImageTeam(svgHtml, imageName) {
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
                 { png: { engine: 'pngquant', command: ['--quality=20-50'] } },
                 { svg: { engine: 'svgo', command: '--multipass' } },
-                { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, function (error, completed, statistic) {
-  
+                { gif: { engine: 'gifsicle', command: ['--colors', '64', '--use-col=web'] } }, async function (error, completed, statistic) {
+
                   if (completed === true) {
-  
+
                     logger.log({
                       level: 'info',
                       message: "statistic : " + JSON.stringify(statistic)
                     });
-  
+
                     if (statistic) {
                       logger.log({
                         level: 'info',
                         message: "start convert compress image to base64 : " + statistic.path_out_new
                       });
-  
-                      base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
-                        encodedUrl = base64Bytes;
-  
-                        var base64DisplayString = encodedUrl != undefined ? encodedUrl.substring(0, 15) + "..." : encodedUrl
-  
-                        logger.log({
-                          level: 'info',
-                          message: "done convert compress image to base64 : " + base64DisplayString
+
+                      if (statistic.size_output > 10000) {
+                        try {
+                          await Jimp.read(statistic.path_out_new)
+                            .then(image => {
+                              var resizeFile = path.basename(statistic.path_out_new, '.png') + ".jpg";
+
+                              image
+                                .resize(notificationConfig.resizeImageWidth, notificationConfig.resizeImageHeight) // resize
+                                .quality(60)
+                                .write(resizeFile); // save
+
+                              base64Img.base64(resizeFile, function (err, base64Bytes) {
+                                encodedUrl = base64Bytes;
+
+                                var base64DisplayString = encodedUrl != undefined ? encodedUrl.substring(0, 15) + "..." : encodedUrl
+
+                                logger.log({
+                                  level: 'info',
+                                  message: "done convert compress image to base64 : " + base64DisplayString
+                                });
+
+                                if (fs.existsSync(statistic.path_out_new)) {
+
+                                  logger.log({
+                                    level: 'info',
+                                    message: "deleting compress image  : " + statistic.path_out_new
+                                  });
+                                  fs.unlinkSync(statistic.path_out_new);
+                                }
+                                if (fs.existsSync(config.imageFolder + imageName)) {
+
+                                  logger.log({
+                                    level: 'info',
+                                    message: "deleting team image  : " + config.imageFolder + imageName
+                                  });
+                                  fs.unlinkSync(config.imageFolder + imageName);
+                                }
+                                if (fs.existsSync(resizeFile)) {
+
+                                  logger.log({
+                                    level: 'info',
+                                    message: "deleting team resize image  : " + resizeFile
+                                  });
+                                  fs.unlinkSync(resizeFile);
+                                }
+                                resolve(encodedUrl);
+
+                              });
+                            })
+                            .catch(err => {
+                              console.error(err);
+                            });
+                        } catch (error) {
+                          logger.log({
+                            level: 'error',
+                            message: "error occured while compress image",
+                            errMsg: "error occured while compress image : " + error
+                          });
+                        }
+
+                      }
+                      else {
+                        base64Img.base64(statistic.path_out_new, function (err, base64Bytes) {
+                          encodedUrl = base64Bytes;
+
+                          var base64DisplayString = encodedUrl != undefined ? encodedUrl.substring(0, 15) + "..." : encodedUrl
+
+                          logger.log({
+                            level: 'info',
+                            message: "done convert compress image to base64 : " + base64DisplayString
+                          });
+
+                          if (fs.existsSync(statistic.path_out_new)) {
+
+                            logger.log({
+                              level: 'info',
+                              message: "deleting compress image  : " + statistic.path_out_new
+                            });
+                            fs.unlinkSync(statistic.path_out_new);
+                          }
+                          if (fs.existsSync(config.imageFolder + imageName)) {
+
+                            logger.log({
+                              level: 'info',
+                              message: "deleting team image  : " + config.imageFolder + imageName
+                            });
+                            fs.unlinkSync(config.imageFolder + imageName);
+                          }
+                          resolve(encodedUrl);
+
                         });
-  
-                        if (fs.existsSync(statistic.path_out_new)) {
-  
-                          logger.log({
-                            level: 'info',
-                            message: "deleting compress image  : " + statistic.path_out_new
-                          });
-                          fs.unlinkSync(statistic.path_out_new);
-                        }
-                        if (fs.existsSync(config.imageFolder + imageName)) {
-  
-                          logger.log({
-                            level: 'info',
-                            message: "deleting team image  : " + config.imageFolder + imageName
-                          });
-                          fs.unlinkSync(config.imageFolder + imageName);
-                        }
-                        resolve(encodedUrl);
-  
-                      });
+                      }
                     }
                     else {
                       logger.log({
@@ -110,7 +178,7 @@ async function generateImageTeam(svgHtml, imageName) {
                       message: "error while compress image" + error
                     });
                     resolve(encodedUrl);
-  
+
                   }
                 }, function (error) {
                   logger.log({
@@ -125,7 +193,7 @@ async function generateImageTeam(svgHtml, imageName) {
                   });
                   resolve(encodedUrl);
                 });
-  
+
             })();
           } catch (error) {
             logger.log({
@@ -134,7 +202,7 @@ async function generateImageTeam(svgHtml, imageName) {
               errMsg: "error occured while compress image : " + error
             });
           }
-        
+
         }
 
       }, function (error) {

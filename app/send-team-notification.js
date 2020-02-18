@@ -43,7 +43,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
     config.potentialAction[0].targets[0].uri = teamConfig.shareLink;
     config.potentialAction[1].targets[0].uri = teamConfig.buildUrl;
 
-    webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL); //[1]
+    webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL);
 
     try {
 
@@ -52,49 +52,55 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
 
         config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, teamConfig.schedulerTaskMeta.id);
         config.potentialAction[3].targets[0].uri = teamConfig.flairInsightsLink;
-        config.text = thresholdTime + ' ![chart image](' + teamConfig.base64 + ')';
+        config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')';
 
         return new Promise(async (resolve, reject) => {
-            for (let index = 0; index < webhookURL.records.length; index++) {
-                message.push(webhookURL.records[index].config.webhookName)
-                await axios.post(webhookURL.records[index].config.webhookURL, config)
-                    .then(async (res) => {
-                        try {
-                            if (res.data == "1") {
-                                notificationSent = true;
-                            }
-                            else {
-                                errorMsg = res.data;
-                                notificationSent = false;
-                            }
+            if (webhookURL.records.length == 0) {
+                errorMsg = "Webhook is not found."
+            }
+            else {
+                for (let index = 0; index < webhookURL.records.length; index++) {
+                    message.push(webhookURL.records[index].config.webhookName)
+                    await axios.post(webhookURL.records[index].config.webhookURL, config)
+                        .then(async (res) => {
+                            try {
+                                if (res.data == "1") {
+                                    notificationSent = true;
+                                }
+                                else {
+                                    errorMsg = res.data;
+                                    notificationSent = false;
+                                }
 
-                        } catch (error) {
-                            errorMsg = error;
+                            } catch (error) {
+                                errorMsg = error;
+                                logger.log({
+                                    level: 'error',
+                                    message: 'error occurred while sending team' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                                    errMsg: error,
+                                });
+
+                                reject({
+                                    success: 0,
+                                    message: 'Something wrong while sending team notification'
+                                });
+                            }
+                        })
+                        .catch((error) => {
                             logger.log({
                                 level: 'error',
-                                message: 'error occurred while sending team' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                                message: 'error occurred while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
                                 errMsg: error,
                             });
 
                             reject({
                                 success: 0,
-                                message: error
+                                message: 'Something wrong while sending team notification'
                             });
-                        }
-                    })
-                    .catch((error) => {
-                        logger.log({
-                            level: 'error',
-                            message: 'error occurred while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
-                            errMsg: error,
-                        });
-
-                        reject({
-                            success: 0,
-                            message: error
-                        });
-                    })
+                        })
+                }
             }
+
 
             if (notificationSent) {
                 logger.log({
@@ -115,11 +121,10 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                 });
                 reject({
                     success: 0,
-                    message: errorMsg
+                    message: 'Something wrong while sending team notification'
                 });
             }
         })
-
 
     } catch (error) {
 
@@ -130,7 +135,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         });
         reject({
             success: 0,
-            message: error
+            message: 'Something wrong while sending team notification'
         });
     }
 

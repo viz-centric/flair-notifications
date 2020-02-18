@@ -277,7 +277,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                             rawQuery: rawQuery
                         }, { transaction });
                         await transaction.commit();
-                        
+
                         viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
 
                         const updateTransaction = await db.sequelize.transaction();
@@ -303,7 +303,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         mailRetryCount += 1;
                         var channelList = util.channelList();
                         if (util.checkChannel(channels, channelList.email)) {
-                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.email + '.png';
+                            var d = new Date();
+                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + d.getTime() + "_" + channelList.email + '.png' : reports_data['report_obj']['report_name'] + "_" + d.getTime() + "_" + channelList.email + '.png';
                             imageProcessor.saveImageConvertToBase64ForEmail(imagefilename, response).then(async function (bytes) {
 
                                 var emailData = {
@@ -335,6 +336,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             errMsg: error,
                                         });
                                         if (mailRetryCount < 2) {
+                                            channels = [channelList.email];
                                             setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
@@ -352,7 +354,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                             });
                         }
                         if (util.checkChannel(channels, channelList.team)) {
-                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + channelList.team + '.png';
+                            var d = new Date();
+                            var imagefilename = thresholdAlertEmail ? 'threshold_alert_chart_' + reports_data['report_obj']['report_name'] + "_" + d.getTime() + "_" + channelList.team + '.png' : reports_data['report_obj']['report_name'] + "_" + d.getTime() + "_" + channelList.team + '.png';
                             imageProcessor.saveImageConvertToBase64ForTeam(imagefilename, response).then(async function (bytes) {
 
                                 var teamData = {
@@ -367,7 +370,6 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     webhookURL: webhookURL,
                                     visualizationId: vizID,
                                     isThresholdReport: thresholdAlertEmail,
-                                    shedularlog: shedularlog,
                                     schedulerTaskMeta: schedulerTaskMeta,
                                     flairInsightsLink: flairInsightsLink,
                                     rawQuery
@@ -384,6 +386,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                             errMsg: error,
                                         });
                                         if (mailRetryCount < 2) {
+                                            channels = [channelList.team];
                                             setTimeout(() => sendReport(subject, toMailList, mailBody, reportTitle, imagefilename),
                                                 retryDelay);
                                         }
