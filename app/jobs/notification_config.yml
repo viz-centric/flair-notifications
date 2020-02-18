@@ -5,3 +5,5 @@ unassignedTicket: Unassigned
 ticketTitlePrefix: Flair BI
 totalRecord: 20
 totalTicket: 20
+resizeImageHeight: 153
+resizeImageWidth: 400
