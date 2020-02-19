@@ -113,7 +113,7 @@ async function generateImageTeam(svgHtml, imageName) {
                                   });
                                   fs.unlinkSync(resizeFile);
                                 }
-                                resolve(encodedUrl);
+                                resolve(encodedUrl+"|"+notificationConfig.compressImagesText);
 
                               });
                             })
@@ -156,7 +156,7 @@ async function generateImageTeam(svgHtml, imageName) {
                             });
                             fs.unlinkSync(config.imageFolder + imageName);
                           }
-                          resolve(encodedUrl);
+                          resolve(encodedUrl+"|"+"");
 
                         });
                       }
@@ -166,19 +166,18 @@ async function generateImageTeam(svgHtml, imageName) {
                         level: 'error',
                         message: "error while compress image" + error
                       });
-                      resolve(encodedUrl);
+                      resolve(encodedUrl+"|"+"");
                     }
                   }
                   else {
-                    resolve(encodedUrl);
+                    resolve(encodedUrl+"|"+"");
                   }
                   if (error) {
                     logger.log({
                       level: 'info',
                       message: "error while compress image" + error
                     });
-                    resolve(encodedUrl);
-
+                    resolve(encodedUrl+"|"+"");
                   }
                 }, function (error) {
                   logger.log({
@@ -191,7 +190,7 @@ async function generateImageTeam(svgHtml, imageName) {
                     task_executed: new Date(Date.now()).toISOString(),
                     task_status: "error occured while converting image to base64 uri : " + error.message,
                   });
-                  resolve(encodedUrl);
+                  resolve(encodedUrl+"|"+"");
                 });
 
             })();
@@ -216,7 +215,7 @@ async function generateImageTeam(svgHtml, imageName) {
           task_executed: new Date(Date.now()).toISOString(),
           task_status: "error occured while converting svg html to image : " + error.message,
         });
-        resolve(encodedUrl);
+        resolve(encodedUrl+"|"+"");
       });
     } catch (ex) {
       logger.log({
@@ -229,7 +228,7 @@ async function generateImageTeam(svgHtml, imageName) {
         task_executed: new Date(Date.now()).toISOString(),
         task_status: "error occured while processing an image" + ex.message,
       });
-      resolve(encodedUrl);
+      resolve(encodedUrl+"|"+"");
     }
   });
 }
