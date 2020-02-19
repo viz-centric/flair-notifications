@@ -2,6 +2,7 @@ notifyOpenedTicketJobCron: 0 9 */1 * *
 notifyOpenedTicketSubject: Action required - Open Flair BI Alert Jira's - 
 notifyOpenedTicketBody: Following are the open threshold alert Jira's that have been created from Flair BI Insights, If any issues accessing these Jira's please contact your system admin
 unassignedTicket: Unassigned
+compressImagesText: MS Teams max file size limit reached, Image compressed further affecting quality. Please click on <b>Go to Widget</b>  to access the visualization.
 ticketTitlePrefix: Flair BI
 totalRecord: 20
 totalTicket: 20
