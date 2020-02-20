@@ -613,7 +613,7 @@ var job = {
                 logger.log({
                     level: 'error',
                     message: 'error occured while creating jira ticket',
-                    error: error
+                    error: error.message
                 });
             })
 

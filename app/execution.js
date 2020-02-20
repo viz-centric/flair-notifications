@@ -366,13 +366,14 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     buildUrl: buildUrl,
                                     shareLink: shareLink,
                                     base64: bytes.split("|")[0],
-                                    compressText:bytes.split("|")[1],
+                                    compressText: bytes.split("|")[1],
                                     tableData: json_res.data,
                                     webhookURL: webhookURL,
                                     visualizationId: vizID,
                                     isThresholdReport: thresholdAlertEmail,
                                     schedulerTaskMeta: schedulerTaskMeta,
                                     flairInsightsLink: flairInsightsLink,
+                                    visualizationType: reports_data.report_line_obj.viz_type,
                                     rawQuery
                                 }
 
