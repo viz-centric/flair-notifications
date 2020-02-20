@@ -159,7 +159,8 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label'); 
+                        result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
                         result['stacked'] = VisualizationUtils.getPropertyValue(properties, 'Stacked');
                         result['showGrid'] = VisualizationUtils.getPropertyValue(properties, 'Show grid');
@@ -1593,7 +1594,7 @@ var configs = {
 
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
-
+                        result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Number format');
                         result['fontSize'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size');
                         result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font style');
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
@@ -1659,11 +1660,12 @@ var configs = {
                         result['colorSet'] = colorSet;
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                         result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
-
+                        result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Number format');
                         result['fontSize'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size');
                         result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font style');
                         result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font weight');
                         result['showLabel'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Show Labels');
+                        result['showValue'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Value on Points');
                         result['fontColor'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Colour of labels');
                         result['fontSizeforDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Font size for diplay name');
                         resolve(result);

@@ -52,7 +52,12 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
 
         config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, teamConfig.schedulerTaskMeta.id);
         config.potentialAction[3].targets[0].uri = teamConfig.flairInsightsLink;
-        config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')' + '<br><p style="color:#9B41A3;font-size:12px">' + teamConfig.compressText+"</p>";
+        if (teamConfig.visualizationType == "Table") {
+            config.text = thresholdTime + '<br> ';
+        }
+        else {
+            config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')' + '<br><p style="color:#9B41A3;font-size:12px">' + teamConfig.compressText + "</p>";
+        }
 
         return new Promise(async (resolve, reject) => {
             if (webhookURL.records.length == 0) {
