@@ -374,6 +374,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     schedulerTaskMeta: schedulerTaskMeta,
                                     flairInsightsLink: flairInsightsLink,
                                     visualizationType: reports_data.report_line_obj.viz_type,
+                                    chartrRsponse:response,
                                     rawQuery
                                 }
 

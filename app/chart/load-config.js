@@ -815,6 +815,7 @@ var configs = {
                         result['kpiIconExpression'] = [];
                         result['FontSizeforDisplayName'] = [];
                         result['showIcon'] = [];
+                        result['iconSize'] = [];
                         for (var i = 0; i < measures.length; i++) {
                             result['kpiDisplayName'].push(
                                 VisualizationUtils.getFieldPropertyValue(measures[i], 'Display name') ||
@@ -833,6 +834,7 @@ var configs = {
                             result['kpiIconExpression'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Expression'));
                             result['FontSizeforDisplayName'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Font size for diplay name'));
                             result['showIcon'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Show Icon'));
+                            result['iconSize'].push(VisualizationUtils.getFieldPropertyValue(measures[i], 'Icon Font size'));
                         }
                         resolve(result);
                     }
