@@ -19,12 +19,12 @@ init();
 exports.sendTeamNotification = async function sendNotification(teamConfig, reportData) {
     config.title = teamConfig.reportTitle;
     var tablekey = Object.keys(teamConfig.tableData[0]);
-    var table = "<table><tr>";
+    var table = "<div style='overflow-x:auto;'><table><tr>";
     var message = [];
     for (var j = 0; j < tablekey.length; j++) {
         table += "<th style='border:1px solid #a0a7a7'>" + tablekey[j] + "</th>";
     }
-    table += "</tr><tbody>";
+    table += "</tr><tbody><div>";
     for (let index = 0; index < teamConfig.tableData.length; index++) {
         if (index < notificationConfig.totalRecord) {
             const element = teamConfig.tableData[index];
