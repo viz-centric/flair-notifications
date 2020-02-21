@@ -10,7 +10,7 @@ const customJoi = Joi.extend((joi) => ({
     base: joi.string(),
     name: 'crone',
     language: {
-        valid: 'needs to be a valid crone expression', // Used below as 'crone.valid'
+        valid: 'needs to be a valid cron expression', // Used below as 'crone.valid'
     },
     rules: [
         {
