@@ -68,11 +68,7 @@ const chartMap = {
 
     'Gauge plot': {
         generateChart: function (report_obj, data) {
-            var config = {
-                dimension: report_obj.report_line_obj.dimension,
-                measure: report_obj.report_line_obj.measure,
-            }
-            return charts.gaugeChart(config, data);
+            return charts.gaugeChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
@@ -374,7 +370,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     schedulerTaskMeta: schedulerTaskMeta,
                                     flairInsightsLink: flairInsightsLink,
                                     visualizationType: reports_data.report_line_obj.viz_type,
-                                    chartrRsponse:response,
+                                    chartrRsponse: response,
                                     rawQuery
                                 }
 
@@ -413,7 +409,24 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         message: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
                         errMsg: err,
                     });
-                    await updateSchedulerTaskLog(err, shedularlog, channelList.team);
+                    channelStatus = [];
+                    for (let index = 0; index < channels.length; index++) {
+                        channelStatus.push(
+                            {
+                                channel: channels[index],
+                                notificationSent: false,
+                                status: "Something wrong while creating an image"
+                            }
+                        )
+                    }
+                    let shedularlog = models.SchedulerTaskLog.create({
+                        SchedulerJobId: reports_data['report_shedular_obj']['id'],
+                        task_executed: new Date(Date.now()).toISOString(),
+                        task_status: "error while generating chart",
+                        thresholdMet: false,
+                        notificationSent: false,
+                        channel: JSON.stringify(channelStatus),
+                    });
 
                 });
             } else {

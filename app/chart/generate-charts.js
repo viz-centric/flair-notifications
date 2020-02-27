@@ -181,6 +181,18 @@ var charts = {
 
   },
 
+  gaugeChart: async function (viz_id, data) {
+    var gaugeFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="gauge" width="950" height="440"/></body></html>');
+    chartUtility.configureDomForcharts(gaugeFakeDom.window.document)
+    var gaugePlotChartobj = gauge();
+
+    var chartConfig = await load_config.gaugePlotConfig(viz_id);
+    gaugePlotChartobj.config(chartConfig).print(true).data(data);
+    gaugePlotChartobj(d3.select(gaugeFakeDom.window.document).select('#gauge'))
+    return gaugePlotChartobj._getHTML();
+
+  },
+
   tableChart: async function (viz_id, data) {
 
     var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="table" ></div></body></html>');

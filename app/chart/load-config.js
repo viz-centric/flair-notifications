@@ -159,7 +159,7 @@ var configs = {
                         result['yAxisColor'] = VisualizationUtils.getPropertyValue(properties, 'Y Axis Colour');
                         result['showXaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis Label');
                         result['showYaxisLabel'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis Label');
-                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label'); 
+                        result['axisScaleLabel'] = VisualizationUtils.getPropertyValue(properties, 'Axis Scale Label');
                         result['showLegend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                         result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position');
                         result['stacked'] = VisualizationUtils.getPropertyValue(properties, 'Stacked');
@@ -540,6 +540,79 @@ var configs = {
         return chartconfigPromise;
 
     },
+    gaugePlotConfig: function (viz_id) {
+        var chartconfigPromise = new Promise((resolve, reject) => {
+
+            try {
+                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                    if (error) {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config for doughnut' + viz_id,
+                            errMsg: error.message,
+                        });
+                        reject(error.message);
+                        return;
+                    }
+                    if (response && response.statusCode == 200) {
+                        var json_res = JSON.parse(body);
+                        var properties = json_res.visualMetadata.properties;
+                        var fields = json_res.visualMetadata.fields;
+                        var result = {};
+                        var features = VisualizationUtils.getDimensionsAndMeasures(fields),
+                            dimension = features.dimensions,
+                            measures = features.measures;
+                        var visualizationColors = json_res.visualizationColors;
+                        var colorSet = [];
+                        visualizationColors.forEach(function (obj) {
+                            colorSet.push(obj.code)
+                        });
+
+                        result['measures'] = VisualizationUtils.getNames(measures);
+                        result['gaugeType'] = VisualizationUtils.getPropertyValue(properties, 'Gauge Type').toLowerCase();
+                        result['displayName'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Display name') || result['measures'][0];
+                        result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Font style');
+                        result['fontWeight'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Font weight');
+                        result['showValues'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Value on Points');
+                        var displayColor = VisualizationUtils.getFieldPropertyValue(measures[0], 'Display colour');
+                        result['displayColor'] = (displayColor == null) ? colorSet[0] : displayColor
+                        result['isGradient'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Enable Gradient Color');
+                        result['textColor'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Text colour');
+                        result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Number format');
+                        result['targetDisplayName'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Display name') || result['measures'][1];
+                        result['targetFontStyle'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Font style');
+                        result['targetFontWeight'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Font weight');
+                        result['targetShowValues'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Value on Points');
+                        var targetDisplayColor = VisualizationUtils.getFieldPropertyValue(measures[1], 'Display colour');
+                        result['targetDisplayColor'] = (targetDisplayColor == null) ? colorSet[1] : targetDisplayColor
+                        result['targetTextColor'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Text colour');
+                        result['targetNumberFormat'] = VisualizationUtils.getFieldPropertyValue(measures[1], 'Number format');
+                        resolve(result);
+                    }
+                    else {
+                        logger.log({
+                            level: 'error',
+                            message: 'error while fetching config for gauge plot ' + viz_id,
+                            errMsg: JSON.parse(body).message,
+                        });
+                        reject(JSON.parse(body).message);
+                    }
+
+                });
+            } catch (error) {
+                logger.log({
+                    level: 'error',
+                    message: 'error while fetching config for  gauge plot ' + viz_id,
+                    errMsg: error.message,
+                });
+                reject(error);
+            }
+
+        });
+
+        return chartconfigPromise;
+    },
+
     tableChartConfig: function (viz_id) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
