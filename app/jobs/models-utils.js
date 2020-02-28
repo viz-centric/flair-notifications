@@ -99,15 +99,15 @@ var job = {
                 issue.status = element.fields.status.name;
                 issue.createDate = element.fields.created;
                 if (element.fields.assignee) {
-                    issue.assignPerson = element.fields.assignee.name + "/" + element.fields.assignee.emailAddress;
+                    issue.assignPerson = element.fields.assignee.displayName + "/" + element.fields.assignee.emailAddress;
                 }
                 else {
                     issue.assignPerson = notificationConfig.unassignedTicket;
                 }
-                issue.reporter = element.fields.reporter.name + "/ " + element.fields.reporter.emailAddress;
+                issue.reporter = element.fields.reporter.displayName + "/ " + element.fields.reporter.emailAddress;
                 issue.priority = element.fields.priority.name;
                 issue.summary = element.fields.summary;
-                issue.createdBy = element.fields.creator.name + "/ " + element.fields.creator.emailAddress;
+                issue.createdBy = element.fields.creator.displayName + "/ " + element.fields.creator.emailAddress;
                 issue.viewTicket = element.key + "|" + jiraSettings.record.organization + "/browse/" + element.key;
 
                 issueList.push(issue);
