@@ -4,6 +4,7 @@ notifyOpenedTicketBody: Following are the open threshold alert Jira's that have 
 unassignedTicket: Unassigned
 compressImagesText: MS Teams max file size limit reached, Image compressed further affecting quality. Please click on <b>Go to Widget</b>  to access the visualization.
 ticketTitlePrefix: Flair BI
+teamSizeLimitError: Microsoft Teams endpoint returned HTTP error 413
 totalRecord: 20
 totalTicket: 20
 resizeImageHeight: 153

@@ -54,7 +54,12 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         config.potentialAction[3].targets[0].uri = teamConfig.flairInsightsLink;
 
         config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')' + '<br><p style="color:#9B41A3;font-size:12px">' + teamConfig.compressText + "</p>";
-
+        if (teamConfig.visualizationType == "Table" || teamConfig.visualizationType == "Pivot Table") {
+            config.text = thresholdTime + '<br> ';
+        }
+        else {
+            config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')' + '<br><p style="color:#9B41A3;font-size:12px">' + teamConfig.compressText + "</p>";
+        }
 
         return new Promise(async (resolve, reject) => {
             if (webhookURL.records.length == 0) {
@@ -121,10 +126,18 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                     message: 'error occurred while sending team message',
                     errMsg: errorMsg,
                 });
-                reject({
-                    success: 0,
-                    message: 'Something wrong while sending team notification'
-                });
+                if (errorMsg.indexOf(notificationConfig.teamSizeLimitError >= 0)) {
+                    reject({
+                        success: 0,
+                        message: 'Something wrong while sending team notification'
+                    });
+                }
+                else {
+                    reject({
+                        success: 0,
+                        message: 'Failed to send notification due to MS Teams max size limit reached'
+                    });
+                }
             }
         })
 
