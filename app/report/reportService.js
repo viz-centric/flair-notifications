@@ -19,6 +19,7 @@ module.exports = {
     getScheduleReportLog,
     getChannelProperties,
     getTeamConfig,
+    getTeamNames,
     getEmailConfig,
     updateTeamWebhookURL,
     updateEmailSMTP,
@@ -321,6 +322,27 @@ function getTeamConfig(request) {
     return new Promise(function (resolve, reject) {
         logger.info(`get team webhook URL list`);
         channelJobs.getTeamConfig().then(function (result) {
+            if (result.success === 1) {
+                resolve({ records: result.records });
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
+    });
+}
+
+/**
+ * get team webhook Names list
+ * @param
+ * @return {Promise<any>}
+ */
+function getTeamNames(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get team webhook URL list`);
+        channelJobs.getTeamNames().then(function (result) {
             if (result.success === 1) {
                 resolve({ records: result.records });
             } else {

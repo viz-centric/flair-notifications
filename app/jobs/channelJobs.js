@@ -177,6 +177,39 @@ var job = {
 
     },
 
+    getTeamNames: async function () {
+        try {
+            var webhookNames = [];
+            var channel = await models.ChannelConfigs.findAll({
+                where: {
+                    communication_channel_id: "Teams"
+                }
+            });
+            if (channel) {
+                for (let index = 0; index < channel.length; index++) {
+                    webhookNames.push(channel[index].config.webhookName);
+                }
+                return {
+                    success: 1,
+                    records: webhookNames
+                };
+            }
+            else {
+                return { success: 0, message: "team webhooks are not configured" };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while fetching team webhook names',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+
+
+    },
+
     getEmailConfig: async function () {
         try {
             var channel = await models.ChannelConfigs.findOne({

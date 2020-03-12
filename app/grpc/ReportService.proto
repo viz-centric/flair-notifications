@@ -113,6 +113,10 @@ message GetTeamConfigResponse {
     repeated TeamConfigParameters records = 1;
 }
 
+message GetTeamNamesResponse {
+    repeated string records = 1;
+}
+
 message UpdateTeamWebhookURLRequest {
     TeamConfigParameters teamConfigParameter = 1;
 }
@@ -191,6 +195,7 @@ service ReportService {
     rpc AddEmailConfigs(AddEmailConfigsRequest) returns (ConfigsResponse) {};
     rpc GetEmailConfig(GetEmailConfigRequest) returns (GetEmailConfigResponse) {};
     rpc GetTeamConfig(GetTeamConfigRequest) returns (GetTeamConfigResponse) {};
+    rpc GetTeamNames(GetTeamConfigRequest) returns (GetTeamNamesResponse) {};
     rpc UpdateTeamWebhookURL(UpdateTeamWebhookURLRequest) returns (ConfigsResponse) {};
     rpc UpdateEmailSMTP(UpdateEmailSMTPRequest) returns (ConfigsResponse) {};
     rpc DeleteChannelConfig(DeleteChannelConfigRequest) returns (ConfigsResponse) {};
