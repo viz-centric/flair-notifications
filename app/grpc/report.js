@@ -46,6 +46,7 @@ function constructReportService(server) {
         getChannelProperties,
         deleteChannelConfig,
         getTeamConfig,
+        getTeamNames,
         getEmailConfig,
         AddJiraConfigs,
         updateJiraConfigs,
@@ -128,6 +129,10 @@ function getEmailConfig(call, callback) {
 
 function getTeamConfig(call, callback) {
     handleCall(reportService.getTeamConfig(call.request), callback);
+}
+
+function getTeamNames(call, callback) {
+    handleCall(reportService.getTeamNames(call.request), callback);
 }
 
 function AddJiraConfigs(call, callback) {
