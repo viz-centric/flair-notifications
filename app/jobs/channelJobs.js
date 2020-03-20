@@ -7,7 +7,8 @@ var axios = require('axios');
 var jiraConfig = require('./jira-ticket');
 var modelsUtil = require('./models-utils');
 const AppConfig = require('./load-notification-config');
-
+const { Op } = require("sequelize");
+var lodash =require('lodash');
 var moment = require('moment');
 
 let notificationConfig;
@@ -234,6 +235,38 @@ var job = {
             logger.log({
                 level: 'error',
                 message: 'error while fetching SMTP config',
+                error: ex,
+            });
+            return { success: 0, message: ex };
+        }
+    },
+
+    isConfigExist: async function (id) {
+        try {
+            var channels = await models.ChannelConfigs.findAll({
+                where: {
+                    [Op.or]: [
+                        { communication_channel_id: "Email" },
+                        { communication_channel_id: "Teams" }
+                    ]
+                }
+            });
+            var emails = lodash.filter(channels, { 'communication_channel_id': 'Email' } );
+            var teams = lodash.filter(channels, { 'communication_channel_id': 'Teams' } );
+            if (emails.length==0 || teams.length==0) {
+                return {
+                    success: 1,
+                    isConfigExist: false
+                };
+            }
+            else {
+                return { success: 1, isConfigExist: true };
+            }
+        }
+        catch (ex) {
+            logger.log({
+                level: 'error',
+                message: 'error while checking configs exist',
                 error: ex,
             });
             return { success: 0, message: ex };
