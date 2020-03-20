@@ -180,6 +180,14 @@ message NotifyOpenedJiraTicketRequest{
     OpenJiraTicket openJiraTicketConfig = 1;
 }
 
+message IsConfigExistRequest{
+    int32 id = 1;
+}
+
+message IsConfigExistResponse{
+    bool isConfigExist = 1;
+}
+
 service ReportService {
     rpc GetScheduledReport(GetScheduledReportRequest) returns (ScheduleReportResponse) {};
     rpc GetAllScheduledReportsByUser(RepUserReq) returns (RepUserResp) {};
@@ -207,4 +215,5 @@ service ReportService {
     rpc GetAllJira(GetAllJiraRequest) returns (GetAllJiraResponse) {};
     rpc DisableTicketCreation(DisableTicketCreationRequest) returns (ConfigsResponse) {};
     rpc NotifyOpenedJiraTicket(NotifyOpenedJiraTicketRequest) returns (ConfigsResponse) {};
+    rpc IsConfigExist(IsConfigExistRequest) returns (IsConfigExistResponse) {};
 }

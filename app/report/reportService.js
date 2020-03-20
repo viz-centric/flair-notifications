@@ -32,7 +32,8 @@ module.exports = {
     createJiraTicket,
     getAllJira,
     disableTicketCreation,
-    notifyOpenedJiraTicket
+    notifyOpenedJiraTicket,
+    isConfigExist
 };
 
 /**
@@ -553,5 +554,26 @@ function notifyOpenedJiraTicket(request){
                 reject({ message: err });
             })
         }
+    });
+}
+
+/**
+ * get check if Configs Exist
+ * @param
+ * @return {Promise<any>}
+ */
+function isConfigExist(request) {
+    return new Promise(function (resolve, reject) {
+        logger.info(`get Configs Exist`);
+        channelJobs.isConfigExist(request.id).then(function (result) {
+            if (result.success === 1) {
+                resolve({ isConfigExist: result.isConfigExist });
+            } else {
+                reject({ message: result.message });
+            }
+        }, function (err) {
+            reject({ message: err });
+        })
+
     });
 }

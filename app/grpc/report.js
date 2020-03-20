@@ -54,7 +54,8 @@ function constructReportService(server) {
         createJiraTicket,
         getAllJira,
         disableTicketCreation,
-        notifyOpenedJiraTicket
+        notifyOpenedJiraTicket,
+        isConfigExist
     })
 }
 
@@ -161,4 +162,8 @@ function disableTicketCreation(call, callback){
 
 function notifyOpenedJiraTicket(call, callback){
     handleCall(reportService.notifyOpenedJiraTicket(call.request), callback);
+}
+
+function isConfigExist(call, callback){
+    handleCall(reportService.isConfigExist(call.request), callback);
 }
