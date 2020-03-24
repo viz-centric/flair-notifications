@@ -27,6 +27,8 @@ function getConfig() {
 
         logger.info(`config file details : ` + JSON.stringify(AppConfig));
 
+        logger.info(`process details : ` + JSON.stringify(process.env));
+
         if (process.env.mailServiceAuthUser) {
             AppConfig.mailService.auth.user = process.env.mailServiceAuthUser;
         }
