@@ -13,6 +13,8 @@ const db = {};
 
 let sequelize;
 
+logger.info(`process.env:   ${JSON.stringify(process.env)}`);
+
 logger.info(`process.env.NODE_ENV:   ${process.env.NODE_ENV}`);
 
 logger.info(`config: ${JSON.stringify(config)}`);
