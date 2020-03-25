@@ -13,16 +13,17 @@ const db = {};
 
 let sequelize;
 
+logger.info(`process.env:   ${JSON.stringify(process.env)}`);
+
 logger.info(`process.env.NODE_ENV:   ${process.env.NODE_ENV}`);
 
 logger.info(`config: ${JSON.stringify(config)}`);
 
+setEnvironment();
 
 if (config.use_env_variable) {
-  logger.info(`use_env_variable:   ${process.env.NODE_ENV}`);
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  logger.info(`development:   ${config}`);
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
@@ -41,6 +42,33 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+function setEnvironment() {
+
+  if (process.env.DATABASE_USERNAME) {
+    config.username = process.env.DATABASE_USERNAME;
+  }
+
+  if (process.env.DATABASE_PASSWORD) {
+    config.password = process.env.DATABASE_PASSWORD;
+  }
+
+  if (process.env.DATABASE_NAME) {
+    config.database = process.env.DATABASE_NAME;
+  }
+
+  if (process.env.DATABASE_HOSTNAME) {
+    config.host = process.env.DATABASE_HOSTNAME;
+  }
+
+  if (process.env.DATABASE_PORT) {
+    config.port = process.env.DATABASE_PORT;
+  }
+
+  if (process.env.DATABASE_DIALECT) {
+    config.dialect = process.env.DATABASE_DIALECT;
+  }
+}
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
