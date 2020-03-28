@@ -14,25 +14,25 @@ let channelStatus = [];
 const chartMap = {
     'Clustered Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
-            return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data);
+            return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data,report_obj);
         }
     },
 
     'Clustered Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
-            return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
+            return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data,report_obj);
         }
     },
 
     'Stacked Vertical Bar Chart': {
         generateChart: function (report_obj, data) {
-            return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data);
+            return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data,report_obj);
         }
     },
 
     'Stacked Horizontal Bar Chart': {
         generateChart: function (report_obj, data) {
-            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data);
+            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data,report_obj);
         }
     },
 
