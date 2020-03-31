@@ -13,6 +13,11 @@ async function start() {
   const eurekaUrl = config.discovery.eureka.url;
   const discoveryHostname = config.discovery.hostname;
   const eurekaInstanceId = new Date().getTime();
+
+  if (process.env.EUREKA_URL) {
+    eurekaUrl = process.env.EUREKA_URL;
+  }
+  
   logger.info(`Starting eureka ip ${ipAddress} hostname ${discoveryHostname} url ${eurekaUrl} grpc port ${grpcPort}`);
   client = new Eureka({
     instance: {
@@ -55,7 +60,7 @@ function getClient(appId) {
   logger.info(`Get client ${appId}`);
   return new Promise((success, reject) => {
     logger.info(`Get client adding promise`);
-    promises.push({success, reject, appId});
+    promises.push({ success, reject, appId });
     check();
   });
 }
