@@ -15,7 +15,7 @@ async function start() {
   const eurekaInstanceId = new Date().getTime();
 
   if (process.env.EUREKA_URL) {
-    eurekaUrl = process.env.EUREKA_URL;
+    eurekaUrl = process.env.EUREKA_URL; 
   }
   
   logger.info(`Starting eureka ip ${ipAddress} hostname ${discoveryHostname} url ${eurekaUrl} grpc port ${grpcPort}`);
