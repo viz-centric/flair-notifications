@@ -78,25 +78,25 @@ var charts = {
     return stackedhorizontalBarChartObj._getHTML();
   },
 
-  lineChart: async function (viz_id, data) {
+  lineChart: async function (viz_id, data, report_obj) {
 
     var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="line" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(linefakeDom.window.document);
 
     var linechart = line();
-    var chartConfig = await load_config.lineChartConfig(viz_id);
+    var chartConfig = await load_config.lineChartConfig(viz_id, report_obj);
     linechart.config(chartConfig).print(true).data(data);
     linechart(d3.select(linefakeDom.window.document).select('#line'))
     return linechart._getHTML();
   },
 
-  comboChart: async function (viz_id, data) {
+  comboChart: async function (viz_id, data, report_obj) {
 
     var comboFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="combo" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(comboFakeDom.window.document)
 
     var comboChartObj = combo();
-    var chartConfig = await load_config.comboChartConfig(viz_id);
+    var chartConfig = await load_config.comboChartConfig(viz_id, report_obj);
 
     comboChartObj.config(chartConfig).print(true).data(data);
     comboChartObj(d3.select(comboFakeDom.window.document).select('#combo'))

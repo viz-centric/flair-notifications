@@ -148,8 +148,8 @@ var configs = {
                             dimensions = features.dimensions,
                             measures = features.measures;
 
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                        result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                         result['maxMes'] = measures.length;
 
@@ -253,8 +253,8 @@ var configs = {
                             dimensions = features.dimensions,
                             measures = features.measures;
 
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                        result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                         result['maxMes'] = measures.length;
 
