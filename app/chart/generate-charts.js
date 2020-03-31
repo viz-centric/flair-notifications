@@ -30,73 +30,73 @@ const { JSDOM } = jsdom;
 
 
 var charts = {
-  clusteredverticalBarChart: async function (viz_id, data) {
+  clusteredverticalBarChart: async function (viz_id, data, report_obj) {
     var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
 
     var clusteredverticalBarChartObj = clusteredverticalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
 
     clusteredverticalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredverticalBarChartObj(d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar'))
     return clusteredverticalBarChartObj._getHTML();
   },
 
-  clusteredhorizontalBarChart: async function (viz_id, data) {
+  clusteredhorizontalBarChart: async function (viz_id, data, report_obj) {
     var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
 
     var clusteredhorizontalBarChartObj = clusteredhorizontalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
 
     clusteredhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredhorizontalBarChartObj(d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar'))
     return clusteredhorizontalBarChartObj._getHTML();
   },
 
-  stackedverticalBarChart: async function (viz_id, data) {
+  stackedverticalBarChart: async function (viz_id, data, report_obj) {
     var stackedverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
     var stackedverticalBarChartObj = stackedverticalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
 
     stackedverticalBarChartObj.config(chartConfig).print(true).data(data);
     stackedverticalBarChartObj(d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar'))
     return stackedverticalBarChartObj._getHTML();
   },
 
-  stackedhorizontalBarChart: async function (viz_id, data) {
+  stackedhorizontalBarChart: async function (viz_id, data, report_obj) {
     var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
 
     stackedhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     stackedhorizontalBarChartObj(d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar'))
     return stackedhorizontalBarChartObj._getHTML();
   },
 
-  lineChart: async function (viz_id, data) {
+  lineChart: async function (viz_id, data, report_obj) {
 
     var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="line" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(linefakeDom.window.document);
 
     var linechart = line();
-    var chartConfig = await load_config.lineChartConfig(viz_id);
+    var chartConfig = await load_config.lineChartConfig(viz_id, report_obj);
     linechart.config(chartConfig).print(true).data(data);
     linechart(d3.select(linefakeDom.window.document).select('#line'))
     return linechart._getHTML();
   },
 
-  comboChart: async function (viz_id, data) {
+  comboChart: async function (viz_id, data, report_obj) {
 
     var comboFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="combo" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(comboFakeDom.window.document)
 
     var comboChartObj = combo();
-    var chartConfig = await load_config.comboChartConfig(viz_id);
+    var chartConfig = await load_config.comboChartConfig(viz_id, report_obj);
 
     comboChartObj.config(chartConfig).print(true).data(data);
     comboChartObj(d3.select(comboFakeDom.window.document).select('#combo'))

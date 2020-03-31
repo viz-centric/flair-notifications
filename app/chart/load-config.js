@@ -14,7 +14,7 @@ init();
 
 
 var configs = {
-    barChartConfig: function (viz_id) {
+    barChartConfig: function (viz_id, report_obj) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
@@ -42,8 +42,8 @@ var configs = {
                             dimensions = features.dimensions,
                             measures = features.measures;
                         var result = {};
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                        result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
                         result['maxMes'] = measures.length;
                         result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
                         result['showYaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show Y Axis');
@@ -148,8 +148,8 @@ var configs = {
                             dimensions = features.dimensions,
                             measures = features.measures;
 
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                        result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                         result['maxMes'] = measures.length;
 
@@ -253,8 +253,8 @@ var configs = {
                             dimensions = features.dimensions,
                             measures = features.measures;
 
-                        result['dimension'] = VisualizationUtils.getNames(dimensions);
-                        result['measure'] = VisualizationUtils.getNames(measures);
+                        result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                        result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                         result['maxMes'] = measures.length;
 
