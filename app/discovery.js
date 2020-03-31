@@ -10,7 +10,7 @@ async function start() {
   const config = await AppConfig.getConfig();
   const grpcPort = config.grpcPort;
   const ipAddress = config.ipAddress;
-  const eurekaUrl = config.discovery.eureka.url;
+  let eurekaUrl = config.discovery.eureka.url;
   const discoveryHostname = config.discovery.hostname;
   const eurekaInstanceId = new Date().getTime();
 
