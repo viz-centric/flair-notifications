@@ -65,6 +65,7 @@ message Query {
             LTE = 6;
         }
         ComparatorType comparatorType = 3;
+        Query valueQuery = 4;
     }
     QueryType queryType = 11;
     bool enableCaching = 12;
