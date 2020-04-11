@@ -8,6 +8,7 @@ const promises = [];
 async function start() {
   logger.info('AppConfig ', AppConfig);
   const config = await AppConfig.getConfig();
+  const httpPort = config.httpPort;
   const grpcPort = config.grpcPort;
   const ipAddress = config.ipAddress;
   let eurekaUrl = config.discovery.eureka.url;
@@ -15,9 +16,9 @@ async function start() {
   const eurekaInstanceId = new Date().getTime();
 
   if (process.env.EUREKA_URL) {
-    eurekaUrl = process.env.EUREKA_URL; 
+    eurekaUrl = process.env.EUREKA_URL;
   }
-  
+
   logger.info(`Starting eureka ip ${ipAddress} hostname ${discoveryHostname} url ${eurekaUrl} grpc port ${grpcPort}`);
   client = new Eureka({
     instance: {
@@ -25,6 +26,9 @@ async function start() {
       instanceId: `flair-notifications-instance-${eurekaInstanceId}`,
       hostName: discoveryHostname,
       ipAddr: ipAddress,
+      statusPageUrl: `http://${ipAddress}:${httpPort}/`,
+      healthCheckUrl: `http://${ipAddress}:${httpPort}/`,
+      homePageUrl: `http://${ipAddress}:${httpPort}/`,
       port: {
         "$": grpcPort,
         "@enabled": true
