@@ -8,7 +8,7 @@ const env = process.env.NODE_ENV || 'development';
 const logger = require('../../logger');
 
 
-let config = require(__dirname + '/../config.json')[env];
+let config = require(__dirname + '/../config.js')[env];
 const db = {};
 
 let sequelize;
