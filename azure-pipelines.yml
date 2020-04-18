@@ -47,6 +47,7 @@ steps:
 - script: |
     docker ps -a
     ls -a
+    node_modules/.bin/sequelize db:create
     node_modules/.bin/sequelize db:migrate
   displayName: 'Running migrations'
 
