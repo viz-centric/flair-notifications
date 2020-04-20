@@ -5,6 +5,12 @@ package messages;
 option java_package = "com.flair.bi.messages";
 option java_multiple_files = true;
 
+message QueryExpr {
+    Query query = 1;
+    string sign = 2;
+    string factor = 3;
+}
+
 message Query {
     string queryId = 1;
     string userId = 2;
@@ -65,16 +71,22 @@ message Query {
             LTE = 6;
         }
         ComparatorType comparatorType = 3;
-        Query valueQuery = 4;
+        QueryExpr valueQuery = 5;
     }
     QueryType queryType = 11;
     bool enableCaching = 12;
     repeated HavingHolder having = 13;
     int64 offset = 14;
+    QuerySource querySource = 15;
 
     message Field {
         string name = 1;
         string aggregation = 2;
         string alias = 3;
+    }
+
+    message QuerySource {
+        string source = 1;
+        string alias = 2;
     }
 }

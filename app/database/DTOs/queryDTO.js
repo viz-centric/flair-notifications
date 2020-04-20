@@ -5,6 +5,7 @@ function queryDTO(queryObj){
             limit:queryObj.limit,
             queryId:queryObj.queryId,
             source:queryObj.source,
+            querySource:queryObj.querySource,
             sourceId:queryObj.sourceId,
             userId:queryObj.userId,
             conditionExpressions:queryObj.conditionExpressions,
