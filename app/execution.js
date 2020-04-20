@@ -216,28 +216,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
             var channels = reports_data['report_assign_obj']['channel'];
             var json_res = JSON.parse(response.data);
 
-            console.log('Executing query result', json_res);
-
-            let resultRows = (json_res || {}).data;
-            if (rawQuery.having && rawQuery.having[0] && rawQuery.having[0].valueQuery) {
-                const thresholdValue = rawQuery.having[0].value;
-                const aggregationField = rawQuery.fields.find((elem) => elem.aggregation);
-                const operation = rawQuery.having[0].comparatorType;
-                EQ = 1;
-                NEQ = 2;
-                GT = 3;
-                LT = 4;
-                GTE = 5;
-                LTE = 6;
-                if (operation === 'GT') {
-
-                }
-                console.log('dynamic threshold alert thresholdValue', thresholdValue,
-                    'aggregationField', aggregationField,
-                    'operation', operation);
-            }
-
-            if (resultRows.length > 0) {
+            if (json_res && json_res.data.length > 0) {
                 channelStatus = [];
                 for (let index = 0; index < channels.length; index++) {
                     channelStatus.push(
@@ -252,7 +231,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 var vizID = reports_data.report_line_obj.visualizationid;
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
-                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, resultRows);
+                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
 
                 generate_chart.then(async function (response) {
                     var toMailList = [];
