@@ -40,8 +40,8 @@ async function init() {
   let url = await discovery.getAppDomain('FLAIR-ENGINE-GRPC');
 
   if(process.env.FLAIR_ENGINE){
-    logger.info(`Flair engine instance url is picked up from the env variable`);
      url = process.env.FLAIR_ENGINE;
+     logger.info(`Flair engine instance url is picked up from the env variable ${url}`);
   }
   
   logger.info(`Flair engine instance ${url}`);
