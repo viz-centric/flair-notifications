@@ -54,7 +54,6 @@ message Query {
     }
     message HavingHolder {
         Field feature = 1;
-        string value = 2;
         enum ComparatorType {
             UNKNOWN = 0;
             EQ = 1;
@@ -65,15 +64,22 @@ message Query {
             LTE = 6;
         }
         ComparatorType comparatorType = 3;
+        string operation = 5;
     }
     QueryType queryType = 11;
     bool enableCaching = 12;
     repeated HavingHolder having = 13;
     int64 offset = 14;
+    QuerySource querySource = 15;
 
     message Field {
         string name = 1;
         string aggregation = 2;
         string alias = 3;
+    }
+
+    message QuerySource {
+        string source = 1;
+        string alias = 2;
     }
 }

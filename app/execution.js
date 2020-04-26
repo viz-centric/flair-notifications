@@ -207,6 +207,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
         const rawQuery = queryService.preProcessQuery(query);
 
+        console.log('Executing query', rawQuery);
+
         var data_call = grpc_client.getRecords(rawQuery);
 
         data_call.then(async function (response) {
