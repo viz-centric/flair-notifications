@@ -13,7 +13,6 @@ async function init() {
 
 init();
 
-
 var configs = {
     barChartConfig: function (viz_id, report_obj) {
 
@@ -99,10 +98,10 @@ var configs = {
                                 message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
                             });
-                            logger.debug({
-                                level: 'debug',
-                                message: 'API response :  ' + response + '  response body:  ' + JSON.parse(body).message
-                            });
+                            logger.debug(
+                                
+                                'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
+                            );
                             reject(error);
                         }
                     } catch (error) {
@@ -137,7 +136,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for line' + viz_id,
+                            message: 'error while fetching config for line' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -214,8 +213,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for line' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -252,7 +255,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for combo ' + viz_id,
+                            message: 'error while fetching config for combo ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -330,8 +333,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for combo' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -368,7 +375,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for scatter Plot' + viz_id,
+                            message: 'error while fetching config for scatter Plot ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -434,8 +441,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for scatter Plot' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -471,7 +482,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for pie' + viz_id,
+                            message: 'error while fetching config for pie' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -496,8 +507,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for pie' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -532,7 +547,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for doughnut' + viz_id,
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -566,8 +581,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for doughnut' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -602,7 +621,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for doughnut' + viz_id,
+                            message: 'error while fetching config for doughnut' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -647,8 +666,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for gauge plot ' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -684,7 +707,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for table' + viz_id,
+                            message: 'error while fetching config for table' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -773,8 +796,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for table' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -806,7 +833,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for pivot table' + viz_id,
+                            message: 'error while fetching config for pivot table' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -897,8 +924,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for pivot table' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -931,7 +962,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for KPI' + viz_id,
+                            message: 'error while fetching config for KPI' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -991,8 +1022,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for KPI' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1026,7 +1061,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for info graphics ' + viz_id,
+                            message: 'error while fetching config for info graphics ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1074,8 +1109,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for info graphics' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1111,7 +1150,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for map ' + viz_id,
+                            message: 'error while fetching config for map ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1148,8 +1187,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for map ' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1186,7 +1229,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for treemap ' + viz_id,
+                            message: 'error while fetching config for treemap ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1240,8 +1283,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for treemap' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1277,7 +1324,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for heatmap' + viz_id,
+                            message: 'error while fetching config for heatmap' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1355,8 +1402,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for heatmap' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1391,7 +1442,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for boxplot' + viz_id,
+                            message: 'error while fetching config for boxplot' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1430,8 +1481,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for boxplot chart' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1466,7 +1521,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for chord diagram ' + viz_id,
+                            message: 'error while fetching config for chord diagram ' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1501,8 +1556,12 @@ var configs = {
                         else {
                             logger.error({
                                 level: 'error',
-                                message: 'error while processing config for chord diagram ' + viz_id,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                                 errMsg: error,
+                            });
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             });
                             reject(error);
                         }
@@ -1538,7 +1597,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for text Object' + viz_id,
+                            message: 'error while fetching config for text Object' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1598,8 +1657,12 @@ var configs = {
                     else {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for text Object' + viz_id,
+                            message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                             errMsg: error,
+                        });
+                        logger.debug({
+                            level: 'debug',
+                            message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                         });
                         reject(error);
                     }
@@ -1628,7 +1691,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for bullet' + viz_id,
+                            message: 'error while fetching config for bullet' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1672,8 +1735,12 @@ var configs = {
                     else {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for bullet chart' + viz_id,
+                            message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                             errMsg: error,
+                        });
+                        logger.debug({
+                            level: 'debug',
+                            message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                         });
                         reject(error);
                     }
@@ -1701,7 +1768,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for sankey' + viz_id,
+                            message: 'error while fetching config for sankey' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1752,8 +1819,12 @@ var configs = {
                     else {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for sankey chart' + viz_id,
+                            message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                             errMsg: error,
+                        });
+                        logger.debug({
+                            level: 'debug',
+                            message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                         });
                         reject(error);
                     }
@@ -1781,7 +1852,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for pie grid' + viz_id,
+                            message: 'error while fetching config for pie grid' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1819,8 +1890,12 @@ var configs = {
                     else {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for pie grid' + viz_id,
+                            message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                             errMsg: error,
+                        });
+                        logger.debug({
+                            level: 'debug',
+                            message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                         });
                         reject(error);
                     }
@@ -1848,7 +1923,7 @@ var configs = {
                     if (error) {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for number grid' + viz_id,
+                            message: 'error while fetching config for number grid' + viz_id,
                             errMsg: error,
                         });
                         reject(error.message);
@@ -1885,8 +1960,12 @@ var configs = {
                     else {
                         logger.error({
                             level: 'error',
-                            message: 'error while processing config for number grid' + viz_id,
+                            message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
                             errMsg: error,
+                        });
+                        logger.debug({
+                            level: 'debug',
+                            message: 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                         });
                         reject(error);
                     }
