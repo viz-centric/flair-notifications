@@ -8,6 +8,7 @@ let flairBiUrl;
 
 async function init() {
     flairBiUrl = await discovery.getAppUrl('FLAIRBI') + vizUrl;
+    logger.info('flairBi API base URL ' + flairBiUrl);
 }
 
 init();
@@ -19,12 +20,13 @@ var configs = {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
+                logger.info('flairBi API end point ' + flairBiUrl + "/" + viz_id);
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
                             message: 'error while fetching config for bar chart' + viz_id,
-                            errMsg: error.message,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -92,27 +94,31 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for bar chart' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error in ' + flairBiUrl + "/" + viz_id + " API reponse",
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            logger.debug({
+                                level: 'debug',
+                                message: 'API response :  ' + response + '  response body:  ' + JSON.parse(body).message
+                            });
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for bar chart' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for bar chart ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for bar chart' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for bar chart ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -129,10 +135,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for line' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for line' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -206,18 +212,18 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for line' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for line' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
                             message: 'error while processing config for line chart ' + viz_id,
-                            errMsg: error.message,
+                            errMsg: error,
                         });
                         reject(error);
                     }
@@ -225,10 +231,10 @@ var configs = {
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for line' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for line' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -244,10 +250,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for combo ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for combo ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -322,18 +328,18 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for combo' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for combo' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for combo' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for combo' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
@@ -341,10 +347,10 @@ var configs = {
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for combo' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for combo' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -360,10 +366,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for scatter Plot' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for scatter Plot' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -426,28 +432,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for scatter Plot' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for scatter Plot' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for scatter Plot' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for scatter Plot' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
 
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for scatter Plot' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for scatter Plot' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -463,10 +469,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pie' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for pie' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -488,27 +494,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for pie' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for pie' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pie ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for pie ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for pie ' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for pie ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -524,10 +530,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for doughnut' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for doughnut' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -558,27 +564,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for doughnut' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for doughnut' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for doughnut' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for doughnut' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for doughnut' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for doughnut' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -594,10 +600,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for doughnut' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for doughnut' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -639,27 +645,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for gauge plot ' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for gauge plot ' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for  gauge plot ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for  gauge plot ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for  gauge plot ' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for  gauge plot ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -676,10 +682,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for table' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for table' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -765,27 +771,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for table' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for table' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for table' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for table' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for table' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for table' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -798,10 +804,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pivot table' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for pivot table' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -889,27 +895,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for pivot table' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for pivot table' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pivot table' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for pivot table' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for pivot table' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for pivot table' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -923,10 +929,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for KPI' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for KPI' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -983,27 +989,27 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for KPI' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for KPI' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for KPI ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for KPI ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for KPI ' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for KPI ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1018,10 +1024,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for info graphics ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for info graphics ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1066,28 +1072,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for info graphics' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for info graphics' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for info graphics' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for info graphics' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for info graphics' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for info graphics' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1103,10 +1109,10 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for map ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for map ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1140,28 +1146,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for map ' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for map ' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for map' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for map' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for map' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for map' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1178,10 +1184,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for treemap ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for treemap ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1232,28 +1238,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for treemap' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for treemap' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for treemap' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for treemap' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for treemap' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for treemap' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1269,10 +1275,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for heatmap' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for heatmap' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1347,28 +1353,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for heatmap' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for heatmap' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for heatmap ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for heatmap ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for heatmap ' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for heatmap ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1383,10 +1389,10 @@ var configs = {
             try {
                 request(vizMetaApi + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for boxplot' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for boxplot' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1422,28 +1428,28 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for boxplot chart' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for boxplot chart' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for boxplot chart' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for boxplot chart' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for boxplot chart' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for boxplot chart' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1458,10 +1464,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for chord diagram ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for chord diagram ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1493,18 +1499,18 @@ var configs = {
                             resolve(result);
                         }
                         else {
-                            logger.log({
+                            logger.error({
                                 level: 'error',
-                                message: 'error while fetching config for chord diagram ' + viz_id,
-                                errMsg: JSON.parse(body).message,
+                                message: 'error while processing config for chord diagram ' + viz_id,
+                                errMsg: error,
                             });
-                            reject(JSON.parse(body).message);
+                            reject(error);
                         }
                     } catch (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for chord diagram ' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for chord diagram ' + viz_id,
+                            errMsg: error,
                         });
                         reject(error);
                     }
@@ -1512,10 +1518,10 @@ var configs = {
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for chord diagram ' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for chord diagram ' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1530,10 +1536,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for text Object' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for text Object' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1590,20 +1596,20 @@ var configs = {
                         resolve(result);
                     }
                     else {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for text Object' + viz_id,
-                            errMsg: JSON.parse(body).message,
+                            message: 'error while processing config for text Object' + viz_id,
+                            errMsg: error,
                         });
-                        reject(JSON.parse(body).message);
+                        reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for text Object' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for text Object' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1620,10 +1626,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for bullet' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for bullet' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1664,20 +1670,20 @@ var configs = {
                         resolve(result);
                     }
                     else {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for bullet chart' + viz_id,
-                            errMsg: JSON.parse(body).message,
+                            message: 'error while processing config for bullet chart' + viz_id,
+                            errMsg: error,
                         });
-                        reject(JSON.parse(body).message);
+                        reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for bullet chart' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for bullet chart' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1693,10 +1699,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for sankey' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for sankey' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1744,20 +1750,20 @@ var configs = {
                         resolve(result);
                     }
                     else {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for sankey chart' + viz_id,
-                            errMsg: JSON.parse(body).message,
+                            message: 'error while processing config for sankey chart' + viz_id,
+                            errMsg: error,
                         });
-                        reject(JSON.parse(body).message);
+                        reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for sankey chart' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for sankey chart' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1773,10 +1779,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pie grid' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for pie grid' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1811,20 +1817,20 @@ var configs = {
                         resolve(result);
                     }
                     else {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for pie grid' + viz_id,
-                            errMsg: JSON.parse(body).message,
+                            message: 'error while processing config for pie grid' + viz_id,
+                            errMsg: error,
                         });
-                        reject(JSON.parse(body).message);
+                        reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for pie grid' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for pie grid' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
@@ -1840,10 +1846,10 @@ var configs = {
             try {
                 request(flairBiUrl + "/" + viz_id, function (error, response, body) {
                     if (error) {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for number grid' + viz_id,
-                            errMsg: error.message,
+                            message: 'error while processing config for number grid' + viz_id,
+                            errMsg: error,
                         });
                         reject(error.message);
                         return;
@@ -1877,20 +1883,20 @@ var configs = {
                         resolve(result);
                     }
                     else {
-                        logger.log({
+                        logger.error({
                             level: 'error',
-                            message: 'error while fetching config for number grid' + viz_id,
-                            errMsg: JSON.parse(body).message,
+                            message: 'error while processing config for number grid' + viz_id,
+                            errMsg: error,
                         });
-                        reject(JSON.parse(body).message);
+                        reject(error);
                     }
                 });
 
             } catch (error) {
-                logger.log({
+                logger.error({
                     level: 'error',
-                    message: 'error while fetching config for number grid' + viz_id,
-                    errMsg: error.message,
+                    message: 'error while processing config for number grid' + viz_id,
+                    errMsg: error,
                 });
                 reject(error);
             }
