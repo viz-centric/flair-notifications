@@ -88,13 +88,19 @@ function check() {
 
 async function getAppUrl(appId) {
   logger.info(`Get app url ${appId}`);
-  const domain = await getAppDomain(appId);
+  let domain = await getAppDomain(appId);
   let url;
+
+  if (process.env.FLAIR_BI) {
+    domain = process.env.FLAIR_BI;
+  }
+
   if (process.env.GRPC_SSL_ENABLED === 'true') {
     url = 'https://' + domain;
   } else {
     url = 'http://' + domain;
   }
+
   logger.info(`Get app url ${url}`);
   return url;
 }
