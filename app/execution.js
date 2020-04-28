@@ -207,7 +207,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
         const rawQuery = queryService.preProcessQuery(query);
 
-        console.log('Executing query', rawQuery);
+        console.debug('Executing query', rawQuery);
 
         var data_call = grpc_client.getRecords(rawQuery);
 
@@ -408,7 +408,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 }, async function (err) {
                     logger.log({
                         level: 'error',
-                        message: thresholdAlertEmail ? 'error while generating chart for threshold alert' + err : 'error while generating chart' + err,
+                        message: thresholdAlertEmail ? 'error while generating chart for threshold alert ' + err : 'error while generating chart ' + err,
                         errMsg: err,
                     });
                     channelStatus = [];
@@ -477,9 +477,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     channel: JSON.stringify(channelStatus),
                 });
             }
-
         })
-
     }
 
     loadDataFromGrpc(query);

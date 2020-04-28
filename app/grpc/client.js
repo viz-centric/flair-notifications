@@ -37,15 +37,17 @@ const grpcClient = {
 
 async function init() {
   logger.info(`Creating grpc client`);
+
   let url = await discovery.getAppDomain('FLAIR-ENGINE-GRPC');
 
-  if(process.env.FLAIR_ENGINE){
-     url = process.env.FLAIR_ENGINE;
-     logger.info(`Flair engine instance url is picked up from the env variable ${url}`);
+  if (process.env.FLAIR_ENGINE) {
+    url = process.env.FLAIR_ENGINE;
+    logger.debug(`Flair engine instance url is picked up from the env variable ${url}`);
   }
-  
-  logger.info(`Flair engine instance ${url}`);
+
+  logger.debug(`Flair engine instance ${url}`);
   grpcClientInstance = new queryproto.messages.QueryService(url, grpc.credentials.createInsecure());
+
 }
 
 init();
