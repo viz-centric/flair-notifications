@@ -21,13 +21,11 @@ function getConfig() {
         logger.info(`Loading app config...`);
         const configFile = process.env.APP_CONFIG || default_config;
 
-        logger.info(`config file name : ` + configFile);
+        logger.debug(`config file name : ` + configFile);
 
         const AppConfig = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
 
-        logger.info(`config file details : ` + JSON.stringify(AppConfig));
-
-        logger.info(`process details : ` + JSON.stringify(process.env));
+        logger.debug(`config file details : ` + JSON.stringify(AppConfig));
 
         if (process.env.mailServiceAuthUser) {
             AppConfig.mailService.auth.user = process.env.mailServiceAuthUser;
@@ -45,7 +43,7 @@ function getConfig() {
         AppConfig.discovery.hostname = loadHostname();
         appConfig = AppConfig;
 
-        logger.info(`App config loaded ${appConfig}`);
+        logger.debug(`App config loaded ${appConfig}`);
 
         appConfigPromise = null;
         success(appConfig);
