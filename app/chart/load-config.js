@@ -7,13 +7,7 @@ const vizUrl = "/api/external/visualMetaDataById";
 let flairBiUrl;
 
 async function init() {
-    flairBiBaseUrl = await discovery.getAppUrl('FLAIRBI');
-    if (process.env.FLAIR_BI) {
-        flairBiBaseUrl = process.env.FLAIR_BI;
-        logger.debug(`Flair BI base url is picked up from the env variable ${flairBiBaseUrl}`);
-    }
-
-    flairBiUrl = flairBiBaseUrl + vizUrl
+    flairBiUrl = await discovery.getAppUrl('FLAIRBI') + vizUrl;
     logger.info('FlairBi API base URL ' + flairBiUrl);
 }
 
