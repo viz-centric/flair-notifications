@@ -189,7 +189,7 @@ const updateSchedulerTaskLog = async function (data, shedularlog, channel) {
 
     } catch (error) {
         await transaction.rollback();
-        logger.log({
+        logger.error({
             level: 'error',
             message: 'error occured while updating scheduler log',
             errMsg: error,
@@ -290,7 +290,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         await updateTransaction.commit();
                     } catch (error) {
                         await transaction.rollback();
-                        logger.log({
+                        logger.error({
                             level: 'error',
                             message: 'error occured while saving scheduler log',
                             errMsg: error,
@@ -328,7 +328,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 },
                                     async function (error) {
                                         await updateSchedulerTaskLog(error, shedularlog, channelList.email);
-                                        logger.log({
+                                        logger.error({
                                             level: 'error',
                                             message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : 'error while sending mail',
                                             errMsg: error,
@@ -341,7 +341,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     });
 
                             }).catch(async function (error) {
-                                logger.log({
+                                logger.error({
                                     level: 'error',
                                     message: thresholdAlertEmail ? 'error while generating image for threshold alert' : 'error while generating image',
                                     errMsg: error,
@@ -381,7 +381,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                 },
                                     async function (error) {
                                         await updateSchedulerTaskLog(error, shedularlog, channelList.team);
-                                        logger.log({
+                                        logger.error({
                                             level: 'error',
                                             message: 'error while sending mail' + thresholdAlertEmail ? ' for threshold alert' : 'error while sending mail',
                                             errMsg: error,
@@ -394,7 +394,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     });
 
                             }).catch(async function (error) {
-                                logger.log({
+                                logger.error({
                                     level: 'error',
                                     message: 'error while generating image' + thresholdAlertEmail ? ' for threshold alert' : 'error while generating image',
                                     errMsg: error,
@@ -406,7 +406,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     sendReport(subject, toMailList, mailBody, reportTitle);
 
                 }, async function (err) {
-                    logger.log({
+                    logger.error({
                         level: 'error',
                         message: thresholdAlertEmail ? 'error while generating chart for threshold alert ' + err : 'error while generating chart ' + err,
                         errMsg: err,
@@ -444,7 +444,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     )
                 }
 
-                logger.log({
+                logger.error({
                     level: 'error',
                     message: "no data found",
                     errMsg: "no data found",
@@ -459,7 +459,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 });
             }
         }, function (err) {
-            logger.log({
+            logger.error({
                 level: 'error',
                 message: thresholdAlertEmail ? 'error while fetching records from GRPC for threshold alert' + err : 'error while fetching records from GRPC' + err,
                 errMsg: err,
