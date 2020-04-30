@@ -8,7 +8,7 @@ let flairBiUrl;
 
 async function init() {
     flairBiUrl = await discovery.getAppUrl('FLAIRBI') + vizUrl;
-    logger.info('flairBi API base URL ' + flairBiUrl);
+    logger.info('FlairBi API base URL ' + flairBiUrl);
 }
 
 init();
@@ -99,7 +99,7 @@ var configs = {
                                 errMsg: error,
                             });
                             logger.debug(
-                                
+
                                 'API response :  ' + response.statusCode + '  response body:  ' + JSON.parse(body).message
                             );
                             reject(error);
