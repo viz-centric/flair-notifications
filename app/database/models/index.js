@@ -15,11 +15,7 @@ let sequelize;
 
 logger.debug(`process.env:   ${JSON.stringify(process.env)}`);
 
-logger.debug(`process.env.NODE_ENV:   ${process.env.NODE_ENV}`);
-
 setEnvironment();
-
-logger.debug(`config: ${JSON.stringify(config)}`);
 
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);

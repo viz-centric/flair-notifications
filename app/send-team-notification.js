@@ -97,7 +97,12 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                             logger.log({
                                 level: 'error',
                                 message: 'error occurred while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
-                                errMsg: error,
+                                errMsg: error.message
+                            });
+                            logger.debug({
+                                level: 'error',
+                                message: 'error occurred while sending team message ' + reportData.report_obj.thresholdAlert ? ' for threshold alert' : '',
+                                errMsg: error
                             });
 
                             reject({
@@ -107,7 +112,6 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
                         })
                 }
             }
-
 
             if (notificationSent) {
                 logger.log({
