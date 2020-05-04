@@ -67,6 +67,11 @@ const VisualizationUtils = {
             return item.feature.name;
         });
     },
+    getTypes: function (arr) {
+        return arr.map(function (item) {
+            return item.feature.type;
+        });
+    },
 
 
 }

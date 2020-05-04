@@ -45,6 +45,7 @@ var configs = {
                                 measures = features.measures;
                             var result = {};
                             result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
                             result['maxMes'] = measures.length;
                             result['showXaxis'] = VisualizationUtils.getPropertyValue(properties, 'Show X Axis');
@@ -158,6 +159,7 @@ var configs = {
                                 measures = features.measures;
 
                             result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                             result['maxMes'] = measures.length;
@@ -277,6 +279,7 @@ var configs = {
                                 measures = features.measures;
 
                             result['dimension'] = report_obj.report_line_obj.dimension; //VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = report_obj.report_line_obj.measure;//VisualizationUtils.getNames(measures);
 
                             result['maxMes'] = measures.length;
@@ -396,6 +399,7 @@ var configs = {
                                 measures = features.measures;
                             var result = {};
                             result['dimension'] = VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = VisualizationUtils.getNames(measures);
                             result['maxMes'] = measures.length;
 
@@ -498,6 +502,7 @@ var configs = {
                                 dimension = features.dimensions,
                                 measure = features.measures;
                             result['dimension'] = VisualizationUtils.getNames(dimension);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                             result['measure'] = VisualizationUtils.getNames(measure);
                             result['legend'] = VisualizationUtils.getPropertyValue(properties, 'Show Legend');
                             result['legendPosition'] = VisualizationUtils.getPropertyValue(properties, 'Legend position').toLowerCase();
@@ -563,6 +568,7 @@ var configs = {
                                 dimension = features.dimensions,
                                 measure = features.measures;
                             result['dimension'] = VisualizationUtils.getNames(dimension);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                             result['measure'] = VisualizationUtils.getNames(measure);
                             result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
                             result['measureDisplayName'] = VisualizationUtils.getFieldPropertyValue(measure[0], 'Display name') || result['measure'][0];
@@ -729,6 +735,8 @@ var configs = {
                                 measures = features.measures;
 
                             result['dimension'] = VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
+
                             result['measure'] = VisualizationUtils.getNames(measures);
 
                             result['maxDim'] = dimensions.length;
@@ -855,6 +863,7 @@ var configs = {
                                 measures = features.measures;
 
                             result['dimension'] = VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = VisualizationUtils.getNames(measures);
 
                             result['maxDim'] = dimensions.length;
@@ -978,6 +987,7 @@ var configs = {
                                 dimension = features.dimensions,
                                 measures = features.measures;
                             result['dimension'] = VisualizationUtils.getNames(dimension);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                             result['measure'] = VisualizationUtils.getNames(measures);
                             result['kpiAlignment'] = VisualizationUtils.getPropertyValue(properties, 'Text alignment');
 
@@ -1083,6 +1093,7 @@ var configs = {
                                 measures = features.measures;
 
                             result['dimension'] = VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = VisualizationUtils.getNames(measures);
 
                             result['chartType'] = VisualizationUtils.getPropertyValue(properties, 'Info graphic Type').toLowerCase();
@@ -1172,6 +1183,7 @@ var configs = {
                                 measure = features.measures;
 
                             result['dimension'] = VisualizationUtils.getNames(dimension);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                             result['measure'] = VisualizationUtils.getNames(measure);
 
                             result['colorPattern'] = VisualizationUtils.getPropertyValue(properties, 'Color Pattern').toLowerCase().replace(' ', '_');
@@ -1260,6 +1272,7 @@ var configs = {
                             result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Number format');
                             result['measure'] = [measures[0].feature.name];
                             result['dimension'] = [];
+                            result['dimensionType'] = [];
                             result['showLabelForDimension'] = [];
                             result['labelColorForDimension'] = [];
                             result['fontStyleForDimension'] = [];
@@ -1270,6 +1283,7 @@ var configs = {
 
                             for (var i = 0, j = ''; i < result.maxDim; i++ , j = i + 1) {
                                 result['dimension'].push(dimensions[i].feature.name);
+                                result['dimensionType'].push(dimensions[i].feature.type);
                                 result['showLabelForDimension'].push(VisualizationUtils.getFieldPropertyValue(dimensions[i], 'Show Labels'));
                                 result['labelColorForDimension'].push(VisualizationUtils.getFieldPropertyValue(dimensions[i], 'Colour of labels'));
                                 var displayColor = VisualizationUtils.getFieldPropertyValue(dimensions[i], 'Display colour');
@@ -1550,6 +1564,7 @@ var configs = {
                             result['colorPattern'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Color Pattern').toLowerCase().replace(' ', '_');
                             result['numberFormat'] = VisualizationUtils.getFieldPropertyValue(measures[0], 'Number format');
                             result['dimension'] = VisualizationUtils.getNames(dimensions);
+                            result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                             result['measure'] = VisualizationUtils.getNames(measures)[0];
                             resolve(result);
                         }
@@ -1712,6 +1727,7 @@ var configs = {
                             measures = features.measures;
 
                         result['dimension'] = [VisualizationUtils.getNames(dimensions)[0]];
+                        result['dimensionType'] = [VisualizationUtils.getTypes(dimensions)[0]];
                         result['measures'] = VisualizationUtils.getNames(measures);
 
                         result['fontStyle'] = VisualizationUtils.getFieldPropertyValue(dimensions[0], 'Font style');
@@ -1789,6 +1805,7 @@ var configs = {
                             measures = features.measures;
 
                         result['dimension'] = VisualizationUtils.getNames(dimensions);
+                        result['dimensionType'] = VisualizationUtils.getTypes(dimensions);
                         result['measure'] = VisualizationUtils.getNames(measures);
 
                         result['maxDim'] = dimensions.length;
@@ -1872,6 +1889,7 @@ var configs = {
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
+                        result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
                         result['colorSet'] = colorSet;
 
@@ -1943,6 +1961,7 @@ var configs = {
                             dimension = features.dimensions,
                             measure = features.measures;
                         result['dimension'] = VisualizationUtils.getNames(dimension);
+                        result['dimensionType'] = VisualizationUtils.getTypes(dimension);
                         result['measure'] = VisualizationUtils.getNames(measure);
                         result['colorSet'] = colorSet;
                         result['dimensionDisplayName'] = VisualizationUtils.getFieldPropertyValue(dimension[0], 'Display name') || result['dimension'][0];
