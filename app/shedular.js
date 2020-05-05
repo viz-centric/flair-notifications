@@ -59,6 +59,8 @@ var shedular = {
                         report_assign_obj: report.AssignReport,
                         report_shedular_obj: report.SchedulerTask
                     }
+
+                    logger.info('shedular run for id: '+reports_data.report_line_obj.visualizationid+" name: "+reports_data.report_obj.title_name);
                     execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
 
                 }).catch(function (err) {
@@ -73,8 +75,7 @@ var shedular = {
                         task_executed: new Date(Date.now()).toISOString(),
                         task_status: 'error while generationg reports',
                         thresholdMet: reports_data.report_obj.thresholdAlert,
-                        notificationSent: false,
-                        channel: reports_data.SchedulerTask.channel
+                        notificationSent: false
                     });
                 });
 

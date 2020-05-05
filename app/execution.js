@@ -468,6 +468,18 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 setTimeout(() => loadDataFromGrpc(query), retryDelay);
             }
             else {
+                var channels = reports_data['report_assign_obj']['channel'];
+                channelStatus = [];
+                for (let index = 0; index < channels.length; index++) {
+                    channelStatus.push(
+                        {
+                            channel: channels[index],
+                            notificationSent: false,
+                            status: "error while fetching records from GRPC"
+                        }
+                    )
+                }
+
                 let shedularlog = models.SchedulerTaskLog.create({
                     SchedulerJobId: reports_data['report_shedular_obj']['id'],
                     task_executed: new Date(Date.now()).toISOString(),
