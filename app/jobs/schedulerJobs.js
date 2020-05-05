@@ -70,11 +70,9 @@ var job = {
                 report_name: report.report_name,
             });
 
-            for (let index = 0; index < params.assign_report.channel.length; index++) {
-                job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp, shedualar_obj.start_date, shedualar_obj.end_date)
-                if (job === null) {
-                    job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp)
-                }
+            job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp, shedualar_obj.start_date, shedualar_obj.end_date)
+            if (job === null) {
+                job = scheduler.shedulJob(report_line_item.visualizationid, shedualar_obj.cron_exp)
             }
 
             await transaction.commit();
@@ -489,7 +487,7 @@ var job = {
             return { message: `report is not found for visulization Id : ${visualizationid}` };
         }
     },
-    filterJobs: async function (userName, reportName, startDate, endDate, page, pageSize,thresholdAlert) {
+    filterJobs: async function (userName, reportName, startDate, endDate, page, pageSize, thresholdAlert) {
 
         var reportWhereClause = {}
         var schedularWhereClause = {}
@@ -497,7 +495,7 @@ var job = {
         reportName ? reportWhereClause.report_name = { [Op.iLike]: '%' + reportName + '%' } : null;
         startDate ? schedularWhereClause.start_date = { [Op.gt]: startDate } : null;
         endDate ? schedularWhereClause.end_date = { [Op.lt]: endDate } : null;
-        thresholdAlert?reportWhereClause.thresholdAlert=thresholdAlert:null;
+        thresholdAlert ? reportWhereClause.thresholdAlert = thresholdAlert : null;
         var page = page ? page : defaultPage;
         var pageSize = pageSize ? pageSize : defaultPageSize;
 
@@ -601,7 +599,7 @@ var job = {
         }
 
     },
- 
+
     disableTicketCreation: async function (params) {
         try {
 
