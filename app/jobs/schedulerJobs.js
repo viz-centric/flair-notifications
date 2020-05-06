@@ -609,7 +609,7 @@ var job = {
                         model: models.SchedulerTaskLog,
                     }],
                 where: {
-                    id: params.schedulerTaskLogs
+                    id: params.schedulerTaskLogId
                 }
             })
             if (exist_log) {
@@ -625,20 +625,26 @@ var job = {
                         }, { transaction });
 
                     transaction.commit();
+                    logger.info('Enable ticket creation updated successfully for id' + params.schedulerTaskLogId)
+                    return { success: 1, message: "Enable ticket creation updated successfully" };
                 }
-                catch (ex) {
+                catch (error) {
                     logger.log({
                         level: 'error',
                         message: 'error occured while updating scheduler logs',
-                        errMsg: ex.message,
+                        errMsg: error,
                     });
                     await transaction.rollback();
-                    return { success: 0, message: ex };
+                    return { success: 0, message: error };
                 }
             }
 
         } catch (error) {
-
+            logger.log({
+                level: 'error',
+                message: 'Scheduler not found id: ' + params.schedulerTaskLogId,
+                errMsg: error,
+            });
         }
 
     }
