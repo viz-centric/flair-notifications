@@ -417,7 +417,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                             {
                                 channel: channels[index],
                                 notificationSent: false,
-                                status: "Something wrong while creating an image"
+                                status: "Visualisation disabled due to configuration changes. Please reschedule the report to activate."
                             }
                         )
                     }
@@ -425,7 +425,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         SchedulerJobId: reports_data['report_shedular_obj']['id'],
                         task_executed: new Date(Date.now()).toISOString(),
                         task_status: "error while generating chart",
-                        thresholdMet: false,
+                        thresholdMet: true,
                         notificationSent: false,
                         channel: JSON.stringify(channelStatus),
                     });
