@@ -320,7 +320,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     viewName: viewName,
                                     imagefilename: imagefilename,
                                     chartResponse: response,
-                                    visualizationType: reports_data.report_line_obj.viz_type
+                                    visualizationType: reports_data.report_line_obj.viz_type,
+                                    measure: reports_data.report_line_obj.measure
                                 }
 
                                 sendmailtool.sendMail(emailData).then(async function (data) {
@@ -373,7 +374,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     flairInsightsLink: flairInsightsLink,
                                     visualizationType: reports_data.report_line_obj.viz_type,
                                     chartrRsponse: response,
-                                    rawQuery
+                                    rawQuery,
+                                    measure: reports_data.report_line_obj.measure
                                 }
 
                                 sendNotification.sendTeamNotification(teamData, reports_data).then(async function (data) {

@@ -312,7 +312,7 @@ var job = {
         }
     },
 
-    createTableForNotification: function (data) {
+    createTableForNotification: function (data, measure) {
         try {
 
             var tablekey = Object.keys(data[0]);
@@ -326,7 +326,12 @@ var job = {
                     const element = data[index];
                     table += "<tr>";
                     for (var j = 0; j < tablekey.length; j++) {
-                        table += "<td style='border:1px solid #a0a7a7'>" + element[tablekey[j]] + "</td>";
+                        if (measure.indexOf(tablekey[j]) !== -1) {
+                            var value = (Math.round(element[tablekey[j]] * 100) / 100);
+                            table += "<td style='border:1px solid #a0a7a7'>" + value + "</td>";
+                        } else {
+                            table += "<td style='border:1px solid #a0a7a7'>" + element[tablekey[j]] + "</td>";
+                        }
                     }
                 }
             }
