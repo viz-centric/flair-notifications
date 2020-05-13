@@ -8,6 +8,7 @@ var moment = require('moment');
 const util = require('./util');
 var config = require('./jobs/team-message-payload');
 const AppConfig = require('./jobs/load-notification-config');
+var modelsUtil =  require('./jobs/models-utils');
 
 let notificationConfig;
 
@@ -35,6 +36,8 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         }
     }
     table += "</tr></tbody><table>";
+    table = modelsUtil.createTableForNotification(teamConfig.tableData,teamConfig.measure);
+
     config.sections[0].text = table;
     config.sections[0].summary = table;
     config.sections[0].facts[0].value = teamConfig.dashboard;

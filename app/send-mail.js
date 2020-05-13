@@ -43,7 +43,7 @@ exports.sendMail = async function sendMailToGmail(emailData) {
     var template_data = emailData;
     template_data.image_cid = "cid:" + image_cid;
     template_data.AppLogo = "cid:" + appLogo;
-    template_data.htmlTable = modelsUtil.createTableForNotification(emailData.tableData);
+    template_data.htmlTable = modelsUtil.createTableForNotification(emailData.tableData,emailData.measure);
     return new Promise((resolve, reject) => {
         ejs.renderFile(__dirname + "/template/mail-template.ejs", template_data, function (err, html_data) {
             if (err) {
