@@ -32,4 +32,8 @@ async function start() {
   await init(config);
 }
 
+process.on('uncaughtException', function (err) {
+  logger.error('Caught exception: ' + err)
+});
+
 start();
