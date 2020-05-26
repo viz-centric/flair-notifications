@@ -33,11 +33,16 @@ var util = {
 
     getViewDataURL: function (urlString, id) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource;
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource + "&chartType=table";
     },
 
-    getGlairInsightsLink: function (urlString, id, reportType) {
+    getFlairInsightsLink: function (urlString, id, reportType) {
         return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management//report/" + id + "/" + reportType;
+    },
+
+    getViewWidgetLink: function (urlString, id) {
+        let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource + "&chartType=viz";
     },
 
     checkChannel: function (channelList, channelName) {

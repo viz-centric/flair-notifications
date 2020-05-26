@@ -252,9 +252,9 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                     var dashboard = reports_data['report_obj']['dashboard_name']
                     var viewName = reports_data['report_obj']['view_name']
                     var mailRetryCount = 0;
-                    var viewDataLink = "", flairInsightsLink = "";
+                    var viewDataLink = "", flairInsightsLink = "",viewWidgetLink="";
 
-                    flairInsightsLink = util.getGlairInsightsLink(shareLink, vizID, thresholdAlertEmail);
+                    flairInsightsLink = util.getFlairInsightsLink(shareLink, vizID, thresholdAlertEmail);
 
                     let shedularlog = null, schedulerTaskMeta = null;
 
@@ -277,10 +277,12 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         await transaction.commit();
 
                         viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
+                        viewWidgetLink = util.getViewWidgetLink(shareLink, schedulerTaskMeta.id);
 
                         const updateTransaction = await db.sequelize.transaction();
                         await models.SchedulerTaskMeta.update({
-                            viewData: viewDataLink
+                            viewData: viewDataLink,
+                            viewWidget : viewWidgetLink
                         }, {
                             where: {
                                 id: schedulerTaskMeta.id
@@ -315,6 +317,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     tableData: json_res.data,
                                     toMailList: toMailList,
                                     viewDataLink: viewDataLink,
+                                    viewWidgetLink: viewWidgetLink,
                                     flairInsightsLink: flairInsightsLink,
                                     dashboard: dashboard,
                                     viewName: viewName,
@@ -371,6 +374,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     visualizationId: vizID,
                                     isThresholdReport: thresholdAlertEmail,
                                     schedulerTaskMeta: schedulerTaskMeta,
+                                    viewDataLink: viewDataLink,
+                                    viewWidgetLink: viewWidgetLink,
                                     flairInsightsLink: flairInsightsLink,
                                     visualizationType: reports_data.report_line_obj.viz_type,
                                     chartrRsponse: response,

@@ -24,6 +24,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      viewWidget: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       SchedulerTaskLogId: {
         type: Sequelize.BIGINT,
         onDelete: 'CASCADE',
