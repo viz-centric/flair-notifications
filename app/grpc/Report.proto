@@ -80,6 +80,7 @@ message ReportLog {
     bool enableTicketCreation = 13;
     string viewTicket = 14;
     Query query = 15;
+    string visualizationid = 16;
 }
 
 message ChannelParameters {

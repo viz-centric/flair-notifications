@@ -8,7 +8,7 @@ var moment = require('moment');
 const util = require('./util');
 var config = require('./jobs/team-message-payload');
 const AppConfig = require('./jobs/load-notification-config');
-var modelsUtil =  require('./jobs/models-utils');
+var modelsUtil = require('./jobs/models-utils');
 
 let notificationConfig;
 
@@ -36,14 +36,14 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         }
     }
     table += "</tr></tbody><table>";
-    table = modelsUtil.createTableForNotification(teamConfig.tableData,teamConfig.measure);
+    table = modelsUtil.createTableForNotification(teamConfig.tableData, teamConfig.measure);
 
     config.sections[0].text = table;
     config.sections[0].summary = table;
     config.sections[0].facts[0].value = teamConfig.dashboard;
     config.sections[0].facts[1].value = teamConfig.view;
     config.sections[0].activitySubtitle = teamConfig.description;
-    config.potentialAction[0].targets[0].uri = teamConfig.shareLink;
+    config.potentialAction[0].targets[0].uri = teamConfig.viewWidgetLink;
     config.potentialAction[1].targets[0].uri = teamConfig.buildUrl;
 
     webhookURL = await channelJob.getWebhookList(teamConfig.webhookURL);
@@ -53,7 +53,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         var notificationSent = false, errorMsg = "";
         thresholdTime = teamConfig.isThresholdReport ? "Threshold run at " + moment(moment().format()).format(util.dateFormat()) : "Scheduled report run at " + moment(moment().format()).format(util.dateFormat());
 
-        config.potentialAction[2].targets[0].uri = util.getViewDataURL(teamConfig.shareLink, teamConfig.schedulerTaskMeta.id);
+        config.potentialAction[2].targets[0].uri = teamConfig.viewDataLink;
         config.potentialAction[3].targets[0].uri = teamConfig.flairInsightsLink;
 
         config.text = thresholdTime + '<br> ![chart image](' + teamConfig.base64 + ')' + '<br><p style="color:#9B41A3;font-size:12px">' + teamConfig.compressText + "</p>";
