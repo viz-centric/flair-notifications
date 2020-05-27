@@ -276,8 +276,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                         }, { transaction });
                         await transaction.commit();
 
-                        viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id);
-                        viewWidgetLink = util.getViewWidgetLink(shareLink, schedulerTaskMeta.id);
+                        viewDataLink = util.getViewDataURL(shareLink, schedulerTaskMeta.id,reports_data['report_obj']['view_id']);
+                        viewWidgetLink = util.getViewWidgetLink(shareLink, schedulerTaskMeta.id,reports_data['report_obj']['view_id']);
 
                         const updateTransaction = await db.sequelize.transaction();
                         await models.SchedulerTaskMeta.update({
