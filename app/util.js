@@ -36,12 +36,12 @@ var util = {
     },
     getViewDataURL: function (urlString, id, viewId) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource + "&chartType=table&viewId=" + viewId;
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?schedulerId=" + id + "&" + datasource + "&chartType=table";
     },
 
     getViewWidgetLink: function (urlString, id, viewId) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/" + id + "?" + datasource + "&chartType=viz&viewId=" + viewId;
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?schedulerId=" + id + "&" + datasource + "&chartType=viz";
     },
 
     checkChannel: function (channelList, channelName) {
