@@ -51,7 +51,8 @@ var validator = {
             subject: Joi.string().allow(null, ''),
             report_name: Joi.string().required(),
             title_name: Joi.string().allow(null, ''),
-            thresholdAlert: Joi.boolean().required()
+            thresholdAlert: Joi.boolean().required(),
+            createdDate: Joi.string().allow(null, ''),
         });
         var reportLineSchema = Joi.object().keys({
             dimension: Joi.array().items(Joi.string()),
