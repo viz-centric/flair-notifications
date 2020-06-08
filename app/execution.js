@@ -324,7 +324,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     imagefilename: imagefilename,
                                     chartResponse: response,
                                     visualizationType: reports_data.report_line_obj.viz_type,
-                                    measure: reports_data.report_line_obj.measure
+                                    measure: reports_data.report_line_obj.measure,
+                                    dimension: reports_data.report_line_obj.dimension
                                 }
 
                                 sendmailtool.sendMail(emailData).then(async function (data) {
@@ -380,7 +381,8 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                                     visualizationType: reports_data.report_line_obj.viz_type,
                                     chartrRsponse: response,
                                     rawQuery,
-                                    measure: reports_data.report_line_obj.measure
+                                    measure: reports_data.report_line_obj.measure,
+                                    dimension: reports_data.report_line_obj.dimension
                                 }
 
                                 sendNotification.sendTeamNotification(teamData, reports_data).then(async function (data) {
