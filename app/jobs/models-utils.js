@@ -312,7 +312,7 @@ var job = {
         }
     },
 
-    createTableForNotification: function (data, measure) {
+    createTableForNotification: function (data, measure, dimension) {
         try {
 
             var tablekey = Object.keys(data[0]);
@@ -329,7 +329,19 @@ var job = {
                         if (measure.indexOf(tablekey[j]) !== -1) {
                             var value = (Math.round(element[tablekey[j]] * 100) / 100);
                             table += "<td style='border:1px solid #a0a7a7'>" + value + "</td>";
-                        } else {
+                        }
+                        else if (dimension.indexOf(tablekey[j]) !== -1) {
+                            var _dateFormat = "YYYY-MM-DD HH:mm:ss.SSSSSS";
+                            var isValid = moment(element[tablekey[j]], _dateFormat, true).isValid(); // true
+                            if (isValid) {
+                                value = moment(element[tablekey[j]], _dateFormat).format('YYYY-MM-DD HH:mm:ss')
+                                table += "<td style='border:1px solid #a0a7a7'>" + value + "</td>";
+                            }
+                            else {
+                                table += "<td style='border:1px solid #a0a7a7'>" + element[tablekey[j]] + "</td>";
+                            }
+                        }
+                        else {
                             table += "<td style='border:1px solid #a0a7a7'>" + element[tablekey[j]] + "</td>";
                         }
                     }

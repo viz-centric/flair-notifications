@@ -36,7 +36,7 @@ exports.sendTeamNotification = async function sendNotification(teamConfig, repor
         }
     }
     table += "</tr></tbody><table>";
-    table = modelsUtil.createTableForNotification(teamConfig.tableData, teamConfig.measure);
+    table = modelsUtil.createTableForNotification(teamConfig.tableData, teamConfig.measure,teamConfig.dimension);
 
     config.sections[0].text = table;
     config.sections[0].summary = table;
