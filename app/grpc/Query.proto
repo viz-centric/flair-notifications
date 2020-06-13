@@ -80,6 +80,5 @@ message Query {
 
     message QuerySource {
         string source = 1;
-        string alias = 2;
     }
 }
