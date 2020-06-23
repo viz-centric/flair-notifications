@@ -34,14 +34,14 @@ var util = {
     getFlairInsightsLink: function (urlString, id, reportType) {
         return urlString.substring(0, urlString.indexOf('visual')) + "administration/report-management//report/" + id + "/" + reportType;
     },
-    getViewDataURL: function (urlString, id, viewId) {
+    getViewDataURL: function (urlString, id, viewId, visualisationId) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?schedulerId=" + id + "&" + datasource + "&chartType=table";
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?visualisationId=" + visualisationId + "&schedulerId=" + id + "&" + datasource + "&chartType=table";
     },
 
-    getViewWidgetLink: function (urlString, id, viewId) {
+    getViewWidgetLink: function (urlString, id, viewId,visualisationId) {
         let datasource = urlString.substring(urlString.indexOf('datasource'), urlString.lenght)
-        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?schedulerId=" + id + "&" + datasource + "&chartType=viz";
+        return urlString.substring(0, urlString.indexOf('visual')) + "visual-table/?visualisationId=" + visualisationId + "&schedulerId=" + id + "&" + datasource + "&chartType=viz";
     },
 
     checkChannel: function (channelList, channelName) {
