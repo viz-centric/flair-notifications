@@ -3,6 +3,7 @@ const protoLoader = require("@grpc/proto-loader");
 const discovery = require('../discovery');
 const logger = require('../logger');
 const PROTO_PATH = './app/grpc/QueryService.proto';
+const AppConfig = require('./load_config');
 
 let grpcClientInstance;
 
@@ -40,6 +41,7 @@ async function init() {
   logger.info(`Creating grpc client`);
 
   let url = await discovery.getAppDomain('FLAIR-ENGINE-GRPC');
+  const config = await AppConfig.getConfig();
 
   if (process.env.FLAIR_ENGINE) {
     url = process.env.FLAIR_ENGINE;
@@ -47,7 +49,18 @@ async function init() {
   }
 
   logger.debug(`Flair engine instance ${url}`);
-  grpcClientInstance = new queryproto.messages.QueryService(url, grpc.credentials.createInsecure());
+  let channelCredentials = grpc.credentials.createInsecure();
+  let callCredentials = grpc.credentials.createFromMetadataGenerator((args, callback) => {
+    const adminMacaroon = fs.readFileSync(options.macaroonPath);
+    const metadata = new grpc.Metadata();
+    metadata.add('macaroon', adminMacaroon.toString('hex'));
+    callback(null, metadata);
+  });
+  let creds = grpc.credentials.combineChannelCredentials(
+      channelCredentials,
+      callCredentials,
+  )
+  grpcClientInstance = new queryproto.messages.QueryService(url, creds);
 
 }
 

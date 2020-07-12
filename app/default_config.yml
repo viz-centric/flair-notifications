@@ -17,4 +17,7 @@ mailService:
     testUser: admin@vizcentric.com
     auth :
       user: rudolph.schoen@ethereal.email
-      pass: 
+      pass:
+app:
+  auth:
+    jwt-key: "dGhpcyBpcyBhIHRvcCBzZWNyZXQga2V5IDE1MXEtLTI0IyUk"

@@ -11,3 +11,6 @@ mailService:
     auth :
       user:
       pass:
+app:
+  auth:
+    jwt-key:
