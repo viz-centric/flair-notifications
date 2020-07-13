@@ -487,7 +487,7 @@ var job = {
             return { message: `report is not found for visulization Id : ${visualizationid}` };
         }
     },
-    filterJobs: async function (userName, reportName, startDate, endDate, page, pageSize, thresholdAlert) {
+    filterJobs: async function (userName, reportName, startDate, endDate, page, pageSize, thresholdAlert,dashboardName,viewName) {
 
         var reportWhereClause = {}
         var schedularWhereClause = {}
@@ -496,6 +496,8 @@ var job = {
         startDate ? schedularWhereClause.start_date = { [Op.gt]: startDate } : null;
         endDate ? schedularWhereClause.end_date = { [Op.lt]: endDate } : null;
         thresholdAlert ? reportWhereClause.thresholdAlert = thresholdAlert : null;
+        dashboardName ? reportWhereClause.dashboard_name = dashboardName : null;
+        viewName ? reportWhereClause.view_name = viewName : null;
         var page = page ? page : defaultPage;
         var pageSize = pageSize ? pageSize : defaultPageSize;
 

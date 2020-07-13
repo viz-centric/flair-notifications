@@ -70,6 +70,8 @@ message SearchReportsRequest {
     int32 pageSize = 5;
     int32 page = 6;
     bool thresholdAlert = 7;
+    string dashboardName = 8;
+    string viewName = 9;
 }
 
 message SearchReportsResponse {
