@@ -44,6 +44,7 @@ TEST-RESULTS.xml
 #log files created by compress-images package 
 log
 
+.idea/
 .ideaDataSources/
 dataSources/
 *.iml

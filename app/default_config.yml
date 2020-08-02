@@ -18,6 +18,7 @@ mailService:
     auth :
       user: rudolph.schoen@ethereal.email
       pass:
-app:
+grpc:
   auth:
-    jwt-key: "dGhpcyBpcyBhIHRvcCBzZWNyZXQga2V5IDE1MXEtLTI0IyUk"
+    username: flair-notifications
+    jwtKey: secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1

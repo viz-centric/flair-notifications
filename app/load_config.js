@@ -36,6 +36,9 @@ function getConfig() {
         if (process.env.EUREKA_URL) {
             AppConfig.discovery.eureka.url = process.env.EUREKA_URL;
         }
+        if (process.env.GRPC_JWT_KEY) {
+            AppConfig.grpc.auth.jwtKey = process.env.GRPC_JWT_KEY;
+        }
         if (process.env.GRPC_SSL_ENABLED) {
             AppConfig.ssl.enabled = process.env.GRPC_SSL_ENABLED === 'true';
         }

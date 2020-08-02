@@ -11,6 +11,7 @@ mailService:
     auth :
       user:
       pass:
-app:
+grpc:
   auth:
-    jwt-key:
+    username:
+    jwtKey:
