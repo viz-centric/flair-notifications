@@ -2,6 +2,7 @@ const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 const PROTO_PATH = 'app/grpc/ReportService.proto';
 const reportService = require('./../report/reportService');
+const auth = require('../auth')
 
 const reportProto = grpc.loadPackageDefinition(
     protoLoader.loadSync(PROTO_PATH, {
@@ -19,8 +20,10 @@ module.exports =
     ];
 
 
-function handleCall(promise, callback) {
-    return promise.then(function (data) {
+async function handleCall(func, call, callback) {
+    const authorization = call.metadata.get('Authorization')[0];
+    const jwtResult = await auth.decodeAuth(authorization);
+    return func(call, jwtResult).then(function (data) {
         callback(null, data);
     }).catch(function (err) {
         callback(null, err)
@@ -60,110 +63,110 @@ function constructReportService(server) {
 }
 
 function searchReports(call, callback) {
-    handleCall(reportService.searchReports(call.request), callback);
+    handleCall(reportService.searchReports, call, callback);
 }
 
 function executeReport(call, callback) {
-    handleCall(reportService.executeReport(call.request), callback);
+    handleCall(reportService.executeReport, call, callback);
 }
 
 function getScheduleReportLogs(call, callback) {
-    handleCall(reportService.getScheduleReportLogs(call.request), callback);
+    handleCall(reportService.getScheduleReportLogs, call, callback);
 }
 
 function getScheduleReportLog(call, callback) {
-    handleCall(reportService.getScheduleReportLog(call.request), callback);
+    handleCall(reportService.getScheduleReportLog, call, callback);
 }
 
 function getScheduledReport(call, callback) {
-    handleCall(reportService.getScheduledReport(call.request), callback);
+    handleCall(reportService.getScheduledReport, call, callback);
 }
 
 function getAllScheduledReportsByUser(call, callback) {
-    handleCall(reportService.getAllScheduledReportForUser(call.request), callback);
+    handleCall(reportService.getAllScheduledReportForUser, call, callback);
 }
 
 function scheduleReport(call, callback) {
-    handleCall(reportService.scheduleReport(call.request), callback);
+    handleCall(reportService.scheduleReport, call, callback);
 }
 
 function getAllScheduledReportsCountsByUser(call, callback) {
-    handleCall(reportService.getScheduledReportCountsForUser(call.request), callback);
+    handleCall(reportService.getScheduledReportCountsForUser, call, callback);
 }
 
 function updateScheduledReport(call, callback) {
-    handleCall(reportService.updateScheduledReport(call.request), callback);
+    handleCall(reportService.updateScheduledReport, call, callback);
 }
 
 function deleteScheduledReport(call, callback) {
-    handleCall(reportService.deleteScheduledReport(call.request), callback);
+    handleCall(reportService.deleteScheduledReport, call, callback);
 }
 
 function addTeamConfigs(call, callback) {
-    handleCall(reportService.addTeamConfigs(call.request), callback);
+    handleCall(reportService.addTeamConfigs, call, callback);
 }
 
 function addEmailConfigs(call, callback) {
-    handleCall(reportService.addEmailConfigs(call.request), callback);
+    handleCall(reportService.addEmailConfigs, call, callback);
 }
 
 function getChannelProperties(call, callback) {
-    handleCall(reportService.getChannelProperties(call.request), callback);
+    handleCall(reportService.getChannelProperties, call, callback);
 }
 
 function deleteChannelConfig(call, callback) {
-    handleCall(reportService.deleteChannelConfig(call.request), callback);
+    handleCall(reportService.deleteChannelConfig, call, callback);
 }
 
 
 function updateEmailSMTP(call, callback) {
-    handleCall(reportService.updateEmailSMTP(call.request), callback);
+    handleCall(reportService.updateEmailSMTP, call, callback);
 }
 
 function UpdateTeamWebhookURL(call, callback) {
-    handleCall(reportService.updateTeamWebhookURL(call.request), callback);
+    handleCall(reportService.updateTeamWebhookURL, call, callback);
 }
 
 function getEmailConfig(call, callback) {
-    handleCall(reportService.getEmailConfig(call.request), callback);
+    handleCall(reportService.getEmailConfig, call, callback);
 }
 
 function getTeamConfig(call, callback) {
-    handleCall(reportService.getTeamConfig(call.request), callback);
+    handleCall(reportService.getTeamConfig, call, callback);
 }
 
 function getTeamNames(call, callback) {
-    handleCall(reportService.getTeamNames(call.request), callback);
+    handleCall(reportService.getTeamNames, call, callback);
 }
 
 function AddJiraConfigs(call, callback) {
-    handleCall(reportService.AddJiraConfigs(call.request), callback);
+    handleCall(reportService.AddJiraConfigs, call, callback);
 }
 
 function updateJiraConfigs(call, callback) {
-    handleCall(reportService.updateJiraConfiguration(call.request), callback);
+    handleCall(reportService.updateJiraConfiguration, call, callback);
 }
 
 function getJiraConfig(call, callback) {
-    handleCall(reportService.getJiraConfig(call.request), callback);
+    handleCall(reportService.getJiraConfig, call, callback);
 }
 
 function createJiraTicket(call, callback) {
-    handleCall(reportService.createJiraTicket(call.request), callback);
+    handleCall(reportService.createJiraTicket, call, callback);
 }
 
 function getAllJira(call, callback) {
-    handleCall(reportService.getAllJira(call.request), callback);
+    handleCall(reportService.getAllJira, call, callback);
 }
 
 function disableTicketCreation(call, callback){
-    handleCall(reportService.disableTicketCreation(call.request), callback);
+    handleCall(reportService.disableTicketCreation, call, callback);
 }
 
 function notifyOpenedJiraTicket(call, callback){
-    handleCall(reportService.notifyOpenedJiraTicket(call.request), callback);
+    handleCall(reportService.notifyOpenedJiraTicket, call, callback);
 }
 
 function isConfigExist(call, callback){
-    handleCall(reportService.isConfigExist(call.request), callback);
+    handleCall(reportService.isConfigExist, call, callback);
 }

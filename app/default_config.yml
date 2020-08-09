@@ -17,4 +17,8 @@ mailService:
     testUser: admin@vizcentric.com
     auth :
       user: rudolph.schoen@ethereal.email
-      pass: 
+      pass:
+grpc:
+  auth:
+    username: flair-notifications
+    jwtKey: secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1

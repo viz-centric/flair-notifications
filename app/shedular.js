@@ -61,7 +61,7 @@ var shedular = {
                     }
 
                     logger.info('shedular run for id: '+reports_data.report_line_obj.visualizationid+" name: "+reports_data.report_obj.title_name);
-                    execution.loadDataAndSendNotification(reports_data, reports_data.report_obj.thresholdAlert);
+                    execution.loadDataAndSendNotification(reports_data);
 
                 }).catch(function (err) {
 

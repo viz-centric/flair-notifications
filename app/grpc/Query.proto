@@ -71,6 +71,7 @@ message Query {
     repeated HavingHolder having = 13;
     int64 offset = 14;
     QuerySource querySource = 15;
+    map<string, string> meta = 16;
 
     message Field {
         string name = 1;

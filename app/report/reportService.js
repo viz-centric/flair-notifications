@@ -50,7 +50,8 @@ function Message(message) {
  * @param request request
  * @returns {Promise<Message>}
  */
-function scheduleReport(request) {
+function scheduleReport(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`Schedule report with param`, request.report);
         const resultReport = validator.validateReportReqBody(request.report);
@@ -80,7 +81,8 @@ function scheduleReport(request) {
  * @param request
  * @return new Promise<Message>
  */
-function updateScheduledReport(request) {
+function updateScheduledReport(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`Update report with param`, request.report);
         const resultReport = validator.validateReportReqBody(request.report);
@@ -105,7 +107,8 @@ function updateScheduledReport(request) {
  * @param visualizationId
  * @return {Promise<Message>}
  */
-function deleteScheduledReport(request) {
+function deleteScheduledReport(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         jobs.deleteJob(request.visualizationId).then(function (result) {
             if (result.success === 1) {
@@ -124,7 +127,8 @@ function deleteScheduledReport(request) {
  * @param request request
  * @return {Promise<Any>}
  */
-function getScheduledReport(request) {
+function getScheduledReport(call) {
+    const request = call.request;
     let visualizationId = request.visualizationId;
     logger.info(`Get scheduled report via grpc for ${visualizationId}`);
     return new Promise(function (resolve, reject) {
@@ -146,7 +150,8 @@ function getScheduledReport(request) {
  * @param request
  * @return {Promise<any>}
  */
-function getAllScheduledReportForUser(request) {
+function getAllScheduledReportForUser(call) {
+    const request = call.request;
     let username = request.username;
     let page = (+request.page);
     let pageSize = (+request.pageSize);
@@ -167,7 +172,8 @@ function getAllScheduledReportForUser(request) {
  * @param request
  * @return {Promise<any>}
  */
-function getScheduledReportCountsForUser(request) {
+function getScheduledReportCountsForUser(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         jobs.JobCountByUser(request.username).then(function (result) {
             resolve(result);
@@ -182,7 +188,8 @@ function getScheduledReportCountsForUser(request) {
  * @param visualizationId
  * @return {Promise<any>}
  */
-function getScheduleReportLogs(request) {
+function getScheduleReportLogs(call) {
+    const request = call.request;
     logger.info(`Get scheduled report logs via grpc for ${request.visualizationId} page ${request.page} size ${request.pageSize}`);
     return new Promise(function (resolve, reject) {
         jobs.jobLogs(request.visualizationId, request.page, request.pageSize).then(function (result) {
@@ -197,7 +204,8 @@ function getScheduleReportLogs(request) {
     })
 }
 
-async function getScheduleReportLog(request) {
+async function getScheduleReportLog(call) {
+    const request = call.request;
     const taskLogMetaId = request.task_log_meta_id;
     logger.info(`Get scheduled report log via grpc for ${taskLogMetaId}`);
     let taskMeta;
@@ -211,7 +219,8 @@ async function getScheduleReportLog(request) {
     return { report_log: taskMeta };
 }
 
-function searchReports(request) {
+function searchReports(call) {
+    const request = call.request;
     logger.info(`Search reports for`, request);
     return new Promise(function (resolve, reject) {
         jobs.filterJobs(
@@ -238,10 +247,12 @@ function searchReports(request) {
  * @param request
  * @return {Promise<any>}
  */
-function executeReport(request) {
-    logger.info(`Execute report for ${request.visualizationId}`);
+function executeReport(call, jwt) {
+    const request = call.request;
+    const userName = jwt.sub;
+    logger.info(`Execute report for ${request.visualizationId} user ${userName}`);
     return new Promise(function (resolve, reject) {
-        jobs.executeImmediate(request.visualizationId).then(function (result) {
+        jobs.executeImmediate(request.visualizationId, userName).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);
@@ -254,7 +265,8 @@ function executeReport(request) {
  * @param channel
  * @return {Promise<any>}
  */
-function getChannelProperties(request) {
+function getChannelProperties(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`Get channel config for ${request.channel}`);
         channelJobs.getChannelProperties().then(function (result) {
@@ -274,7 +286,8 @@ function getChannelProperties(request) {
  * @param channel
  * @return {Promise<any>}
  */
-function updateTeamWebhookURL(request) {
+function updateTeamWebhookURL(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
@@ -297,7 +310,8 @@ function updateTeamWebhookURL(request) {
  * @param update email smtp
  * @return {Promise<any>}
  */
-function updateEmailSMTP(request) {
+function updateEmailSMTP(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`Update channel with param`, request.report);
 
@@ -319,7 +333,8 @@ function updateEmailSMTP(request) {
  * @param
  * @return {Promise<any>}
  */
-function getTeamConfig(request) {
+function getTeamConfig(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`get team webhook URL list`);
         channelJobs.getTeamConfig().then(function (result) {
@@ -340,7 +355,8 @@ function getTeamConfig(request) {
  * @param
  * @return {Promise<any>}
  */
-function getTeamNames(request) {
+function getTeamNames(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`get team webhook URL list`);
         channelJobs.getTeamNames().then(function (result) {
@@ -361,7 +377,8 @@ function getTeamNames(request) {
  * @param
  * @return {Promise<any>}
  */
-function getEmailConfig(request) {
+function getEmailConfig(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`get SMTP config`);
         channelJobs.getEmailConfig().then(function (result) {
@@ -382,7 +399,8 @@ function getEmailConfig(request) {
  * @param
  * @return {Promise<any>}
  */
-function addTeamConfigs(request) {
+function addTeamConfigs(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`add channel with param`, request);
         if (request) {
@@ -403,7 +421,8 @@ function addTeamConfigs(request) {
  * @param
  * @return {Promise<any>}
  */
-function addEmailConfigs(request) {
+function addEmailConfigs(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`add channel email with param`, request);
         if (request) {
@@ -426,7 +445,8 @@ function addEmailConfigs(request) {
  * @param
  * @return {Promise<any>}
  */
-function deleteChannelConfig(request) {
+function deleteChannelConfig(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`deleteing webhook URL`, request);
         if (request) {
@@ -444,7 +464,8 @@ function deleteChannelConfig(request) {
 }
 
 
-function AddJiraConfigs(request) {
+function AddJiraConfigs(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.AddJiraConfigs(request).then(function (result) {
@@ -460,7 +481,8 @@ function AddJiraConfigs(request) {
     });
 }
 
-function updateJiraConfiguration(request) {
+function updateJiraConfiguration(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.updateJiraConfiguration(request).then(function (result) {
@@ -476,7 +498,8 @@ function updateJiraConfiguration(request) {
     });
 }
 
-function getJiraConfig(request) {
+function getJiraConfig(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.getJiraConfig(request).then(function (result) {
@@ -492,7 +515,8 @@ function getJiraConfig(request) {
     });
 }
 
-function createJiraTicket(request) {
+function createJiraTicket(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.createJiraTicket(request).then(function (result) {
@@ -509,7 +533,8 @@ function createJiraTicket(request) {
 }
 
 
-function getAllJira(request) {
+function getAllJira(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.getAllJira(request).then(function (result) {
@@ -525,7 +550,8 @@ function getAllJira(request) {
     });
 }
 
-function disableTicketCreation(request) {
+function disableTicketCreation(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             jobs.disableTicketCreation(request).then(function (result) {
@@ -541,7 +567,8 @@ function disableTicketCreation(request) {
     });
 }
 
-function notifyOpenedJiraTicket(request){
+function notifyOpenedJiraTicket(call){
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         if (request) {
             channelJobs.sentMailForOpenTickets(request).then(function (result) {
@@ -562,7 +589,8 @@ function notifyOpenedJiraTicket(request){
  * @param
  * @return {Promise<any>}
  */
-function isConfigExist(request) {
+function isConfigExist(call) {
+    const request = call.request;
     return new Promise(function (resolve, reject) {
         logger.info(`get Configs Exist`);
         channelJobs.isConfigExist(request.id).then(function (result) {

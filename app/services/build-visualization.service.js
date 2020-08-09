@@ -126,7 +126,7 @@ exports.loadDataAndBuildVisualization = function loadDataAndBuildVisualization(r
     return new Promise((resolve, reject) => {
         let query = thresholdAlertEmail?report.queryHaving:report.query;
         function loadDataFromGrpc(query) {
-            var data_call = grpc_client.getRecords(query);
+            var data_call = grpc_client.getRecords(query, {});
             data_call.then(function (response) {
                 var json_res = JSON.parse(response.data);
                 generate_chart = chartMap[report.visualization].generateChart(report, json_res.data);

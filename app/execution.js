@@ -197,8 +197,9 @@ const updateSchedulerTaskLog = async function (data, shedularlog, channel) {
     }
 }
 
-exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, thresholdAlertEmail) {
+exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, caller) {
     let query = reports_data.report_line_obj.query;
+    const thresholdAlertEmail = reports_data.report_obj.thresholdAlert;
 
     var grpcRetryCount = 0;
 
@@ -209,7 +210,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
         console.debug('Executing query', rawQuery);
 
-        var data_call = grpc_client.getRecords(rawQuery);
+        var data_call = grpc_client.getRecords(rawQuery, {userName: caller});
 
         data_call.then(async function (response) {
 
