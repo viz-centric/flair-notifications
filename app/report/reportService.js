@@ -402,7 +402,7 @@ function getEmailConfig(call) {
 function addTeamConfigs(call) {
     const request = call.request;
     return new Promise(function (resolve, reject) {
-        logger.info(`add channel with param`, request);
+        logger.info(`add channel with param`);
         if (request) {
             channelJobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
@@ -424,7 +424,7 @@ function addTeamConfigs(call) {
 function addEmailConfigs(call) {
     const request = call.request;
     return new Promise(function (resolve, reject) {
-        logger.info(`add channel email with param`, request);
+        logger.info(`add channel email with param`);
         if (request) {
             channelJobs.addEmailConfigs(request).then(function (result) {
                 if (result.success === 1) {
