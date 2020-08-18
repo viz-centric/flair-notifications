@@ -135,7 +135,7 @@ function getEmailConfig(request) {
  */
 function addTeamConfigs(request) {
     return new Promise(function (resolve, reject) {
-        logger.info(`add channel with param`, request);
+        logger.info(`add channel with param`);
         if (request) {
             jobs.addTeamConfigs(request).then(function (result) {
                 if (result.success === 1) {
@@ -157,7 +157,7 @@ function addTeamConfigs(request) {
  */
 function addEmailConfigs(request) {
     return new Promise(function (resolve, reject) {
-        logger.info(`add channel email with param`, request);
+        logger.info(`add channel email with param`);
         if (request) {
             jobs.addEmailConfigs(request).then(function (result) {
                 if (result.success === 1) {

@@ -27,7 +27,7 @@ async function getRecords(query, meta) {
   return new Promise((resolve, reject) => {
     logger.info(`Get records promise`, query);
     client.GetData(query, grpcMetadata, (error, response) => {
-      logger.info(`Get records response ${JSON.stringify(query)} resp ${JSON.stringify(response)}`);
+      
       if (!error) {
         resolve(response);
       } else {
