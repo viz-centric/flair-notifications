@@ -1,6 +1,6 @@
 {
   "name": "flair-notifications",
-  "version": "2.5.16-SNAPSHOT.46",
+  "version": "2.5.16-SNAPSHOT.47",
   "description": "flair-notifications",
   "main": "/flair-notifications/app/index.js",
   "scripts": {
