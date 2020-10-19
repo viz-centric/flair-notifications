@@ -17,11 +17,11 @@ module.exports = {
         allowNull: true
       },
       share_link: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
       },
       build_url: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
       },
       report_name: {
