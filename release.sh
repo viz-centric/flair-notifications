@@ -11,4 +11,4 @@ else
 fi
 
 cd docker/dev
-docker-compose run --rm release npm run release -- ${RELEASE_COMMAND} --ci
+docker-compose run --rm release npm run release -- ${RELEASE_COMMAND} --ci --no-npm
