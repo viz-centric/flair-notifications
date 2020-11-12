@@ -249,10 +249,10 @@ function searchReports(call) {
  */
 function executeReport(call, jwt) {
     const request = call.request;
-    const userName = jwt.sub;
-    logger.info(`Execute report for ${request.visualizationId} user ${userName}`);
+    const options = { userName: jwt.sub };
+    logger.info(`Execute report for ${request.visualizationId} user ${options}`);
     return new Promise(function (resolve, reject) {
-        jobs.executeImmediate(request.visualizationId, userName).then(function (result) {
+        jobs.executeImmediate(request.visualizationId, options).then(function (result) {
             resolve(result);
         }, function (err) {
             reject(err);

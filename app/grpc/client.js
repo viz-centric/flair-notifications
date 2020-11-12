@@ -1,10 +1,10 @@
 const grpc = require("grpc");
+const auth = require("../auth");
 const protoLoader = require("@grpc/proto-loader");
 const discovery = require('../discovery');
 const logger = require('../logger');
 const PROTO_PATH = './app/grpc/QueryService.proto';
 const AppConfig = require('../load_config');
-const jwt = require('jsonwebtoken');
 
 let grpcClientInstance;
 
@@ -70,17 +70,7 @@ async function generateGrpcMetadata(userName) {
   const config = await AppConfig.getConfig();
   const subject = userName || config.grpc.auth.username;
 
-  logger.info(`Creating grpc jwt token for subject ${subject}`);
-
-  const token = jwt.sign(
-      {},
-      config.grpc.auth.jwtKey,
-      {algorithm: "HS256", subject: subject}
-  );
-
-  const metadata = new grpc.Metadata();
-  metadata.add('Authorization', 'Bearer ' + token);
-  return metadata;
+  return await auth.encodeGrpcJwt(subject);
 }
 
 init();
