@@ -1,4 +1,6 @@
 const request = require('request');
+const auth = require('../auth');
+const AppConfig = require('../load_config');
 const VisualizationUtils = require('./visualization-util');
 const logger = require('../logger');
 const discovery = require('../discovery');
@@ -13,14 +15,23 @@ async function init() {
 
 init();
 
+async function makeFlairBiCall(viz_id, option, callback) {
+    const config = await AppConfig.getConfig();
+    const subject = option.userName || config.auth.username;
+    const {token} = await auth.encodeJwt(subject);
+    request(flairBiUrl + "/" + viz_id,
+        {'auth': {'bearer': token}},
+        callback);
+}
+
 var configs = {
-    barChartConfig: function (viz_id, report_obj) {
+    barChartConfig: function (viz_id, report_obj, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
                 logger.info('flairBi API end point ' + flairBiUrl + "/" + viz_id);
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -129,12 +140,12 @@ var configs = {
 
     },
 
-    lineChartConfig: function (viz_id, report_obj) {
+    lineChartConfig: function (viz_id, report_obj, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -249,12 +260,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    comboChartConfig: function (viz_id, report_obj) {
+    comboChartConfig: function (viz_id, report_obj, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -370,12 +381,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    scatterPlotConfig: function (viz_id) {
+    scatterPlotConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -478,12 +489,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    pieChartConfig: function (viz_id) {
+    pieChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -544,12 +555,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    DoughnutChartConfig: function (viz_id) {
+    DoughnutChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -620,11 +631,11 @@ var configs = {
         return chartconfigPromise;
 
     },
-    gaugePlotConfig: function (viz_id) {
+    gaugePlotConfig: function (viz_id, option) {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -705,12 +716,12 @@ var configs = {
         return chartconfigPromise;
     },
 
-    tableChartConfig: function (viz_id) {
+    tableChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -835,10 +846,10 @@ var configs = {
         return chartconfigPromise;
 
     },
-    pivottableChartConfig: function (viz_id) {
+    pivottableChartConfig: function (viz_id, option) {
         var chartconfigPromise = new Promise((resolve, reject) => {
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -963,12 +974,12 @@ var configs = {
         });
         return chartconfigPromise;
     },
-    KPIChartConfig: function (viz_id) {
+    KPIChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1063,12 +1074,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    infographicsChartConfig: function (viz_id) {
+    infographicsChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1153,12 +1164,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    mapChartConfig: function (viz_id) {
+    mapChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1233,12 +1244,12 @@ var configs = {
 
     },
 
-    treemapChartConfig: function (viz_id) {
+    treemapChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1330,12 +1341,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    heatMapChartConfig: function (viz_id) {
+    heatMapChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1448,12 +1459,12 @@ var configs = {
 
         return chartconfigPromise;
     },
-    boxplotChartConfig: function (viz_id) {
+    boxplotChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(vizMetaApi + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1527,12 +1538,12 @@ var configs = {
 
         return chartconfigPromise;
     },
-    chorddiagramChartConfig: function (viz_id) {
+    chorddiagramChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1605,11 +1616,11 @@ var configs = {
 
     },
 
-    textObjectChartConfig: function (viz_id, data) {
+    textObjectChartConfig: function (viz_id, data, option) {
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1698,12 +1709,12 @@ var configs = {
 
     },
 
-    bulletChartConfig: function (viz_id) {
+    bulletChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1776,12 +1787,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    sankeyChartConfig: function (viz_id) {
+    sankeyChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1861,12 +1872,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    piegridChartConfig: function (viz_id) {
+    piegridChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',
@@ -1933,12 +1944,12 @@ var configs = {
         return chartconfigPromise;
 
     },
-    numbergridChartConfig: function (viz_id) {
+    numbergridChartConfig: function (viz_id, option) {
 
         var chartconfigPromise = new Promise((resolve, reject) => {
 
             try {
-                request(flairBiUrl + "/" + viz_id, function (error, response, body) {
+                makeFlairBiCall(viz_id, option, function (error, response, body) {
                     if (error) {
                         logger.error({
                             level: 'error',

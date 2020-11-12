@@ -453,8 +453,8 @@ var job = {
         });
         return { totalReports: reportCount };
     },
-    executeImmediate: async function (visualizationid, caller) {
-        logger.info(`Job execute report ${visualizationid} caller ${caller}`);
+    executeImmediate: async function (visualizationid, options) {
+        logger.info(`Job execute report ${visualizationid} caller ${options}`);
         var report = await models.Report.findOne({
             include: [
                 {
@@ -481,7 +481,7 @@ var job = {
                 report_assign_obj: report.AssignReport,
                 report_shedular_obj: report.SchedulerTask
             };
-            execution.loadDataAndSendNotification(reports_data, caller);
+            execution.loadDataAndSendNotification(reports_data, options);
             return {};
         } else {
             return { message: `report is not found for visulization Id : ${visualizationid}` };

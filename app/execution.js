@@ -13,145 +13,145 @@ const retryDelay = 3000 //in miliseconds
 let channelStatus = [];
 const chartMap = {
     'Clustered Vertical Bar Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.clusteredverticalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Clustered Horizontal Bar Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.clusteredhorizontalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Stacked Vertical Bar Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.stackedverticalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Stacked Horizontal Bar Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.stackedhorizontalBarChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Line Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.lineChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.lineChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Combo Chart': {
-        generateChart: function (report_obj, data) {
-            return charts.comboChart(report_obj.report_line_obj.visualizationid, data, report_obj);
+        generateChart: function (report_obj, data, option) {
+            return charts.comboChart(report_obj.report_line_obj.visualizationid, data, report_obj, option);
         }
     },
 
     'Scatter plot': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.scatterChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Pie Chart': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.pieChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Doughnut Chart': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.doughnutChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Gauge plot': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.gaugeChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Table': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.tableChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Pivot Table': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.pivottableChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'KPI': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.kpiChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Info-graphic': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.infographicsChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Map': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.mapChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Tree Map': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.treemapChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Heat Map': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.heatmapChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Box Plot': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.boxplotChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Text Object': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.textObjectChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Bullet Chart': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.bulletChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Chord Diagram': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.chorddiagramChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Sankey': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.sankeyChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Pie Grid': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.piegridChart(report_obj.report_line_obj.visualizationid, data);
         }
     },
 
     'Number Grid': {
-        generateChart: function (report_obj, data) {
+        generateChart: function (report_obj, data, option) {
             return charts.numbergridChart(report_obj.report_line_obj.visualizationid, data);
         }
     }
@@ -197,7 +197,7 @@ const updateSchedulerTaskLog = async function (data, shedularlog, channel) {
     }
 }
 
-exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, caller) {
+exports.loadDataAndSendNotification = function loadDataAndSendNotification(reports_data, options) {
     let query = reports_data.report_line_obj.query;
     const thresholdAlertEmail = reports_data.report_obj.thresholdAlert;
 
@@ -210,7 +210,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
 
         console.debug('Executing query', rawQuery);
 
-        var data_call = grpc_client.getRecords(rawQuery, {userName: caller});
+        var data_call = grpc_client.getRecords(rawQuery, options);
 
         data_call.then(async function (response) {
 
@@ -232,7 +232,7 @@ exports.loadDataAndSendNotification = function loadDataAndSendNotification(repor
                 var vizID = reports_data.report_line_obj.visualizationid;
                 reports_data.report_line_obj.visualizationid = thresholdAlertEmail ? reports_data.report_line_obj.visualizationid.split(":")[1] : reports_data.report_line_obj.visualizationid
                 //render html chart
-                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data);
+                generate_chart = chartMap[reports_data.report_line_obj.viz_type].generateChart(reports_data, json_res.data, options);
 
                 generate_chart.then(async function (response) {
                     var toMailList = [];

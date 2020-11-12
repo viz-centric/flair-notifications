@@ -30,98 +30,98 @@ const { JSDOM } = jsdom;
 
 
 var charts = {
-  clusteredverticalBarChart: async function (viz_id, data, report_obj) {
+  clusteredverticalBarChart: async function (viz_id, data, report_obj, option) {
     var clusteredverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredverticalBarFakeDom.window.document)
 
     var clusteredverticalBarChartObj = clusteredverticalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj, option);
 
     clusteredverticalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredverticalBarChartObj(d3.select(clusteredverticalBarFakeDom.window.document).select('#clusteredverticalBar'))
     return clusteredverticalBarChartObj._getHTML();
   },
 
-  clusteredhorizontalBarChart: async function (viz_id, data, report_obj) {
+  clusteredhorizontalBarChart: async function (viz_id, data, report_obj, option) {
     var clusteredhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="clusteredhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(clusteredhorizontalBarFakeDom.window.document)
 
     var clusteredhorizontalBarChartObj = clusteredhorizontalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj, option);
 
     clusteredhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     clusteredhorizontalBarChartObj(d3.select(clusteredhorizontalBarFakeDom.window.document).select('#clusteredhorizontalBar'))
     return clusteredhorizontalBarChartObj._getHTML();
   },
 
-  stackedverticalBarChart: async function (viz_id, data, report_obj) {
+  stackedverticalBarChart: async function (viz_id, data, report_obj, option) {
     var stackedverticalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedverticalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedverticalBarFakeDom.window.document)
 
     var stackedverticalBarChartObj = stackedverticalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj, option);
 
     stackedverticalBarChartObj.config(chartConfig).print(true).data(data);
     stackedverticalBarChartObj(d3.select(stackedverticalBarFakeDom.window.document).select('#stackedverticalBar'))
     return stackedverticalBarChartObj._getHTML();
   },
 
-  stackedhorizontalBarChart: async function (viz_id, data, report_obj) {
+  stackedhorizontalBarChart: async function (viz_id, data, report_obj, option) {
     var stackedhorizontalBarFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="stackedhorizontalBar" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(stackedhorizontalBarFakeDom.window.document)
 
     var stackedhorizontalBarChartObj = stackedhorizontalbar();
-    var chartConfig = await load_config.barChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.barChartConfig(viz_id, report_obj, option);
 
     stackedhorizontalBarChartObj.config(chartConfig).print(true).data(data);
     stackedhorizontalBarChartObj(d3.select(stackedhorizontalBarFakeDom.window.document).select('#stackedhorizontalBar'))
     return stackedhorizontalBarChartObj._getHTML();
   },
 
-  lineChart: async function (viz_id, data, report_obj) {
+  lineChart: async function (viz_id, data, report_obj, option) {
 
     var linefakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="line" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(linefakeDom.window.document);
 
     var linechart = line();
-    var chartConfig = await load_config.lineChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.lineChartConfig(viz_id, report_obj, option);
     linechart.config(chartConfig).print(true).data(data);
     linechart(d3.select(linefakeDom.window.document).select('#line'))
     return linechart._getHTML();
   },
 
-  comboChart: async function (viz_id, data, report_obj) {
+  comboChart: async function (viz_id, data, report_obj, option) {
 
     var comboFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="combo" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(comboFakeDom.window.document)
 
     var comboChartObj = combo();
-    var chartConfig = await load_config.comboChartConfig(viz_id, report_obj);
+    var chartConfig = await load_config.comboChartConfig(viz_id, report_obj, option);
 
     comboChartObj.config(chartConfig).print(true).data(data);
     comboChartObj(d3.select(comboFakeDom.window.document).select('#combo'))
     return comboChartObj._getHTML();
   },
 
-  scatterChart: async function (viz_id, data) {
+  scatterChart: async function (viz_id, data, option) {
     var scatterFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="scatter" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(scatterFakeDom.window.document)
 
     var scatterChartObj = scatter();
-    var chartConfig = await load_config.scatterPlotConfig(viz_id);
+    var chartConfig = await load_config.scatterPlotConfig(viz_id, option);
 
     scatterChartObj.config(chartConfig).print(true).data(data);
     scatterChartObj(d3.select(scatterFakeDom.window.document).select('#scatter'))
     return scatterChartObj._getHTML();
   },
 
-  pieChart: async function (viz_id, data) {
+  pieChart: async function (viz_id, data, option) {
 
     var pieFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pie" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(pieFakeDom.window.document)
 
     var pieChartobj = pie();
-    var chartConfig = await load_config.pieChartConfig(viz_id);
+    var chartConfig = await load_config.pieChartConfig(viz_id, option);
     chartConfig.valueAsArc = false; //for server side
 
     pieChartobj.config(chartConfig).print(true).data(data);
@@ -129,12 +129,12 @@ var charts = {
     return pieChartobj._getHTML();
   },
 
-  doughnutChart: async function (viz_id, data) {
+  doughnutChart: async function (viz_id, data, option) {
     var doughnutFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="doughnut" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(doughnutFakeDom.window.document)
 
     var doughnutChartobj = doughnut();
-    var chartConfig = await load_config.DoughnutChartConfig(viz_id);
+    var chartConfig = await load_config.DoughnutChartConfig(viz_id, option);
     chartConfig.valueAsArc = false; //for server side
 
     doughnutChartobj.config(chartConfig).print(true).data(data);
@@ -143,7 +143,7 @@ var charts = {
 
   },
 
-  gaugeChart: async function (config, data) {
+  gaugeChart: async function (config, data, option) {
     var gaugeFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="gauge" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(gaugeFakeDom.window.document)
     var gaugeChartobj = gauge();
@@ -181,46 +181,46 @@ var charts = {
 
   },
 
-  gaugeChart: async function (viz_id, data) {
+  gaugeChart: async function (viz_id, data, option) {
     var gaugeFakeDom = new JSDOM('<!DOCTYPE html><html><body><svg id="gauge" width="950" height="440"/></body></html>');
     chartUtility.configureDomForcharts(gaugeFakeDom.window.document)
     var gaugePlotChartobj = gauge();
 
-    var chartConfig = await load_config.gaugePlotConfig(viz_id);
+    var chartConfig = await load_config.gaugePlotConfig(viz_id, option);
     gaugePlotChartobj.config(chartConfig).print(true).data(data);
     gaugePlotChartobj(d3.select(gaugeFakeDom.window.document).select('#gauge'))
     return gaugePlotChartobj._getHTML();
 
   },
 
-  tableChart: async function (viz_id, data) {
+  tableChart: async function (viz_id, data, option) {
 
     var tableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="table" ></div></body></html>');
     chartUtility.configureDomForcharts(tableFakeDom.window.document)
     var tableChartobj = table();
 
-    var chartConfig = await load_config.tableChartConfig(viz_id);
+    var chartConfig = await load_config.tableChartConfig(viz_id, option);
     tableChartobj.config(chartConfig).print(true).data(data);
     tableChartobj(d3.select(tableFakeDom.window.document).select('#table'))
     return tableChartobj._getHTML();
   },
 
-  pivottableChart: async function (viz_id, data) {
+  pivottableChart: async function (viz_id, data, option) {
     var pivottableFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="pivottable" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(pivottableFakeDom.window.document)
     var pivottableChartobj = pivottable();
 
-    var chartConfig = await load_config.pivottableChartConfig(viz_id);
+    var chartConfig = await load_config.pivottableChartConfig(viz_id, option);
     pivottableChartobj.config(chartConfig).print(true).data(data);
     pivottableChartobj(d3.select(pivottableFakeDom.window.document).select('#pivottable'))
     return pivottableChartobj._getHTML();
   },
 
-  kpiChart: async function (viz_id, data) {
+  kpiChart: async function (viz_id, data, option) {
     var kpiFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="kpi" width="600" height="600"></div></body></html>');
     chartUtility.configureDomForcharts(kpiFakeDom.window.document)
     var kpiChartobj = kpi();
-    var chartConfig = await load_config.KPIChartConfig(viz_id);
+    var chartConfig = await load_config.KPIChartConfig(viz_id, option);
 
     kpiChartobj.config(chartConfig).print(true).data(data);
     kpiChartobj(d3.select(kpiFakeDom.window.document).select('#kpi'))
@@ -228,100 +228,100 @@ var charts = {
 
   },
 
-  infographicsChart: async function (viz_id, data) {
+  infographicsChart: async function (viz_id, data, option) {
 
     var infographicsFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="infographics" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(infographicsFakeDom.window.document)
 
     var infographicsChartobj = infographics();
-    var chartConfig = await load_config.infographicsChartConfig(viz_id);
+    var chartConfig = await load_config.infographicsChartConfig(viz_id, option);
 
     infographicsChartobj.config(chartConfig).print(true).data(data);
     infographicsChartobj(d3.select(infographicsFakeDom.window.document).select('#infographics'))
     return infographicsChartobj._getHTML();
   },
 
-  mapChart: async function (viz_id, data) {
+  mapChart: async function (viz_id, data, option) {
     var mapFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="map" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(mapFakeDom.window.document)
 
     var mapChartobj = map();
-    var chartConfig = await load_config.mapChartConfig(viz_id);
+    var chartConfig = await load_config.mapChartConfig(viz_id, option);
 
     mapChartobj.config(chartConfig).print(true).data(data);
     mapChartobj(d3.select(mapFakeDom.window.document).select('#map'))
     return mapChartobj._getHTML();
   },
 
-  treemapChart: async function (viz_id, data) {
+  treemapChart: async function (viz_id, data, option) {
     var treemapFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="treemap" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(treemapFakeDom.window.document)
 
     var treemapChartobj = treemap();
-    var chartConfig = await load_config.treemapChartConfig(viz_id);
+    var chartConfig = await load_config.treemapChartConfig(viz_id, option);
 
     treemapChartobj.config(chartConfig).print(true).data(data);
     treemapChartobj(d3.select(treemapFakeDom.window.document).select('#treemap'))
     return treemapChartobj._getHTML();
   },
 
-  heatmapChart: async function (viz_id, data) {
+  heatmapChart: async function (viz_id, data, option) {
 
     var heatmapFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="heatmap" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(heatmapFakeDom.window.document)
 
     var heatmapChartobj = heatmap();
-    var chartConfig = await load_config.heatMapChartConfig(viz_id);
+    var chartConfig = await load_config.heatMapChartConfig(viz_id, option);
 
     heatmapChartobj.config(chartConfig).print(true).data(data);
     heatmapChartobj(d3.select(heatmapFakeDom.window.document).select('#heatmap'))
     return heatmapChartobj._getHTML();
   },
 
-  boxplotChart: async function (viz_id, data) {
+  boxplotChart: async function (viz_id, data, option) {
     var boxplotFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="boxplot" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(boxplotFakeDom.window.document)
 
     var boxplotChartobj = boxplot();
-    var chartConfig = await load_config.boxplotChartConfig(viz_id);
+    var chartConfig = await load_config.boxplotChartConfig(viz_id, option);
 
     boxplotChartobj.config(chartConfig).print(true).data(data);
     boxplotChartobj(d3.select(boxplotFakeDom.window.document).select('#boxplot'))
     return boxplotChartobj._getHTML();
   },
 
-  bulletChart: async function (viz_id, data) {
+  bulletChart: async function (viz_id, data, option) {
 
     var bulletFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="bullet" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(bulletFakeDom.window.document)
 
     var bulletChartobj = bullet();
-    var chartConfig = await load_config.bulletChartConfig(viz_id);
+    var chartConfig = await load_config.bulletChartConfig(viz_id, option);
 
     bulletChartobj.config(chartConfig).print(true).data(data);
     bulletChartobj(d3.select(bulletFakeDom.window.document).select('#bullet'))
     return bulletChartobj._getHTML();
   },
 
-  chorddiagramChart: async function (viz_id, data) {
+  chorddiagramChart: async function (viz_id, data, option) {
     var chorddiagramFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="chorddiagram" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(chorddiagramFakeDom.window.document)
 
     var chorddiagramChartobj = chorddiagram();
-    var chartConfig = await load_config.chorddiagramChartConfig(viz_id);
+    var chartConfig = await load_config.chorddiagramChartConfig(viz_id, option);
 
     chorddiagramChartobj.config(chartConfig).print(true).data(data);
     chorddiagramChartobj(d3.select(chorddiagramFakeDom.window.document).select('#chorddiagram'))
     return chorddiagramChartobj._getHTML();
   },
 
-  textObjectChart: async function (viz_id, data) {
+  textObjectChart: async function (viz_id, data, option) {
 
     var textobjectFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="textobject" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(textobjectFakeDom.window.document)
 
     var textobjectChartobj = textobject();
-    var chartConfig = await load_config.textObjectChartConfig(viz_id, data);
+    var chartConfig = await load_config.textObjectChartConfig(viz_id, data, option);
 
     textobjectChartobj.config(chartConfig).print(true);
 
@@ -329,39 +329,39 @@ var charts = {
     return textobjectChartobj._getHTML();
   },
 
-  sankeyChart: async function (viz_id, data) {
+  sankeyChart: async function (viz_id, data, option) {
 
     var sankeyFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="sankey" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(sankeyFakeDom.window.document)
 
     var sankeyChartobj = sankey();
-    var chartConfig = await load_config.sankeyChartConfig(viz_id);
+    var chartConfig = await load_config.sankeyChartConfig(viz_id, option);
 
     sankeyChartobj.config(chartConfig).print(true).data(data);
     sankeyChartobj(d3.select(sankeyFakeDom.window.document).select('#sankey'))
     return sankeyChartobj._getHTML();
   },
 
-  piegridChart: async function (viz_id, data) {
+  piegridChart: async function (viz_id, data, option) {
 
     var piegridFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="piegrid" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(piegridFakeDom.window.document)
 
     var piegridChartobj = piegrid();
-    var chartConfig = await load_config.piegridChartConfig(viz_id);
+    var chartConfig = await load_config.piegridChartConfig(viz_id, option);
 
     piegridChartobj.config(chartConfig).print(true).data(data);
     piegridChartobj(d3.select(piegridFakeDom.window.document).select('#piegrid'))
     return piegridChartobj._getHTML();
   },
 
-  numbergridChart: async function (viz_id, data) {
+  numbergridChart: async function (viz_id, data, option) {
 
     var numbergridFakeDom = new JSDOM('<!DOCTYPE html><html><body><div id="numbergrid" width="950" height="440"></div></body></html>');
     chartUtility.configureDomForcharts(numbergridFakeDom.window.document)
 
     var numbergridChartobj = numbergrid();
-    var chartConfig = await load_config.numbergridChartConfig(viz_id);
+    var chartConfig = await load_config.numbergridChartConfig(viz_id, option);
 
     numbergridChartobj.config(chartConfig).print(true).data(data);
     numbergridChartobj(d3.select(numbergridFakeDom.window.document).select('#numbergrid'))
