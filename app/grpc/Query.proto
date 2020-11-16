@@ -72,6 +72,7 @@ message Query {
     int64 offset = 14;
     QuerySource querySource = 15;
     map<string, string> meta = 16;
+    repeated string transformations = 17;
 
     message Field {
         string name = 1;
